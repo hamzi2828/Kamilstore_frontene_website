@@ -1,56 +1,30 @@
-import { Truck, RotateCcw, ShieldCheck, Headphones } from "lucide-react";
+import { Truck, RotateCcw, ShieldCheck, BadgeCheck } from "lucide-react";
 
 const badges = [
-  {
-    icon: Truck,
-    title: "Free Shipping",
-    description: "On orders over $50",
-    color: "text-blue-600 bg-blue-50",
-  },
-  {
-    icon: RotateCcw,
-    title: "Easy Returns",
-    description: "30-day return policy",
-    color: "text-emerald-600 bg-emerald-50",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Secure Payment",
-    description: "256-bit SSL encrypted",
-    color: "text-purple-600 bg-purple-50",
-  },
-  {
-    icon: Headphones,
-    title: "24/7 Support",
-    description: "Dedicated help center",
-    color: "text-orange-600 bg-orange-50",
-  },
+  { icon: BadgeCheck, title: "Verified Sellers", desc: "All vendors vetted & approved" },
+  { icon: ShieldCheck, title: "Buyer Protection", desc: "100% purchase protection" },
+  { icon: Truck, title: "Free Delivery", desc: "On orders over $50" },
+  { icon: RotateCcw, title: "30-Day Returns", desc: "Money-back guarantee" },
 ];
 
 export default function TrustBadges() {
   return (
-    <section className="py-10 border-b border-gray-100">
-      <div className="site-container">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {badges.map((badge) => {
-            const Icon = badge.icon;
+    <section className="site-container">
+      <div className="bg-white rounded-2xl">
+        <div className="grid grid-cols-2 lg:grid-cols-4">
+          {badges.map((b, i) => {
+            const Icon = b.icon;
             return (
               <div
-                key={badge.title}
-                className="flex items-center gap-4 p-4 rounded-xl"
+                key={b.title}
+                className={`flex items-center gap-3 px-5 py-4 ${
+                  i < badges.length - 1 ? "lg:border-r border-gray-100" : ""
+                }`}
               >
-                <div
-                  className={`flex-shrink-0 w-12 h-12 rounded-xl ${badge.color} flex items-center justify-center`}
-                >
-                  <Icon className="w-6 h-6" />
-                </div>
+                <Icon className="w-5 h-5 text-orange-500 flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
-                    {badge.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-500">
-                    {badge.description}
-                  </p>
+                  <p className="font-medium text-[#333] text-sm">{b.title}</p>
+                  <p className="text-xs text-[#999]">{b.desc}</p>
                 </div>
               </div>
             );

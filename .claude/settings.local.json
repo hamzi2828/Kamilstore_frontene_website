@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(rm -rf node_modules/.cache)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npx next:*)",
+      "WebFetch(domain:www.alibaba.com)",
+      "WebFetch(domain:zextons.co.uk)"
     ]
   }
 }

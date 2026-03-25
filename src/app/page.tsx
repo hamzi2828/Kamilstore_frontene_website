@@ -9,7 +9,7 @@ import Newsletter from "@/components/home/Newsletter";
 
 export default function Home() {
   return (
-    <>
+    <div className="flex flex-col gap-5 sm:gap-6 pb-8">
       <HeroBanner />
       <TrustBadges />
       <FeaturedCategories />
@@ -18,6 +18,6 @@ export default function Home() {
       <FeaturedProducts />
       <TopVendors />
       <Newsletter />
-    </>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Star, CheckCircle, Package, ArrowRight } from "lucide-react";
+import { Star, ShieldCheck, Package, MessageSquare } from "lucide-react";
 import VendorAvatar from "@/components/ui/VendorAvatar";
 
 interface VendorCardProps {
@@ -13,73 +13,98 @@ interface VendorCardProps {
     reviewCount: number;
     productCount: number;
     isVerified: boolean;
+    badge?: string;
   };
+  rank?: number;
 }
 
-export default function VendorCard({ vendor }: VendorCardProps) {
-  return (
-    <Link href={`/vendor/${vendor.slug}`}>
-      <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-gray-200 group">
-        {/* Header accent */}
-        <div className="h-20 bg-gradient-to-br from-orange-50 to-amber-50 relative">
-          <div
-            className="absolute inset-0 opacity-[0.15]"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle, #f97316 1px, transparent 1px)",
-              backgroundSize: "16px 16px",
-            }}
-          />
-        </div>
+const badgeColors: Record<string, string> = {
+  "Top Rated": "bg-amber-50 text-amber-600 border-amber-200",
+  "Best Seller": "bg-emerald-50 text-emerald-600 border-emerald-200",
+  Featured: "bg-violet-50 text-violet-600 border-violet-200",
+};
 
-        <div className="px-5 pb-5 -mt-8 relative z-10">
-          {/* Logo */}
+function formatCount(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k`;
+  return n.toString();
+}
+
+export default function VendorCard({ vendor, rank }: VendorCardProps) {
+  return (
+    <Link href={`/vendor/${vendor.slug}`} className="block group">
+      <div className="relative bg-[#fafafa] rounded-xl p-4 hover:shadow-md border border-transparent hover:border-gray-100 transition-all duration-200 h-full">
+        {/* Rank badge */}
+        {rank && rank <= 3 && (
+          <div className="absolute -top-1.5 -left-1.5 w-6 h-6 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center shadow-sm z-10">
+            {rank}
+          </div>
+        )}
+
+        {/* Header: avatar + info */}
+        <div className="flex items-center gap-3 mb-3">
           <VendorAvatar
             src={vendor.logo}
             name={vendor.name}
-            size="lg"
-            className="border-2 border-white shadow-md"
+            size="md"
+            className="border border-gray-200 flex-shrink-0"
           />
-
-          {/* Info */}
-          <div className="mt-3">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-gray-900 truncate group-hover:text-orange-500 transition-colors">
+              <h3 className="font-semibold text-[#333] text-sm truncate group-hover:text-orange-500 transition-colors">
                 {vendor.name}
               </h3>
               {vendor.isVerified && (
-                <CheckCircle className="w-4 h-4 text-blue-500 fill-blue-500 flex-shrink-0" />
+                <ShieldCheck className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
               )}
             </div>
-
-            {/* Rating & Products */}
-            <div className="flex items-center gap-3 mt-2">
-              <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                <span className="text-sm font-medium text-gray-700">
-                  {vendor.rating.toFixed(1)}
-                </span>
-                <span className="text-xs text-gray-400">
-                  ({vendor.reviewCount})
-                </span>
+            {/* Rating */}
+            <div className="flex items-center gap-1 mt-1">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, j) => (
+                  <Star
+                    key={j}
+                    className={`w-3 h-3 ${
+                      j < Math.floor(vendor.rating)
+                        ? "text-amber-400 fill-amber-400"
+                        : "text-gray-200 fill-gray-200"
+                    }`}
+                  />
+                ))}
               </div>
-              <div className="w-px h-4 bg-gray-200" />
-              <div className="flex items-center gap-1 text-sm text-gray-500">
-                <Package className="w-3.5 h-3.5" />
-                <span>{vendor.productCount}</span>
-              </div>
+              <span className="text-xs font-semibold text-[#333]">{vendor.rating.toFixed(1)}</span>
             </div>
           </div>
-
-          <p className="mt-3 text-sm text-gray-500 line-clamp-2 leading-relaxed">
-            {vendor.description}
-          </p>
-
-          <div className="mt-4 w-full py-2.5 border border-gray-200 text-gray-700 rounded-xl hover:border-orange-500 hover:text-orange-500 transition-colors font-medium text-sm flex items-center justify-center gap-1.5 group-hover:border-orange-500 group-hover:text-orange-500">
-            Visit Store
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-          </div>
         </div>
+
+        {/* Description */}
+        <p className="text-xs text-[#888] line-clamp-2 leading-relaxed mb-3">
+          {vendor.description}
+        </p>
+
+        {/* Stats row */}
+        <div className="flex items-center gap-3 text-xs text-[#999]">
+          <span className="flex items-center gap-1">
+            <Package className="w-3 h-3" />
+            {formatCount(vendor.productCount)} products
+          </span>
+          <span className="flex items-center gap-1">
+            <MessageSquare className="w-3 h-3" />
+            {formatCount(vendor.reviewCount)} reviews
+          </span>
+        </div>
+
+        {/* Badge */}
+        {vendor.badge && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <span
+              className={`inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+                badgeColors[vendor.badge] ?? "bg-gray-50 text-gray-600 border-gray-200"
+              }`}
+            >
+              {vendor.badge}
+            </span>
+          </div>
+        )}
       </div>
     </Link>
   );

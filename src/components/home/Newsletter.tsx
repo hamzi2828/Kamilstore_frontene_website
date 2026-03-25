@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Send, Check } from "lucide-react";
+import { Send, Check, Mail } from "lucide-react";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -16,64 +16,53 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-br from-orange-500 via-orange-600 to-rose-600 relative overflow-hidden">
-      {/* Decorative */}
-      <div className="absolute inset-0">
-        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-      </div>
-
-      <div className="site-container relative z-10">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Stay in the Loop
-          </h2>
-          <p className="text-white/80 text-lg mb-8">
-            Get exclusive deals, new arrival alerts, and insider-only discounts
-            delivered straight to your inbox.
-          </p>
-
-          {submitted ? (
-            <div className="flex items-center justify-center gap-2 text-white bg-white/20 backdrop-blur-sm rounded-full py-4 px-6 max-w-md mx-auto">
-              <Check className="w-5 h-5" />
-              <span className="font-medium">
-                Thanks for subscribing! Check your inbox.
-              </span>
+    <section className="site-container">
+      <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6 sm:p-8">
+        <div className="max-w-3xl mx-auto flex flex-col md:flex-row md:items-center gap-5 md:gap-10">
+          {/* Left: icon + text */}
+          <div className="flex items-start gap-3 flex-1 min-w-0">
+            <div className="p-2.5 bg-orange-100 rounded-xl flex-shrink-0 mt-0.5">
+              <Mail className="w-5 h-5 text-orange-500" />
             </div>
-          ) : (
-            <form
-              onSubmit={handleSubmit}
-              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
-                required
-                className="flex-1 px-5 py-3.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/40 focus:bg-white/20 transition-all"
-              />
-              <button
-                type="submit"
-                className="px-7 py-3.5 bg-white text-orange-600 rounded-full font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-black/10"
-              >
-                Subscribe
-                <Send className="w-4 h-4" />
-              </button>
-            </form>
-          )}
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-[#333]">
+                Stay in the Loop
+              </h2>
+              <p className="text-sm text-[#777] leading-relaxed mt-0.5">
+                Exclusive deals, new arrivals & insider discounts — straight to your inbox.
+              </p>
+            </div>
+          </div>
 
-          <p className="mt-4 text-white/50 text-xs">
-            No spam, unsubscribe at any time. We respect your privacy.
-          </p>
+          {/* Right: form or success */}
+          <div className="flex-1 min-w-0 md:max-w-sm">
+            {submitted ? (
+              <div className="flex items-center gap-2.5 bg-emerald-50 border border-emerald-200 rounded-xl py-3 px-4">
+                <div className="p-1 bg-emerald-100 rounded-full flex-shrink-0">
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                </div>
+                <span className="text-sm font-medium text-emerald-700">You&apos;re subscribed!</span>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  className="flex-1 min-w-0 px-4 py-2.5 bg-white border border-orange-200 rounded-xl text-sm text-[#333] placeholder:text-[#bbb] focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition-all"
+                />
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 bg-orange-500 text-white rounded-xl font-semibold text-sm hover:bg-orange-600 transition-colors flex items-center gap-1.5 flex-shrink-0"
+                >
+                  Subscribe
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>

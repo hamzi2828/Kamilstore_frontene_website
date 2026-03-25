@@ -24,6 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
         <Header />
+        <div id="header-spacer" className="h-[136px] md:h-[145px]" />
         <main className="min-h-screen">{children}</main>
         <Footer />
       </body>
