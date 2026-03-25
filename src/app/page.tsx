@@ -1,0 +1,23 @@
+import HeroBanner from "@/components/home/HeroBanner";
+import TrustBadges from "@/components/home/TrustBadges";
+import FeaturedCategories from "@/components/home/FeaturedCategories";
+import FlashDeals from "@/components/home/FlashDeals";
+import PromoBanner from "@/components/home/PromoBanner";
+import FeaturedProducts from "@/components/home/FeaturedProducts";
+import TopVendors from "@/components/home/TopVendors";
+import Newsletter from "@/components/home/Newsletter";
+
+export default function Home() {
+  return (
+    <>
+      <HeroBanner />
+      <TrustBadges />
+      <FeaturedCategories />
+      <FlashDeals />
+      <PromoBanner />
+      <FeaturedProducts />
+      <TopVendors />
+      <Newsletter />
+    </>
+  );
+}
