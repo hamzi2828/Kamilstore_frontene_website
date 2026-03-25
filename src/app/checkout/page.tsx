@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   CreditCard,
@@ -12,6 +11,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import ProductImage from "@/components/ui/ProductImage";
 
 // Mock data
 const cartItems = [
@@ -417,7 +417,7 @@ export default function CheckoutPage() {
                     {cartItems.map((item) => (
                       <div key={item._id} className="flex gap-4 p-4 bg-gray-50 rounded-lg">
                         <div className="relative w-20 h-20 bg-gray-200 rounded-lg overflow-hidden">
-                          <Image src={item.image || "/placeholder-product.jpg"} alt={item.name} fill className="object-cover" />
+                          <ProductImage src={item.image} alt={item.name} className="object-cover" />
                         </div>
                         <div className="flex-1">
                           <h4 className="font-medium">{item.name}</h4>
@@ -455,7 +455,7 @@ export default function CheckoutPage() {
                 {cartItems.map((item) => (
                   <div key={item._id} className="flex gap-3">
                     <div className="relative w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-                      <Image src={item.image || "/placeholder-product.jpg"} alt={item.name} fill className="object-cover" />
+                      <ProductImage src={item.image} alt={item.name} className="object-cover" />
                       <span className="absolute -top-1 -right-1 w-5 h-5 bg-gray-500 text-white text-xs rounded-full flex items-center justify-center">
                         {item.quantity}
                       </span>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   Star,
@@ -18,6 +17,8 @@ import {
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductCard from "@/components/ui/ProductCard";
+import ProductImage from "@/components/ui/ProductImage";
+import VendorAvatar from "@/components/ui/VendorAvatar";
 
 // Mock product data
 const product = {
@@ -188,10 +189,9 @@ export default function ProductDetailPage() {
             {/* Image Gallery */}
             <div>
               <div className="relative aspect-square bg-gray-100 rounded-xl overflow-hidden mb-4">
-                <Image
-                  src={product.images[selectedImage] || "/placeholder-product.jpg"}
+                <ProductImage
+                  src={product.images[selectedImage]}
                   alt={product.name}
-                  fill
                   className="object-contain"
                 />
                 {discount > 0 && (
@@ -211,10 +211,9 @@ export default function ProductDetailPage() {
                         : "border-gray-200"
                     }`}
                   >
-                    <Image
-                      src={image || "/placeholder-product.jpg"}
+                    <ProductImage
+                      src={image}
                       alt={`${product.name} ${index + 1}`}
-                      fill
                       className="object-cover"
                     />
                   </button>
@@ -461,13 +460,12 @@ export default function ProductDetailPage() {
                   {reviews.map((review) => (
                     <div key={review._id} className="border-b border-gray-100 pb-6">
                       <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
-                          <Image
-                            src={review.user.avatar || "/placeholder-avatar.jpg"}
-                            alt={review.user.name}
-                            width={40}
-                            height={40}
-                            className="object-cover"
+                        <div className="flex-shrink-0">
+                          <VendorAvatar
+                            src={review.user.avatar}
+                            name={review.user.name}
+                            size="sm"
+                            className="!rounded-full"
                           />
                         </div>
                         <div className="flex-1">

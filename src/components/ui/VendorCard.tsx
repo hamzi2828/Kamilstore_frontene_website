@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Star, CheckCircle, Package, ArrowRight } from "lucide-react";
+import VendorAvatar from "@/components/ui/VendorAvatar";
 
 interface VendorCardProps {
   vendor: {
@@ -34,14 +34,12 @@ export default function VendorCard({ vendor }: VendorCardProps) {
 
         <div className="px-5 pb-5 -mt-8 relative z-10">
           {/* Logo */}
-          <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-white border-2 border-white shadow-md flex-shrink-0">
-            <Image
-              src={vendor.logo || "/placeholder-vendor.jpg"}
-              alt={vendor.name}
-              fill
-              className="object-cover"
-            />
-          </div>
+          <VendorAvatar
+            src={vendor.logo}
+            name={vendor.name}
+            size="lg"
+            className="border-2 border-white shadow-md"
+          />
 
           {/* Info */}
           <div className="mt-3">

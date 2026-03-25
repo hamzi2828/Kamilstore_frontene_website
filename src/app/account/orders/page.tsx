@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Package, ChevronRight, Search, Filter, Eye, RotateCcw } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import ProductImage from "@/components/ui/ProductImage";
 
 // Mock orders data
 const orders = [
@@ -219,10 +219,9 @@ export default function OrdersPage() {
                   {order.items.slice(0, 3).map((item, index) => (
                     <div key={index} className="flex items-center gap-3">
                       <div className="relative w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-                        <Image
-                          src={item.image || "/placeholder-product.jpg"}
+                        <ProductImage
+                          src={item.image}
                           alt={item.name}
-                          fill
                           className="object-cover"
                         />
                       </div>
@@ -251,10 +250,9 @@ export default function OrdersPage() {
                         <div key={index} className="flex items-center justify-between bg-white p-4 rounded-lg">
                           <div className="flex items-center gap-4">
                             <div className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
-                              <Image
-                                src={item.image || "/placeholder-product.jpg"}
+                              <ProductImage
+                                src={item.image}
                                 alt={item.name}
-                                fill
                                 className="object-cover"
                               />
                             </div>

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, Tag } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import ProductImage from "@/components/ui/ProductImage";
 
 // Mock cart data
 const initialCartItems = [
@@ -144,10 +144,9 @@ export default function CartPage() {
                       {/* Product Info */}
                       <div className="md:col-span-6 flex gap-4">
                         <div className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                          <Image
-                            src={item.product.image || "/placeholder-product.jpg"}
+                          <ProductImage
+                            src={item.product.image}
                             alt={item.product.name}
-                            fill
                             className="object-cover"
                           />
                         </div>

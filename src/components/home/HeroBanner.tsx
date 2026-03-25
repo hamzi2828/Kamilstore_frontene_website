@@ -2,14 +2,22 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ArrowRight,
+  ShoppingBag,
+  Users,
+  Star,
+} from "lucide-react";
 
 const banners = [
   {
     id: 1,
     title: "Summer Sale",
     subtitle: "Up to 50% Off",
-    description: "Shop the latest trends from top vendors across the marketplace",
+    description:
+      "Shop the latest trends from top vendors across the marketplace",
     gradient: "from-orange-500 via-rose-500 to-pink-600",
     accentColor: "bg-orange-400",
     link: "/deals",
@@ -19,7 +27,8 @@ const banners = [
     id: 2,
     title: "New Arrivals",
     subtitle: "Fresh Collection",
-    description: "Discover new products from hundreds of verified sellers worldwide",
+    description:
+      "Discover new products from hundreds of verified sellers worldwide",
     gradient: "from-violet-600 via-purple-600 to-indigo-700",
     accentColor: "bg-violet-400",
     link: "/new-arrivals",
@@ -29,12 +38,19 @@ const banners = [
     id: 3,
     title: "Electronics Fair",
     subtitle: "Best Deals",
-    description: "Premium electronics at unbeatable prices — phones, laptops & more",
+    description:
+      "Premium electronics at unbeatable prices — phones, laptops & more",
     gradient: "from-emerald-500 via-teal-600 to-cyan-700",
     accentColor: "bg-emerald-400",
     link: "/category/electronics",
     tag: "Top Picks",
   },
+];
+
+const stats = [
+  { icon: ShoppingBag, value: "50K+", label: "Products" },
+  { icon: Users, value: "1,200+", label: "Vendors" },
+  { icon: Star, value: "4.8", label: "Avg Rating" },
 ];
 
 export default function HeroBanner() {
@@ -66,7 +82,7 @@ export default function HeroBanner() {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="relative h-[420px] sm:h-[480px] md:h-[540px]">
+      <div className="relative h-[420px] sm:h-[460px] md:h-[500px]">
         {banners.map((banner, index) => (
           <div
             key={banner.id}
@@ -86,7 +102,6 @@ export default function HeroBanner() {
               />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-white/5" />
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-white/5" />
-              {/* Grid pattern */}
               <div
                 className="absolute inset-0 opacity-[0.03]"
                 style={{
@@ -99,8 +114,9 @@ export default function HeroBanner() {
 
             <div className="site-container h-full relative z-10">
               <div className="flex items-center h-full">
+                {/* Left — Text content */}
                 <div
-                  className={`w-full md:w-3/5 text-white transition-all duration-700 delay-100 ${
+                  className={`w-full lg:w-3/5 text-white transition-all duration-700 delay-100 ${
                     index === currentSlide
                       ? "translate-y-0 opacity-100"
                       : "translate-y-8 opacity-0"
@@ -111,13 +127,13 @@ export default function HeroBanner() {
                     {banner.tag}
                   </span>
 
-                  <h2 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-3 tracking-tight leading-[1.1]">
+                  <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-3 tracking-tight leading-[1.1]">
                     {banner.title}
                   </h2>
-                  <p className="text-2xl sm:text-3xl md:text-4xl font-light mb-4 text-white/90">
+                  <p className="text-2xl sm:text-3xl font-light mb-4 text-white/90">
                     {banner.subtitle}
                   </p>
-                  <p className="text-base sm:text-lg mb-8 text-white/75 max-w-lg leading-relaxed">
+                  <p className="text-base sm:text-lg mb-8 text-white/70 max-w-lg leading-relaxed">
                     {banner.description}
                   </p>
 
@@ -137,6 +153,37 @@ export default function HeroBanner() {
                     </Link>
                   </div>
                 </div>
+
+                {/* Right — Marketplace stats (desktop) */}
+                <div
+                  className={`hidden lg:flex flex-col items-end gap-4 w-2/5 pl-8 transition-all duration-700 delay-200 ${
+                    index === currentSlide
+                      ? "translate-y-0 opacity-100"
+                      : "translate-y-8 opacity-0"
+                  }`}
+                >
+                  {stats.map((stat) => {
+                    const Icon = stat.icon;
+                    return (
+                      <div
+                        key={stat.label}
+                        className="flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl px-6 py-4 w-56"
+                      >
+                        <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
+                          <Icon className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-2xl font-bold text-white leading-none">
+                            {stat.value}
+                          </p>
+                          <p className="text-sm text-white/60 mt-0.5">
+                            {stat.label}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
@@ -146,14 +193,14 @@ export default function HeroBanner() {
       {/* Navigation Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full text-white transition-all border border-white/10"
+        className="absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full text-white transition-all border border-white/10"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full text-white transition-all border border-white/10"
+        className="absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/25 backdrop-blur-sm rounded-full text-white transition-all border border-white/10"
         aria-label="Next slide"
       >
         <ChevronRight className="w-5 h-5" />

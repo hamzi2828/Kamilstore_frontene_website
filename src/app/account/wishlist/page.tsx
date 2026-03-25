@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Heart, ShoppingCart, Trash2, ChevronRight, Share2 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import ProductImage from "@/components/ui/ProductImage";
 
 // Mock wishlist data
 const initialWishlistItems = [
@@ -140,10 +140,9 @@ export default function WishlistPage() {
               {/* Image */}
               <div className="relative aspect-square bg-gray-100">
                 <Link href={`/product/${item.slug}`}>
-                  <Image
-                    src={item.image || "/placeholder-product.jpg"}
+                  <ProductImage
+                    src={item.image}
                     alt={item.name}
-                    fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </Link>

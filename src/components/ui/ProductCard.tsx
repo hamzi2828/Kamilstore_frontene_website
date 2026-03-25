@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Heart, ShoppingCart, Star, Eye } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import ProductImage from "@/components/ui/ProductImage";
 
 interface ProductCardProps {
   product: {
@@ -35,23 +35,22 @@ export default function ProductCard({ product }: ProductCardProps) {
       {/* Image Container */}
       <div className="relative aspect-square overflow-hidden bg-gray-50">
         <Link href={`/product/${product.slug}`}>
-          <Image
-            src={product.images[0] || "/placeholder-product.jpg"}
+          <ProductImage
+            src={product.images[0]}
             alt={product.name}
-            fill
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </Link>
 
         {/* Discount Badge */}
         {discount > 0 && (
-          <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg">
+          <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg z-10">
             -{discount}%
           </span>
         )}
 
         {/* Action Buttons */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+        <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 z-10">
           <button className="p-2 bg-white/90 backdrop-blur-sm rounded-xl shadow-md hover:bg-orange-500 hover:text-white transition-colors">
             <Heart className="w-4 h-4" />
           </button>
@@ -61,7 +60,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
 
         {/* Quick Add to Cart */}
-        <button className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 flex items-center justify-center gap-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300 font-medium text-sm">
+        <button className="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 flex items-center justify-center gap-2 translate-y-full group-hover:translate-y-0 transition-transform duration-300 font-medium text-sm z-10">
           <ShoppingCart className="w-4 h-4" />
           Add to Cart
         </button>

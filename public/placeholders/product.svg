@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc"/>
+      <stop offset="100%" style="stop-color:#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <g transform="translate(200,185)" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-20 -24h40l6 8H-26l6-8z"/>
+    <path d="M-26 -16h52v40a4 4 0 0 1-4 4h-44a4 4 0 0 1-4-4v-40z"/>
+    <path d="M-10 -16v-6a10 10 0 0 1 20 0v6"/>
+  </g>
+  <text x="200" y="230" text-anchor="middle" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="13" font-weight="500">Product Image</text>
+</svg>

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   Star,
@@ -15,6 +14,8 @@ import {
   List,
 } from "lucide-react";
 import ProductCard from "@/components/ui/ProductCard";
+import ProductImage from "@/components/ui/ProductImage";
+import VendorAvatar from "@/components/ui/VendorAvatar";
 
 // Mock vendor data
 const vendor = {
@@ -121,10 +122,9 @@ export default function VendorPage() {
       {/* Cover Image */}
       <div className="relative h-48 md:h-64 bg-gradient-to-r from-orange-500 to-orange-600">
         {vendor.coverImage && (
-          <Image
+          <ProductImage
             src={vendor.coverImage}
             alt={vendor.name}
-            fill
             className="object-cover opacity-50"
           />
         )}
@@ -136,12 +136,12 @@ export default function VendorPage() {
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex flex-col md:flex-row gap-6">
               {/* Logo */}
-              <div className="relative w-32 h-32 rounded-xl overflow-hidden border-4 border-white shadow-lg flex-shrink-0 -mt-20 md:-mt-12">
-                <Image
-                  src={vendor.logo || "/placeholder-vendor.jpg"}
-                  alt={vendor.name}
-                  fill
-                  className="object-cover"
+              <div className="flex-shrink-0 -mt-20 md:-mt-12">
+                <VendorAvatar
+                  src={vendor.logo}
+                  name={vendor.name}
+                  size="lg"
+                  className="!w-32 !h-32 border-4 border-white shadow-lg"
                 />
               </div>
 
