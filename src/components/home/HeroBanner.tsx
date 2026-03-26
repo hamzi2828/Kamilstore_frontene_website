@@ -1,58 +1,29 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import Link from "next/link";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const banners = [
-  {
-    id: 1,
-    tag: "Marketplace Sale",
-    title: "Shop from 1,200+ Verified Sellers",
-    subtitle: "Up to 50% off across all stores this season",
-    gradient: "from-[#1a1a2e] via-[#16213e] to-[#0f3460]",
-    accent: "bg-orange-500",
-    link: "/deals",
-    cta: "Shop Deals",
-  },
-  {
-    id: 2,
-    tag: "New Arrivals",
-    title: "Fresh Drops Every Week",
-    subtitle: "Curated collections from hundreds of sellers worldwide",
-    gradient: "from-[#0f0c29] via-[#302b63] to-[#24243e]",
-    accent: "bg-violet-500",
-    link: "/new-arrivals",
-    cta: "Shop New",
-  },
-  {
-    id: 3,
-    tag: "Electronics Fair",
-    title: "Premium Tech at Best Prices",
-    subtitle: "Phones, laptops, gadgets & more from verified sellers",
-    gradient: "from-[#0d2137] via-[#0a3d62] to-[#1a535c]",
-    accent: "bg-emerald-500",
-    link: "/category/electronics",
-    cta: "Shop Electronics",
-  },
+const slides = [
+  { id: 1, src: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1440&h=460&fit=crop&q=80", alt: "Marketplace Sale - Up to 50% off", link: "/deals" },
+  { id: 2, src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1440&h=460&fit=crop&q=80", alt: "New Fashion Arrivals", link: "/new-arrivals" },
+  { id: 3, src: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1440&h=460&fit=crop&q=80", alt: "Premium Electronics", link: "/category/electronics" },
 ];
 
-const INTERVAL = 5000;
+const INTERVAL = 3000;
 
 export default function HeroBanner() {
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState<"left" | "right">("right");
   const [isAnimating, setIsAnimating] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const progressRef = useRef<number>(0);
+  const progressRef = useRef(0);
   const rafRef = useRef<number | null>(null);
-  const lastTickRef = useRef<number>(Date.now());
+  const lastTickRef = useRef(Date.now());
+  const [progress, setProgress] = useState(0);
 
   const goTo = useCallback(
-    (i: number, dir: "left" | "right") => {
+    (i: number) => {
       if (isAnimating || i === current) return;
-      setDirection(dir);
       setIsAnimating(true);
       setCurrent(i);
       progressRef.current = 0;
@@ -64,15 +35,14 @@ export default function HeroBanner() {
   );
 
   const next = useCallback(
-    () => goTo((current + 1) % banners.length, "right"),
+    () => goTo((current + 1) % slides.length),
     [current, goTo]
   );
   const prev = useCallback(
-    () => goTo((current - 1 + banners.length) % banners.length, "left"),
+    () => goTo((current - 1 + slides.length) % slides.length),
     [current, goTo]
   );
 
-  // Progress bar + auto-advance
   useEffect(() => {
     const tick = () => {
       if (!paused) {
@@ -81,7 +51,6 @@ export default function HeroBanner() {
         lastTickRef.current = now;
         progressRef.current += delta;
         setProgress(Math.min(progressRef.current / INTERVAL, 1));
-
         if (progressRef.current >= INTERVAL) {
           progressRef.current = 0;
           setProgress(0);
@@ -98,133 +67,105 @@ export default function HeroBanner() {
     };
   }, [paused, next]);
 
-  // Touch swipe
-  const touchStart = useRef<number | null>(null);
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStart.current = e.touches[0].clientX;
-  };
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStart.current === null) return;
-    const diff = touchStart.current - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) {
-      diff > 0 ? next() : prev();
-    }
-    touchStart.current = null;
-  };
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [prev, next]);
 
-  const slideClass = (i: number) => {
-    if (i === current) return "translate-x-0 opacity-100 z-10 visible";
-    if (direction === "right") return "translate-x-full opacity-0 z-0 invisible";
-    return "-translate-x-full opacity-0 z-0 invisible";
+  // Touch swipe
+  const touchX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchX.current === null) return;
+    const diff = touchX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? next() : prev();
+    touchX.current = null;
   };
 
   return (
     <section className="site-container">
       <div
-        className="relative overflow-hidden rounded-2xl h-[280px] sm:h-[340px] md:h-[420px] group"
+        className="relative overflow-hidden rounded-2xl h-[200px] sm:h-[300px] md:h-[400px] lg:h-[460px] group bg-gray-100"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
-        {banners.map((b, i) => (
-          <div
-            key={b.id}
-            className={`absolute inset-0 bg-gradient-to-br ${b.gradient} transition-all duration-700 ease-out ${slideClass(i)}`}
+        {/* Slides */}
+        {slides.map((slide, i) => (
+          <a
+            key={slide.id}
+            href={slide.link}
+            className={`absolute inset-0 transition-all duration-700 ease-out ${
+              i === current
+                ? "opacity-100 z-10 scale-100"
+                : "opacity-0 z-0 scale-105"
+            }`}
           >
-            {/* Decorative elements */}
-            <div className="absolute inset-0 overflow-hidden">
-              <div className="absolute -top-20 -right-20 w-[500px] h-[500px] rounded-full bg-white/[0.03] blur-3xl" />
-              <div className="absolute -bottom-32 -left-32 w-[400px] h-[400px] rounded-full bg-white/[0.02] blur-3xl" />
-              <div className="absolute top-1/2 right-[15%] w-48 h-48 border border-white/[0.06] rounded-full -translate-y-1/2 hidden md:block" />
-              <div className="absolute top-1/2 right-[15%] w-72 h-72 border border-white/[0.04] rounded-full -translate-y-1/2 hidden md:block" />
-              <div className="absolute top-1/2 right-[15%] w-96 h-96 border border-white/[0.02] rounded-full -translate-y-1/2 hidden md:block" />
-              {/* Dot grid pattern */}
-              <div
-                className="absolute inset-0 opacity-[0.03]"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle, white 1px, transparent 1px)",
-                  backgroundSize: "24px 24px",
-                }}
-              />
-            </div>
-
-            {/* Content */}
-            <div className="relative z-10 h-full flex items-center justify-center px-6 sm:px-12 md:px-20 lg:px-28">
-              <div
-                className={`w-full max-w-3xl transition-all duration-700 delay-150 ${
-                  i === current
-                    ? "translate-y-0 opacity-100"
-                    : "translate-y-8 opacity-0"
-                }`}
-              >
-                <span
-                  className={`inline-block px-3 py-1 ${b.accent} rounded-md text-xs font-semibold text-white mb-4 tracking-wide uppercase`}
-                >
-                  {b.tag}
-                </span>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 leading-[1.15] tracking-tight">
-                  {b.title}
-                </h2>
-                <p className="text-sm sm:text-base text-white/50 mb-8 max-w-md leading-relaxed">
-                  {b.subtitle}
-                </p>
-                <Link
-                  href={b.link}
-                  className="inline-flex items-center gap-2.5 bg-white text-gray-900 px-7 py-3.5 rounded-xl font-semibold text-sm hover:bg-white/90 transition-all group/btn shadow-lg shadow-black/10"
-                >
-                  {b.cta}
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5" />
-                </Link>
-              </div>
-            </div>
-          </div>
+            <Image
+              src={slide.src}
+              alt={slide.alt}
+              fill
+              className="object-cover"
+              priority={i === 0}
+              sizes="(max-width: 768px) 100vw, 1440px"
+            />
+          </a>
         ))}
 
-        {/* Nav arrows */}
+        {/* Bottom gradient for better control visibility */}
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/40 to-transparent z-[11] pointer-events-none" />
+
+        {/* Arrows */}
         <button
           onClick={prev}
-          className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-20 p-2.5 bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-full text-white transition-all opacity-0 group-hover:opacity-100"
-          aria-label="Previous slide"
+          className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center bg-white/90 hover:bg-white rounded-full text-gray-800 shadow-lg shadow-black/10 transition-all opacity-0 group-hover:opacity-100 hover:scale-105 active:scale-95"
+          aria-label="Previous"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
         <button
           onClick={next}
-          className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-20 p-2.5 bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-full text-white transition-all opacity-0 group-hover:opacity-100"
-          aria-label="Next slide"
+          className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center bg-white/90 hover:bg-white rounded-full text-gray-800 shadow-lg shadow-black/10 transition-all opacity-0 group-hover:opacity-100 hover:scale-105 active:scale-95"
+          aria-label="Next"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
 
-        {/* Bottom bar: dots + progress */}
-        <div className="absolute bottom-0 left-0 right-0 z-20">
-          {/* Progress bar */}
-          <div className="h-[3px] bg-white/10">
-            <div
-              className="h-full bg-white/40 transition-none"
-              style={{ width: `${progress * 100}%` }}
-            />
+        {/* Dots + slide counter */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+          <span className="text-white/60 text-[11px] font-semibold tabular-nums font-mono hidden sm:block">
+            {String(current + 1).padStart(2, "0")}/{String(slides.length).padStart(2, "0")}
+          </span>
+          <div className="flex items-center gap-1.5">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i)}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  i === current
+                    ? "w-7 bg-white shadow-sm shadow-white/30"
+                    : "w-2 bg-white/40 hover:bg-white/70"
+                }`}
+                aria-label={`Slide ${i + 1}`}
+              />
+            ))}
           </div>
         </div>
 
-        {/* Dots */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-          {banners.map((_, i) => (
-            <button
-              key={i}
-              onClick={() =>
-                goTo(i, i > current ? "right" : "left")
-              }
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === current
-                  ? "bg-white w-7"
-                  : "bg-white/30 w-2 hover:bg-white/50"
-              }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
+        {/* Progress bar */}
+        <div className="absolute bottom-0 left-0 right-0 z-20 h-[3px] bg-white/15">
+          <div
+            className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-r shadow-[0_0_8px_rgba(234,107,14,0.4)]"
+            style={{ width: `${progress * 100}%`, transition: "none" }}
+          />
         </div>
       </div>
     </section>
