@@ -2,322 +2,252 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Package, ChevronRight, Search, Filter, Eye, RotateCcw } from "lucide-react";
+import {
+  Package, Search, Eye, EyeOff, RotateCcw, ShoppingBag,
+  ChevronDown, Clock, MapPin, Truck, ArrowRight,
+} from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import "@/styling/OrdersPage.css";
 
-// Mock orders data
 const orders = [
   {
-    _id: "ORD001",
-    date: "2024-01-15",
-    status: "Delivered",
-    total: 2199.98,
+    _id: "ORD001", date: "2024-01-15", status: "Delivered", total: 2199.98,
     items: [
-      {
-        name: "Apple MacBook Pro 14-inch M3 Pro",
-        image: "/products/macbook.jpg",
-        quantity: 1,
-        price: 1849.99,
-      },
-      {
-        name: "Sony WH-1000XM5 Wireless Headphones",
-        image: "/products/sony-headphones.jpg",
-        quantity: 1,
-        price: 349.99,
-      },
+      { name: "Apple MacBook Pro 14-inch M3 Pro", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop", quantity: 1, price: 1849.99 },
+      { name: "Sony WH-1000XM5 Wireless Headphones", image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop", quantity: 1, price: 349.99 },
     ],
     shippingAddress: "123 Main St, New York, NY 10001",
     trackingNumber: "1Z999AA10123456784",
   },
   {
-    _id: "ORD002",
-    date: "2024-01-10",
-    status: "Shipped",
-    total: 149.99,
+    _id: "ORD002", date: "2024-01-10", status: "Shipped", total: 149.99,
     items: [
-      {
-        name: "USB-C Hub Adapter 7-in-1",
-        image: "/products/hub.jpg",
-        quantity: 1,
-        price: 49.99,
-      },
-      {
-        name: "Wireless Charging Pad",
-        image: "/products/charger.jpg",
-        quantity: 2,
-        price: 50.00,
-      },
+      { name: "USB-C Hub Adapter 7-in-1", image: "https://images.unsplash.com/photo-1625842268584-8f3296236761?w=400&h=400&fit=crop", quantity: 1, price: 49.99 },
+      { name: "Wireless Charging Pad", image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&h=400&fit=crop", quantity: 2, price: 50.00 },
     ],
     shippingAddress: "123 Main St, New York, NY 10001",
     trackingNumber: "1Z999AA10123456785",
   },
   {
-    _id: "ORD003",
-    date: "2024-01-05",
-    status: "Processing",
-    total: 599.99,
+    _id: "ORD003", date: "2024-01-05", status: "Processing", total: 599.99,
     items: [
-      {
-        name: "iPad Pro 12.9-inch Case",
-        image: "/products/ipad-case.jpg",
-        quantity: 1,
-        price: 79.99,
-      },
-      {
-        name: "Apple Pencil 2nd Generation",
-        image: "/products/pencil.jpg",
-        quantity: 1,
-        price: 129.00,
-      },
-      {
-        name: "Magic Keyboard for iPad Pro",
-        image: "/products/magic-keyboard.jpg",
-        quantity: 1,
-        price: 349.00,
-      },
+      { name: "iPad Pro 12.9-inch Case", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop", quantity: 1, price: 79.99 },
+      { name: "Apple Pencil 2nd Generation", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=400&fit=crop", quantity: 1, price: 129.00 },
+      { name: "Magic Keyboard for iPad Pro", image: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&h=400&fit=crop", quantity: 1, price: 349.00 },
     ],
     shippingAddress: "123 Main St, New York, NY 10001",
   },
   {
-    _id: "ORD004",
-    date: "2023-12-20",
-    status: "Cancelled",
-    total: 299.99,
+    _id: "ORD004", date: "2023-12-20", status: "Cancelled", total: 299.99,
     items: [
-      {
-        name: "Beats Studio Pro Headphones",
-        image: "/products/beats.jpg",
-        quantity: 1,
-        price: 299.99,
-      },
+      { name: "Beats Studio Pro Headphones", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop", quantity: 1, price: 299.99 },
     ],
     shippingAddress: "123 Main St, New York, NY 10001",
   },
 ];
+
+const statusFilters = ["all", "Processing", "Shipped", "Delivered", "Cancelled"];
+
+const statusStyles: Record<string, { bg: string; color: string; border: string }> = {
+  Delivered: { bg: "#ECFDF5", color: "#059669", border: "#A7F3D0" },
+  Shipped: { bg: "#EFF6FF", color: "#2563EB", border: "#BFDBFE" },
+  Processing: { bg: "#FFFBEB", color: "#D97706", border: "#FDE68A" },
+  Cancelled: { bg: "#FEF2F2", color: "#DC2626", border: "#FECACA" },
+};
 
 export default function OrdersPage() {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
-  const statusOptions = ["all", "Processing", "Shipped", "Delivered", "Cancelled"];
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Delivered":
-        return "bg-green-100 text-green-700";
-      case "Shipped":
-        return "bg-blue-100 text-blue-700";
-      case "Processing":
-        return "bg-yellow-100 text-yellow-700";
-      case "Cancelled":
-        return "bg-red-100 text-red-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
-
-  const filteredOrders = orders.filter((order) => {
-    const matchesStatus = selectedStatus === "all" || order.status === selectedStatus;
-    const matchesSearch = order._id.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesSearch;
+  const filtered = orders.filter((o) => {
+    const matchStatus = selectedStatus === "all" || o.status === selectedStatus;
+    const matchSearch = o._id.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchStatus && matchSearch;
   });
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="site-container py-8">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-orange-500">Home</Link>
-          <ChevronRight className="w-4 h-4" />
-          <Link href="/account" className="hover:text-orange-500">Account</Link>
-          <ChevronRight className="w-4 h-4" />
-          <span className="text-gray-900">Orders</span>
-        </nav>
+    <>
+      <Breadcrumb items={[{ label: "Account", href: "/account" }, { label: "Orders" }]} />
 
-        <div className="flex items-center gap-3 mb-8">
-          <Package className="w-8 h-8 text-orange-500" />
-          <h1 className="text-3xl font-bold">My Orders</h1>
-        </div>
-
-        {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search by order ID..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
-              />
-            </div>
-
-            {/* Status Filter */}
-            <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-gray-500" />
-              <div className="flex flex-wrap gap-2">
-                {statusOptions.map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setSelectedStatus(status)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium capitalize ${
-                      selectedStatus === status
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    {status}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Orders List */}
-        <div className="space-y-4">
-          {filteredOrders.map((order) => (
-            <div key={order._id} className="bg-white rounded-xl shadow-sm overflow-hidden">
-              {/* Order Header */}
-              <div className="p-4 md:p-6 border-b border-gray-200">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div>
-                      <p className="font-semibold text-lg">Order #{order._id}</p>
-                      <p className="text-sm text-gray-500">
-                        Placed on {new Date(order.date).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </p>
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
-                      {order.status}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold text-lg">{formatPrice(order.total)}</span>
-                    <button
-                      onClick={() => setExpandedOrder(expandedOrder === order._id ? null : order._id)}
-                      className="flex items-center gap-1 text-orange-500 hover:underline"
-                    >
-                      <Eye className="w-4 h-4" />
-                      {expandedOrder === order._id ? "Hide Details" : "View Details"}
-                    </button>
-                  </div>
+      <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
+        {/* ── Header ── */}
+        <section className="site-container">
+          <div className="bg-white rounded-2xl overflow-hidden">
+            <div className="h-[3px] bg-gradient-to-r from-orange-400 via-orange-500 to-amber-400" />
+            <div className="p-5 sm:p-6">
+              <div className="flex items-center gap-3.5 mb-5">
+                <div className="ks-ord-icon-box">
+                  <Package className="w-[22px] h-[22px] text-orange-500" />
+                </div>
+                <div>
+                  <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
+                    My Orders
+                  </h1>
+                  <p className="text-sm text-[#999] font-medium mt-1.5">
+                    {orders.length} orders placed
+                  </p>
                 </div>
               </div>
 
-              {/* Order Items Preview */}
-              <div className="p-4 md:p-6">
-                <div className="flex flex-wrap gap-4">
-                  {order.items.slice(0, 3).map((item, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <div className="relative w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
-                        <ProductImage
-                          src={item.image}
-                          alt={item.name}
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm line-clamp-1">{item.name}</p>
-                        <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
-                      </div>
-                    </div>
+              {/* Filters */}
+              <div className="ks-ord-filter-bar">
+                <div className="ks-ord-search-wrap">
+                  <Search className="ks-ord-search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search by order ID..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="ks-ord-search-input"
+                  />
+                </div>
+
+                <div className="ks-ord-status-pills">
+                  {statusFilters.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setSelectedStatus(s)}
+                      className={`ks-ord-pill ${selectedStatus === s ? "ks-ord-pill-active" : ""}`}
+                    >
+                      {s === "all" ? "All" : s}
+                    </button>
                   ))}
-                  {order.items.length > 3 && (
-                    <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-lg">
-                      <span className="text-sm text-gray-500">+{order.items.length - 3} more</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Orders List ── */}
+        <section className="site-container">
+          <div className="ks-ord-list">
+            {filtered.map((order) => {
+              const st = statusStyles[order.status] || statusStyles.Processing;
+              const isExpanded = expandedOrder === order._id;
+
+              return (
+                <div key={order._id} className="ks-ord-card">
+                  {/* Header */}
+                  <div className="ks-ord-card-header">
+                    <div className="ks-ord-card-left">
+                      <div className="ks-ord-id-row">
+                        <span className="ks-ord-id">#{order._id}</span>
+                        <span className="ks-ord-status" style={{ background: st.bg, color: st.color, borderColor: st.border }}>
+                          {order.status}
+                        </span>
+                      </div>
+                      <p className="ks-ord-meta">
+                        <Clock className="w-3.5 h-3.5" />
+                        {new Date(order.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                        <span className="ks-ord-dot" />
+                        {order.items.length} item{order.items.length > 1 ? "s" : ""}
+                      </p>
+                    </div>
+                    <div className="ks-ord-card-right">
+                      <span className="ks-ord-total">{formatPrice(order.total)}</span>
+                      <button
+                        onClick={() => setExpandedOrder(isExpanded ? null : order._id)}
+                        className="ks-ord-toggle-btn"
+                      >
+                        {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {isExpanded ? "Hide" : "Details"}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Items preview */}
+                  <div className="ks-ord-items-preview">
+                    {order.items.slice(0, 3).map((item, idx) => (
+                      <div key={idx} className="ks-ord-preview-item">
+                        <div className="ks-ord-preview-img">
+                          <ProductImage src={item.image} alt={item.name} className="object-cover" />
+                        </div>
+                        <div className="ks-ord-preview-info">
+                          <p className="ks-ord-preview-name">{item.name}</p>
+                          <p className="ks-ord-preview-qty">Qty: {item.quantity}</p>
+                        </div>
+                      </div>
+                    ))}
+                    {order.items.length > 3 && (
+                      <div className="ks-ord-preview-more">+{order.items.length - 3} more</div>
+                    )}
+                  </div>
+
+                  {/* Expanded details */}
+                  {isExpanded && (
+                    <div className="ks-ord-expanded">
+                      <h4 className="ks-ord-expanded-title">Order Items</h4>
+                      <div className="ks-ord-expanded-items">
+                        {order.items.map((item, idx) => (
+                          <div key={idx} className="ks-ord-expanded-item">
+                            <div className="ks-ord-expanded-item-left">
+                              <div className="ks-ord-expanded-img">
+                                <ProductImage src={item.image} alt={item.name} className="object-cover" />
+                              </div>
+                              <div>
+                                <p className="ks-ord-expanded-name">{item.name}</p>
+                                <p className="ks-ord-expanded-qty">Quantity: {item.quantity}</p>
+                              </div>
+                            </div>
+                            <span className="ks-ord-expanded-price">{formatPrice(item.price)}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="ks-ord-expanded-info-grid">
+                        <div className="ks-ord-expanded-info-block">
+                          <MapPin className="w-4 h-4 text-[#bbb]" />
+                          <div>
+                            <span className="ks-ord-expanded-info-label">Shipping Address</span>
+                            <span className="ks-ord-expanded-info-value">{order.shippingAddress}</span>
+                          </div>
+                        </div>
+                        {order.trackingNumber && (
+                          <div className="ks-ord-expanded-info-block">
+                            <Truck className="w-4 h-4 text-[#bbb]" />
+                            <div>
+                              <span className="ks-ord-expanded-info-label">Tracking Number</span>
+                              <span className="ks-ord-expanded-info-value ks-ord-tracking">{order.trackingNumber}</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="ks-ord-expanded-actions">
+                        {order.status === "Delivered" && (
+                          <button className="ks-ord-action-btn-outline">
+                            <RotateCcw className="w-4 h-4" /> Return Items
+                          </button>
+                        )}
+                        <button className="ks-ord-action-btn-primary">
+                          <ShoppingBag className="w-4 h-4" /> Buy Again
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
-              </div>
-
-              {/* Expanded Details */}
-              {expandedOrder === order._id && (
-                <div className="border-t border-gray-200 p-4 md:p-6 bg-gray-50">
-                  {/* All Items */}
-                  <div className="mb-6">
-                    <h4 className="font-semibold mb-4">Order Items</h4>
-                    <div className="space-y-4">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between bg-white p-4 rounded-lg">
-                          <div className="flex items-center gap-4">
-                            <div className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
-                              <ProductImage
-                                src={item.image}
-                                alt={item.name}
-                                className="object-cover"
-                              />
-                            </div>
-                            <div>
-                              <p className="font-medium">{item.name}</p>
-                              <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
-                            </div>
-                          </div>
-                          <p className="font-semibold">{formatPrice(item.price)}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Shipping Info */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-semibold mb-2">Shipping Address</h4>
-                      <p className="text-gray-600">{order.shippingAddress}</p>
-                    </div>
-                    {order.trackingNumber && (
-                      <div>
-                        <h4 className="font-semibold mb-2">Tracking Number</h4>
-                        <p className="text-orange-500 font-mono">{order.trackingNumber}</p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-3 mt-6">
-                    {order.status === "Delivered" && (
-                      <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
-                        <RotateCcw className="w-4 h-4" />
-                        Return Items
-                      </button>
-                    )}
-                    <button className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">
-                      Buy Again
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredOrders.length === 0 && (
-          <div className="text-center py-16">
-            <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No orders found</h3>
-            <p className="text-gray-500 mb-6">
-              {searchQuery
-                ? "Try adjusting your search or filter"
-                : "You haven't placed any orders yet"}
-            </p>
-            <Link
-              href="/products"
-              className="inline-block bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600"
-            >
-              Start Shopping
-            </Link>
+              );
+            })}
           </div>
-        )}
+
+          {/* Empty */}
+          {filtered.length === 0 && (
+            <div className="ks-ord-empty">
+              <div className="ks-ord-empty-icon"><Package className="w-10 h-10 text-[#ddd]" /></div>
+              <h3 className="ks-ord-empty-title">No orders found</h3>
+              <p className="ks-ord-empty-sub">
+                {searchQuery ? "Try adjusting your search or filter" : "You haven't placed any orders yet"}
+              </p>
+              <Link href="/products" className="ks-ord-empty-btn">
+                <ShoppingBag className="w-[18px] h-[18px]" /> Start Shopping
+              </Link>
+            </div>
+          )}
+        </section>
       </div>
-    </div>
+    </>
   );
 }

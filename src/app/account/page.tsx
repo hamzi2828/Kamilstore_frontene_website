@@ -1,237 +1,204 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
-  User,
-  Package,
-  Heart,
-  MapPin,
-  CreditCard,
-  Settings,
-  LogOut,
-  ChevronRight,
-  Edit2,
+  User, Package, Heart, MapPin, CreditCard, Settings,
+  LogOut, ChevronRight, Edit2, ShieldCheck, Star, Clock,
 } from "lucide-react";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import "@/styling/AccountPage.css";
 
-// Mock user data
 const user = {
   name: "John Doe",
   email: "john.doe@example.com",
   phone: "+1 (555) 123-4567",
-  avatar: "/avatars/user1.jpg",
   memberSince: "January 2023",
 };
 
 const recentOrders = [
-  {
-    _id: "ORD001",
-    date: "2024-01-15",
-    status: "Delivered",
-    total: 2199.98,
-    items: 2,
-  },
-  {
-    _id: "ORD002",
-    date: "2024-01-10",
-    status: "Shipped",
-    total: 149.99,
-    items: 1,
-  },
-  {
-    _id: "ORD003",
-    date: "2024-01-05",
-    status: "Processing",
-    total: 599.99,
-    items: 3,
-  },
+  { _id: "ORD001", date: "2024-01-15", status: "Delivered", total: 2199.98, items: 2 },
+  { _id: "ORD002", date: "2024-01-10", status: "Shipped", total: 149.99, items: 1 },
+  { _id: "ORD003", date: "2024-01-05", status: "Processing", total: 599.99, items: 3 },
 ];
 
 const menuItems = [
-  { label: "My Orders", icon: Package, href: "/account/orders", count: 5 },
-  { label: "Wishlist", icon: Heart, href: "/account/wishlist", count: 12 },
-  { label: "Addresses", icon: MapPin, href: "/account/addresses" },
-  { label: "Payment Methods", icon: CreditCard, href: "/account/payments" },
-  { label: "Account Settings", icon: Settings, href: "/account/settings" },
+  { label: "My Orders", icon: Package, href: "/account/orders", count: 5, color: "#F97316" },
+  { label: "Wishlist", icon: Heart, href: "/wishlist", count: 12, color: "#EF4444" },
+  { label: "Addresses", icon: MapPin, href: "/account/addresses", color: "#3B82F6" },
+  { label: "Payment Methods", icon: CreditCard, href: "/account/payments", color: "#10B981" },
+  { label: "Account Settings", icon: Settings, href: "/account/settings", color: "#8B5CF6" },
 ];
 
+const quickStats = [
+  { label: "Total Orders", value: "5", icon: Package, color: "#F97316", bg: "#FFF7ED" },
+  { label: "Wishlist Items", value: "12", icon: Heart, color: "#EF4444", bg: "#FEF2F2" },
+  { label: "Saved Addresses", value: "2", icon: MapPin, color: "#3B82F6", bg: "#EFF6FF" },
+  { label: "Payment Methods", value: "1", icon: CreditCard, color: "#10B981", bg: "#ECFDF5" },
+];
+
+const statusStyles: Record<string, { bg: string; color: string; border: string }> = {
+  Delivered: { bg: "#ECFDF5", color: "#059669", border: "#A7F3D0" },
+  Shipped: { bg: "#EFF6FF", color: "#2563EB", border: "#BFDBFE" },
+  Processing: { bg: "#FFFBEB", color: "#D97706", border: "#FDE68A" },
+};
+
 export default function AccountPage() {
-  const [activeTab, setActiveTab] = useState("overview");
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Delivered":
-        return "bg-green-100 text-green-700";
-      case "Shipped":
-        return "bg-blue-100 text-blue-700";
-      case "Processing":
-        return "bg-yellow-100 text-yellow-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
-  };
-
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="site-container py-8">
-        {/* Breadcrumb */}
-        <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-orange-500">Home</Link>
-          <span className="mx-2">/</span>
-          <span className="text-gray-900">My Account</span>
-        </nav>
+    <>
+      <Breadcrumb items={[{ label: "My Account" }]} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              {/* User Info */}
-              <div className="text-center mb-6 pb-6 border-b border-gray-200">
-                <div className="relative w-24 h-24 mx-auto mb-4">
-                  <Image
-                    src={user.avatar || "/placeholder-avatar.jpg"}
-                    alt={user.name}
-                    fill
-                    className="rounded-full object-cover"
-                  />
-                  <button className="absolute bottom-0 right-0 p-2 bg-orange-500 text-white rounded-full hover:bg-orange-600">
-                    <Edit2 className="w-4 h-4" />
-                  </button>
+      <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
+        <section className="site-container">
+          <div className="ks-acc-layout">
+            {/* ── Sidebar ── */}
+            <aside className="ks-acc-sidebar">
+              <div className="ks-acc-sidebar-card">
+                {/* User info */}
+                <div className="ks-acc-user-section">
+                  <div className="ks-acc-avatar">
+                    <span className="ks-acc-avatar-letter">
+                      {user.name.charAt(0)}
+                    </span>
+                  </div>
+                  <h2 className="ks-acc-user-name">{user.name}</h2>
+                  <p className="ks-acc-user-email">{user.email}</p>
+                  <div className="ks-acc-member-badge">
+                    <Star className="w-3 h-3" />
+                    Member since {user.memberSince}
+                  </div>
                 </div>
-                <h2 className="font-bold text-lg">{user.name}</h2>
-                <p className="text-sm text-gray-500">{user.email}</p>
-                <p className="text-xs text-gray-400 mt-1">Member since {user.memberSince}</p>
+
+                {/* Menu */}
+                <nav className="ks-acc-menu">
+                  {menuItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link key={item.label} href={item.href} className="ks-acc-menu-item group">
+                        <div className="ks-acc-menu-icon" style={{ background: `${item.color}12`, color: item.color }}>
+                          <Icon className="w-[18px] h-[18px]" />
+                        </div>
+                        <span className="ks-acc-menu-label">{item.label}</span>
+                        <div className="ks-acc-menu-right">
+                          {item.count && (
+                            <span className="ks-acc-menu-count">{item.count}</span>
+                          )}
+                          <ChevronRight className="ks-acc-menu-arrow" />
+                        </div>
+                      </Link>
+                    );
+                  })}
+                  <button className="ks-acc-menu-item ks-acc-logout group">
+                    <div className="ks-acc-menu-icon" style={{ background: "#FEF2F2", color: "#EF4444" }}>
+                      <LogOut className="w-[18px] h-[18px]" />
+                    </div>
+                    <span className="ks-acc-menu-label">Sign Out</span>
+                  </button>
+                </nav>
+              </div>
+            </aside>
+
+            {/* ── Main ── */}
+            <div className="ks-acc-main">
+              {/* Welcome banner */}
+              <div className="ks-acc-welcome">
+                <div className="ks-acc-welcome-bg" />
+                <div className="ks-acc-welcome-content">
+                  <div>
+                    <h1 className="ks-acc-welcome-title">Welcome back, {user.name.split(" ")[0]}!</h1>
+                    <p className="ks-acc-welcome-sub">Manage your orders, wishlist, and account settings.</p>
+                  </div>
+                  <Link href="/account/settings" className="ks-acc-welcome-btn">
+                    <Edit2 className="w-4 h-4" />
+                    Edit Profile
+                  </Link>
+                </div>
               </div>
 
-              {/* Menu */}
-              <nav className="space-y-2">
-                {menuItems.map((item) => {
-                  const Icon = item.icon;
+              {/* Quick stats */}
+              <div className="ks-acc-stats-grid">
+                {quickStats.map((s) => {
+                  const Icon = s.icon;
                   return (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className="w-5 h-5 text-gray-500 group-hover:text-orange-500" />
-                        <span className="font-medium text-gray-700 group-hover:text-orange-500">
-                          {item.label}
-                        </span>
+                    <div key={s.label} className="ks-acc-stat-card">
+                      <div className="ks-acc-stat-icon" style={{ background: s.bg }}>
+                        <Icon className="w-5 h-5" style={{ color: s.color }} />
                       </div>
-                      <div className="flex items-center gap-2">
-                        {item.count && (
-                          <span className="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">
-                            {item.count}
-                          </span>
-                        )}
-                        <ChevronRight className="w-4 h-4 text-gray-400" />
-                      </div>
-                    </Link>
+                      <span className="ks-acc-stat-value">{s.value}</span>
+                      <span className="ks-acc-stat-label">{s.label}</span>
+                    </div>
                   );
                 })}
-                <button className="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 transition-colors w-full text-left group">
-                  <LogOut className="w-5 h-5 text-gray-500 group-hover:text-red-500" />
-                  <span className="font-medium text-gray-700 group-hover:text-red-500">
-                    Sign Out
-                  </span>
-                </button>
-              </nav>
-            </div>
-          </div>
+              </div>
 
-          {/* Main Content */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Welcome Banner */}
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-6 text-white">
-              <h1 className="text-2xl font-bold mb-2">Welcome back, {user.name.split(" ")[0]}!</h1>
-              <p className="opacity-90">Manage your orders, wishlist, and account settings.</p>
-            </div>
+              {/* Recent orders */}
+              <div className="ks-acc-orders-card">
+                <div className="ks-acc-orders-header">
+                  <h2 className="ks-acc-orders-title">Recent Orders</h2>
+                  <Link href="/account/orders" className="ks-acc-orders-viewall">
+                    View All <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-                <Package className="w-8 h-8 text-orange-500 mx-auto mb-2" />
-                <p className="text-2xl font-bold">5</p>
-                <p className="text-sm text-gray-500">Total Orders</p>
+                <div className="ks-acc-orders-list">
+                  {recentOrders.map((order) => {
+                    const st = statusStyles[order.status] || statusStyles.Processing;
+                    return (
+                      <div key={order._id} className="ks-acc-order-row">
+                        <div className="ks-acc-order-left">
+                          <div className="ks-acc-order-id-row">
+                            <span className="ks-acc-order-id">#{order._id}</span>
+                            <span
+                              className="ks-acc-order-status"
+                              style={{ background: st.bg, color: st.color, borderColor: st.border }}
+                            >
+                              {order.status}
+                            </span>
+                          </div>
+                          <p className="ks-acc-order-meta">
+                            <Clock className="w-3.5 h-3.5" />
+                            {new Date(order.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                            <span className="ks-acc-order-dot" />
+                            {order.items} item{order.items > 1 ? "s" : ""}
+                          </p>
+                        </div>
+                        <div className="ks-acc-order-right">
+                          <span className="ks-acc-order-total">${order.total.toFixed(2)}</span>
+                          <Link href={`/account/orders/${order._id}`} className="ks-acc-order-detail-btn">
+                            Details <ChevronRight className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-                <Heart className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                <p className="text-2xl font-bold">12</p>
-                <p className="text-sm text-gray-500">Wishlist Items</p>
-              </div>
-              <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-                <MapPin className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-                <p className="text-2xl font-bold">2</p>
-                <p className="text-sm text-gray-500">Saved Addresses</p>
-              </div>
-              <div className="bg-white rounded-xl p-4 shadow-sm text-center">
-                <CreditCard className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                <p className="text-2xl font-bold">1</p>
-                <p className="text-sm text-gray-500">Payment Methods</p>
-              </div>
-            </div>
 
-            {/* Recent Orders */}
-            <div className="bg-white rounded-xl shadow-sm">
-              <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                <h2 className="text-xl font-bold">Recent Orders</h2>
-                <Link href="/account/orders" className="text-orange-500 hover:underline text-sm font-medium">
-                  View All Orders
-                </Link>
-              </div>
-              <div className="divide-y divide-gray-200">
-                {recentOrders.map((order) => (
-                  <div key={order._id} className="p-6 flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">Order #{order._id}</p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(order.date).toLocaleDateString()} • {order.items} item(s)
-                      </p>
+              {/* Profile info */}
+              <div className="ks-acc-profile-card">
+                <div className="ks-acc-profile-header">
+                  <h2 className="ks-acc-profile-title">Profile Information</h2>
+                  <button className="ks-acc-profile-edit">
+                    <Edit2 className="w-3.5 h-3.5" /> Edit
+                  </button>
+                </div>
+                <div className="ks-acc-profile-grid">
+                  {[
+                    { label: "Full Name", value: user.name },
+                    { label: "Email Address", value: user.email },
+                    { label: "Phone Number", value: user.phone },
+                    { label: "Member Since", value: user.memberSince },
+                  ].map((f) => (
+                    <div key={f.label} className="ks-acc-profile-field">
+                      <span className="ks-acc-profile-label">{f.label}</span>
+                      <span className="ks-acc-profile-value">{f.value}</span>
                     </div>
-                    <div className="text-right">
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                        {order.status}
-                      </span>
-                      <p className="font-semibold mt-1">${order.total.toFixed(2)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Profile Information */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold">Profile Information</h2>
-                <button className="text-orange-500 hover:underline text-sm font-medium flex items-center gap-1">
-                  <Edit2 className="w-4 h-4" />
-                  Edit
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm text-gray-500 mb-1">Full Name</label>
-                  <p className="font-medium">{user.name}</p>
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-500 mb-1">Email Address</label>
-                  <p className="font-medium">{user.email}</p>
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-500 mb-1">Phone Number</label>
-                  <p className="font-medium">{user.phone}</p>
-                </div>
-                <div>
-                  <label className="block text-sm text-gray-500 mb-1">Member Since</label>
-                  <p className="font-medium">{user.memberSince}</p>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
-    </div>
+    </>
   );
 }

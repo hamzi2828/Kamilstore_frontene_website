@@ -2,6 +2,21 @@
    CategoriesPage — KamilStore
    ═══════════════════════════════════════════ */
 
+/* ── Accent bar ── */
+.ks-cat-accent-bar {
+  height: 3px;
+  background: linear-gradient(90deg, #f97316, #f59e0b, #eab308);
+  position: relative;
+}
+.ks-cat-accent-bar::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: ks-cat-shimmer 3s ease-in-out infinite;
+}
+@keyframes ks-cat-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
 /* ── Header icon box ── */
 .ks-cat-icon-box {
   width: 48px;
@@ -13,6 +28,16 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+/* ── Header row ── */
+.ks-cat-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 /* ── Search ── */
@@ -163,6 +188,11 @@
 }
 
 @media (max-width: 768px) {
+  .ks-cat-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .ks-cat-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;

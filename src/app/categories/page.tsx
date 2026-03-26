@@ -132,13 +132,14 @@ export default function CategoriesPage() {
       {/* ── Breadcrumb bar — separate layer under navbar ── */}
       <Breadcrumb items={[{ label: "Categories" }]} />
 
-      <div className="flex flex-col gap-5 sm:gap-6 pt-6 sm:pt-8 pb-20 sm:pb-28">
+      <div className="flex flex-col gap-5 sm:gap-6 pt-5 sm:pt-6 pb-20 sm:pb-28 bg-[#f5f5f5]">
       {/* ── Header Card ── */}
       <section className="site-container">
         <div className="bg-white rounded-2xl overflow-hidden">
+          <div className="ks-cat-accent-bar" />
           <div className="p-5 sm:p-6">
             {/* Title row */}
-            <div className="flex items-start sm:items-center justify-between gap-4 flex-col sm:flex-row mb-5">
+            <div className="ks-cat-header-row">
               <div className="flex items-center gap-3.5">
                 <div className="ks-cat-icon-box">
                   <LayoutGrid className="w-[22px] h-[22px] text-orange-500" />
