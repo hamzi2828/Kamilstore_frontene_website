@@ -1,0 +1,144 @@
+/* ═══════════════════════════════════════════
+   SettingsPage — KamilStore
+   ═══════════════════════════════════════════ */
+
+.ks-set-icon-box {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+  border: 1.5px solid #ddd6fe;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* ── Section card ── */
+.ks-set-card {
+  background: #fff; border-radius: 20px; border: 1px solid #f1f5f9; overflow: hidden;
+}
+
+.ks-set-card-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 22px 24px; border-bottom: 1px solid #f5f5f5;
+}
+
+.ks-set-section-icon {
+  width: 40px; height: 40px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+.ks-set-card-title { font-size: 17px; font-weight: 800; color: #111827; margin: 0; }
+.ks-set-card-sub { font-size: 13px; color: #9ca3af; margin: 3px 0 0; font-weight: 500; }
+
+/* ── Form ── */
+.ks-set-form-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  padding: 24px;
+}
+.ks-set-form-single { grid-template-columns: 1fr; }
+
+.ks-set-field { display: flex; flex-direction: column; }
+
+.ks-set-label {
+  font-size: 12.5px; font-weight: 700; color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.ks-set-input {
+  width: 100%; padding: 11px 14px; background: #f9fafb;
+  border: 1.5px solid #f1f5f9; border-radius: 12px;
+  font-size: 14px; font-weight: 500; color: #111827; outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.ks-set-input::placeholder { color: #bbb; }
+.ks-set-input:focus { border-color: #8b5cf6; background: #fff; box-shadow: 0 0 0 3px rgba(139,92,246,0.08); }
+
+/* Input with icon */
+.ks-set-input-icon-wrap { position: relative; }
+.ks-set-input-pre-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; color: #bbb; pointer-events: none;
+}
+.ks-set-input-with-icon { padding-left: 40px; }
+
+.ks-set-input-post-icon {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: #9ca3af; cursor: pointer;
+  padding: 4px; transition: color 0.15s;
+}
+.ks-set-input-post-icon:hover { color: #6b7280; }
+
+/* Footer */
+.ks-set-card-footer {
+  display: flex; justify-content: flex-end; padding: 16px 24px;
+  border-top: 1px solid #f5f5f5;
+}
+
+.ks-set-save-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 24px; background: #ea6b0e; border: none;
+  border-radius: 12px; font-size: 14px; font-weight: 700; color: #fff;
+  cursor: pointer; transition: all 0.15s;
+}
+.ks-set-save-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(234,107,14,0.25); }
+
+/* ── Toggles ── */
+.ks-set-toggle-list {
+  display: flex; flex-direction: column;
+}
+
+.ks-set-toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px; border-bottom: 1px solid #f9fafb;
+  gap: 16px;
+}
+.ks-set-toggle-row:last-child { border-bottom: none; }
+
+.ks-set-toggle-info { display: flex; align-items: flex-start; gap: 12px; }
+.ks-set-toggle-title { display: block; font-size: 14px; font-weight: 700; color: #111827; }
+.ks-set-toggle-desc { display: block; font-size: 12.5px; color: #9ca3af; margin-top: 2px; font-weight: 500; }
+
+/* Toggle switch */
+.ks-set-toggle {
+  position: relative; width: 48px; height: 28px;
+  background: #e5e7eb; border: none; border-radius: 14px;
+  cursor: pointer; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.ks-set-toggle-on { background: #ea6b0e; }
+
+.ks-set-toggle-knob {
+  position: absolute; top: 3px; left: 3px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+}
+.ks-set-toggle-on .ks-set-toggle-knob { transform: translateX(20px); }
+
+/* ── Danger zone ── */
+.ks-set-danger-card {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+  padding: 22px 24px; background: #fff;
+  border: 1.5px solid #fecaca; border-radius: 20px;
+}
+
+.ks-set-danger-title { font-size: 16px; font-weight: 800; color: #dc2626; margin: 0 0 4px; }
+.ks-set-danger-sub { font-size: 13px; color: #9ca3af; margin: 0; max-width: 440px; line-height: 1.5; }
+
+.ks-set-danger-btn {
+  padding: 10px 22px; background: #fff; border: 1.5px solid #fecaca;
+  border-radius: 12px; font-size: 13px; font-weight: 700; color: #dc2626;
+  cursor: pointer; white-space: nowrap; transition: all 0.15s;
+}
+.ks-set-danger-btn:hover { background: #fef2f2; border-color: #ef4444; }
+
+/* ═══════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .ks-set-form-grid { grid-template-columns: 1fr; padding: 18px; }
+  .ks-set-card-header { padding: 18px; }
+  .ks-set-card-footer { padding: 14px 18px; }
+  .ks-set-toggle-row { padding: 14px 18px; }
+  .ks-set-danger-card { flex-direction: column; align-items: flex-start; }
+  .ks-set-danger-btn { width: 100%; text-align: center; }
+}

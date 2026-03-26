@@ -1,0 +1,222 @@
+/* ═══════════════════════════════════════════
+   PaymentsPage — KamilStore
+   ═══════════════════════════════════════════ */
+
+.ks-pay-icon-box {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1.5px solid #a7f3d0;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+.ks-pay-add-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 22px; background: #ea6b0e; color: #fff;
+  border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.ks-pay-add-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
+
+/* ── Grid ── */
+.ks-pay-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+
+/* ── Payment Card ── */
+.ks-pay-card {
+  background: #fff; border-radius: 20px; border: 1.5px solid #f1f5f9;
+  overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ks-pay-card:hover { border-color: #e5e7eb; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
+.ks-pay-card-default { border-color: #a7f3d0; }
+.ks-pay-card-default:hover { border-color: #6ee7b7; }
+
+/* Card visual */
+.ks-pay-card-visual { padding: 22px; }
+
+.ks-pay-card-visual-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+
+.ks-pay-brand-badge {
+  display: inline-flex; padding: 5px 14px; border-radius: 8px;
+  border: 1px solid; font-size: 12px; font-weight: 800; letter-spacing: 0.3px;
+}
+
+.ks-pay-default-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 12px; background: #ecfdf5; border: 1px solid #a7f3d0;
+  border-radius: 20px; font-size: 11px; font-weight: 700; color: #059669;
+}
+
+/* Card number */
+.ks-pay-card-number {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 22px;
+}
+
+.ks-pay-dots { display: flex; gap: 4px; }
+.ks-pay-dots span {
+  width: 8px; height: 8px; border-radius: 50%; background: #d1d5db;
+}
+
+.ks-pay-last4 {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 20px; font-weight: 800; color: #111827; letter-spacing: 3px;
+}
+
+/* Card bottom */
+.ks-pay-card-bottom { display: flex; gap: 32px; }
+.ks-pay-card-label { display: block; font-size: 10px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.ks-pay-card-value { display: block; font-size: 14px; font-weight: 700; color: #374151; }
+
+/* Actions */
+.ks-pay-card-actions {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 22px; border-top: 1px solid #f5f5f5;
+}
+
+.ks-pay-action {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: none; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: color 0.15s;
+}
+.ks-pay-action-default { color: #059669; }
+.ks-pay-action-default:hover { color: #047857; }
+.ks-pay-action-edit { color: #ea6b0e; }
+.ks-pay-action-edit:hover { color: #c2410c; }
+.ks-pay-action-delete { color: #9ca3af; margin-left: auto; }
+.ks-pay-action-delete:hover { color: #ef4444; }
+
+/* ── Add placeholder ── */
+.ks-pay-add-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; background: #fff; border-radius: 20px;
+  border: 2px dashed #e5e7eb; padding: 48px 20px;
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.ks-pay-add-card:hover { border-color: #ea6b0e; background: #fffaf5; }
+
+.ks-pay-add-card-icon {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #f9fafb; border: 1.5px solid #f1f5f9;
+  display: flex; align-items: center; justify-content: center;
+  color: #bbb; transition: all 0.15s;
+}
+.ks-pay-add-card:hover .ks-pay-add-card-icon { background: #fff7ed; border-color: #fed7aa; color: #ea6b0e; }
+.ks-pay-add-card-text { font-size: 14px; font-weight: 700; color: #9ca3af; transition: color 0.15s; }
+.ks-pay-add-card:hover .ks-pay-add-card-text { color: #ea6b0e; }
+
+/* ── Security note ── */
+.ks-pay-security {
+  display: flex; align-items: center; gap: 8px; margin-top: 20px;
+  padding: 14px 20px; background: #f0fdf4; border: 1px solid #bbf7d0;
+  border-radius: 14px; font-size: 12.5px; font-weight: 500; color: #166534;
+}
+
+/* ── Empty ── */
+.ks-pay-empty {
+  background: #fff; border-radius: 20px; border: 1px solid #f1f5f9;
+  padding: 60px 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.ks-pay-empty-icon {
+  width: 80px; height: 80px; border-radius: 50%; background: #ecfdf5;
+  border: 1.5px solid #a7f3d0;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+}
+.ks-pay-empty-title { font-size: 20px; font-weight: 800; color: #111827; margin: 0 0 8px; }
+.ks-pay-empty-sub { font-size: 14px; color: #9ca3af; margin: 0 0 24px; max-width: 320px; }
+.ks-pay-empty-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 28px; background: #ea6b0e; color: #fff;
+  border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.ks-pay-empty-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
+
+/* ── Modal ── */
+.ks-pay-modal-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+
+.ks-pay-modal {
+  background: #fff; border-radius: 24px; width: 100%; max-width: 500px;
+  max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+}
+
+.ks-pay-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 24px; border-bottom: 1px solid #f5f5f5;
+}
+.ks-pay-modal-title { font-size: 18px; font-weight: 800; color: #111827; margin: 0; }
+.ks-pay-modal-close {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: #f9fafb; border: 1px solid #f1f5f9;
+  display: flex; align-items: center; justify-content: center;
+  color: #9ca3af; cursor: pointer; transition: all 0.15s;
+}
+.ks-pay-modal-close:hover { background: #fef2f2; border-color: #fecaca; color: #ef4444; }
+
+.ks-pay-modal-body { padding: 24px; }
+
+/* Type selector */
+.ks-pay-type-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.ks-pay-type-btn {
+  display: flex; align-items: center; gap: 7px; flex: 1;
+  padding: 12px; background: #f9fafb; border: 1.5px solid #f1f5f9;
+  border-radius: 12px; font-size: 13px; font-weight: 700; color: #6b7280;
+  cursor: pointer; justify-content: center; transition: all 0.15s;
+}
+.ks-pay-type-btn:hover { border-color: #e5e7eb; }
+.ks-pay-type-btn-active { /* styles applied inline via style prop */ }
+
+/* Form */
+.ks-pay-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ks-pay-field-half { grid-column: span 1; }
+.ks-pay-field-full { grid-column: span 2; }
+.ks-pay-label { display: block; font-size: 12.5px; font-weight: 700; color: #6b7280; margin-bottom: 6px; }
+.ks-pay-input {
+  width: 100%; padding: 11px 14px; background: #f9fafb;
+  border: 1.5px solid #f1f5f9; border-radius: 12px;
+  font-size: 14px; font-weight: 500; color: #111827; outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.ks-pay-input::placeholder { color: #bbb; }
+.ks-pay-input:focus { border-color: #10b981; background: #fff; box-shadow: 0 0 0 3px rgba(16,185,129,0.08); }
+
+.ks-pay-modal-trust {
+  display: flex; align-items: center; gap: 6px; margin-top: 16px;
+  font-size: 12px; font-weight: 500; color: #9ca3af;
+}
+
+.ks-pay-modal-footer {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding: 18px 24px; border-top: 1px solid #f5f5f5;
+}
+
+.ks-pay-cancel-btn {
+  padding: 11px 22px; background: #fff; border: 1.5px solid #e5e7eb;
+  border-radius: 12px; font-size: 14px; font-weight: 700; color: #374151;
+  cursor: pointer; transition: all 0.15s;
+}
+.ks-pay-cancel-btn:hover { border-color: #d1d5db; background: #f9fafb; }
+
+.ks-pay-save-btn {
+  padding: 11px 28px; background: #ea6b0e; border: none;
+  border-radius: 12px; font-size: 14px; font-weight: 700; color: #fff;
+  cursor: pointer; transition: all 0.15s;
+}
+.ks-pay-save-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(234,107,14,0.25); }
+
+/* ═══════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .ks-pay-grid { grid-template-columns: 1fr; }
+  .ks-pay-card-number { gap: 10px; }
+  .ks-pay-last4 { font-size: 18px; }
+  .ks-pay-dots span { width: 6px; height: 6px; }
+  .ks-pay-type-row { flex-direction: column; }
+  .ks-pay-form-grid { grid-template-columns: 1fr; }
+  .ks-pay-field-half, .ks-pay-field-full { grid-column: span 1; }
+  .ks-pay-modal { max-width: 100%; border-radius: 20px; }
+}

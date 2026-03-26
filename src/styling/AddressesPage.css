@@ -1,0 +1,204 @@
+/* ═══════════════════════════════════════════
+   AddressesPage — KamilStore
+   ═══════════════════════════════════════════ */
+
+.ks-addr-icon-box {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1.5px solid #bfdbfe;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+.ks-addr-add-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 22px; background: #ea6b0e; color: #fff;
+  border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.ks-addr-add-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
+
+/* ── Grid ── */
+.ks-addr-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;
+}
+
+/* ── Address Card ── */
+.ks-addr-card {
+  background: #fff; border-radius: 20px; border: 1.5px solid #f1f5f9;
+  padding: 22px; display: flex; flex-direction: column;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ks-addr-card:hover { border-color: #e5e7eb; box-shadow: 0 4px 16px rgba(0,0,0,0.03); }
+.ks-addr-card-default { border-color: #bfdbfe; background: #fafcff; }
+.ks-addr-card-default:hover { border-color: #93c5fd; }
+
+/* Top */
+.ks-addr-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+
+.ks-addr-type-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 14px; background: #f9fafb; border: 1px solid #f1f5f9;
+  border-radius: 8px; font-size: 12px; font-weight: 700; color: #374151;
+}
+
+.ks-addr-default-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 12px; background: #eff6ff; border: 1px solid #bfdbfe;
+  border-radius: 20px; font-size: 11px; font-weight: 700; color: #2563eb;
+}
+
+/* Body */
+.ks-addr-card-body { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; flex: 1; }
+
+.ks-addr-info-row { display: flex; gap: 10px; }
+.ks-addr-info-icon { width: 16px; height: 16px; color: #d1d5db; flex-shrink: 0; margin-top: 2px; }
+.ks-addr-info-name { font-size: 15px; font-weight: 700; color: #111827; }
+.ks-addr-info-text { font-size: 14px; color: #6b7280; line-height: 1.55; }
+
+/* Actions */
+.ks-addr-card-actions {
+  display: flex; align-items: center; gap: 12px;
+  padding-top: 16px; border-top: 1px solid #f5f5f5;
+}
+
+.ks-addr-action-link {
+  display: flex; align-items: center; gap: 5px;
+  background: none; border: none; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: color 0.15s;
+}
+.ks-addr-action-default { color: #3b82f6; }
+.ks-addr-action-default:hover { color: #2563eb; }
+.ks-addr-action-edit { color: #ea6b0e; }
+.ks-addr-action-edit:hover { color: #c2410c; }
+.ks-addr-action-delete { color: #9ca3af; margin-left: auto; }
+.ks-addr-action-delete:hover { color: #ef4444; }
+
+/* ── Add card ── */
+.ks-addr-add-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; background: #fff; border-radius: 20px;
+  border: 2px dashed #e5e7eb; padding: 40px 20px;
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.ks-addr-add-card:hover { border-color: #ea6b0e; background: #fffaf5; }
+
+.ks-addr-add-card-icon {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #f9fafb; border: 1.5px solid #f1f5f9;
+  display: flex; align-items: center; justify-content: center;
+  color: #bbb; transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.ks-addr-add-card:hover .ks-addr-add-card-icon { background: #fff7ed; border-color: #fed7aa; color: #ea6b0e; }
+.ks-addr-add-card-text { font-size: 14px; font-weight: 700; color: #9ca3af; transition: color 0.15s; }
+.ks-addr-add-card:hover .ks-addr-add-card-text { color: #ea6b0e; }
+
+/* ── Empty ── */
+.ks-addr-empty {
+  background: #fff; border-radius: 20px; border: 1px solid #f1f5f9;
+  padding: 60px 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.ks-addr-empty-icon {
+  width: 80px; height: 80px; border-radius: 50%; background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+}
+.ks-addr-empty-title { font-size: 20px; font-weight: 800; color: #111827; margin: 0 0 8px; }
+.ks-addr-empty-sub { font-size: 14px; color: #9ca3af; margin: 0 0 24px; max-width: 320px; }
+.ks-addr-empty-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 28px; background: #ea6b0e; color: #fff;
+  border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.ks-addr-empty-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
+
+/* ── Modal ── */
+.ks-addr-modal-overlay {
+  position: fixed; inset: 0; z-index: 50;
+  background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+
+.ks-addr-modal {
+  background: #fff; border-radius: 24px; width: 100%; max-width: 560px;
+  max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 60px rgba(0,0,0,0.15);
+}
+
+.ks-addr-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 24px; border-bottom: 1px solid #f5f5f5;
+}
+.ks-addr-modal-title { font-size: 18px; font-weight: 800; color: #111827; margin: 0; }
+.ks-addr-modal-close {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: #f9fafb; border: 1px solid #f1f5f9;
+  display: flex; align-items: center; justify-content: center;
+  color: #9ca3af; cursor: pointer; transition: all 0.15s;
+}
+.ks-addr-modal-close:hover { background: #fef2f2; border-color: #fecaca; color: #ef4444; }
+
+.ks-addr-modal-body { padding: 24px; }
+
+/* Type selector */
+.ks-addr-type-row { display: flex; gap: 10px; margin-bottom: 20px; }
+.ks-addr-type-btn {
+  display: flex; align-items: center; gap: 7px; flex: 1;
+  padding: 12px; background: #f9fafb; border: 1.5px solid #f1f5f9;
+  border-radius: 12px; font-size: 14px; font-weight: 700; color: #6b7280;
+  cursor: pointer; justify-content: center; transition: all 0.15s;
+}
+.ks-addr-type-btn:hover { border-color: #e5e7eb; }
+.ks-addr-type-btn-active { border-color: #3b82f6; background: #eff6ff; color: #2563eb; }
+
+/* Form grid */
+.ks-addr-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ks-addr-field-half { grid-column: span 1; }
+.ks-addr-field-full { grid-column: span 2; }
+
+.ks-addr-label {
+  display: block; font-size: 12.5px; font-weight: 700; color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.ks-addr-input {
+  width: 100%; padding: 11px 14px; background: #f9fafb;
+  border: 1.5px solid #f1f5f9; border-radius: 12px;
+  font-size: 14px; font-weight: 500; color: #111827; outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.ks-addr-input::placeholder { color: #bbb; }
+.ks-addr-input:focus { border-color: #3b82f6; background: #fff; box-shadow: 0 0 0 3px rgba(59,130,246,0.08); }
+
+.ks-addr-modal-footer {
+  display: flex; justify-content: flex-end; gap: 10px;
+  padding: 18px 24px; border-top: 1px solid #f5f5f5;
+}
+
+.ks-addr-cancel-btn {
+  padding: 11px 22px; background: #fff; border: 1.5px solid #e5e7eb;
+  border-radius: 12px; font-size: 14px; font-weight: 700; color: #374151;
+  cursor: pointer; transition: all 0.15s;
+}
+.ks-addr-cancel-btn:hover { border-color: #d1d5db; background: #f9fafb; }
+
+.ks-addr-save-btn {
+  padding: 11px 28px; background: #ea6b0e; border: none;
+  border-radius: 12px; font-size: 14px; font-weight: 700; color: #fff;
+  cursor: pointer; transition: all 0.15s;
+}
+.ks-addr-save-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(234,107,14,0.25); }
+
+/* ═══════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .ks-addr-grid { grid-template-columns: 1fr; }
+  .ks-addr-form-grid { grid-template-columns: 1fr; }
+  .ks-addr-field-half { grid-column: span 1; }
+  .ks-addr-field-full { grid-column: span 1; }
+  .ks-addr-modal { max-width: 100%; border-radius: 20px; }
+  .ks-addr-type-row { flex-direction: column; }
+}

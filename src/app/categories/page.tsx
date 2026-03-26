@@ -129,172 +129,170 @@ export default function CategoriesPage() {
 
   return (
     <>
-      {/* ── Breadcrumb bar — separate layer under navbar ── */}
       <Breadcrumb items={[{ label: "Categories" }]} />
 
-      <div className="flex flex-col gap-5 sm:gap-6 pt-5 sm:pt-6 pb-20 sm:pb-28 bg-[#f5f5f5]">
-      {/* ── Header Card ── */}
-      <section className="site-container">
-        <div className="bg-white rounded-2xl overflow-hidden">
-          <div className="ks-cat-accent-bar" />
-          <div className="p-5 sm:p-6">
-            {/* Title row */}
-            <div className="ks-cat-header-row">
-              <div className="flex items-center gap-3.5">
-                <div className="ks-cat-icon-box">
-                  <LayoutGrid className="w-[22px] h-[22px] text-orange-500" />
+      <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
+        {/* ── Header Card ── */}
+        <section className="site-container">
+          <div className="bg-white rounded-2xl overflow-hidden">
+            <div className="ks-cat-accent-bar" />
+
+            <div className="p-5 sm:p-6">
+              <div className="ks-cat-header-row">
+                {/* Left: Title */}
+                <div className="flex items-center gap-3.5">
+                  <div className="ks-cat-icon-box">
+                    <LayoutGrid className="w-[22px] h-[22px] text-orange-500" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
+                      All Categories
+                    </h1>
+                    <p className="text-sm text-[#999] font-medium mt-1.5">
+                      Browse products across every department
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                    All Categories
-                  </h1>
+
+                {/* Right: Search */}
+                <div className="ks-cat-search-wrap">
+                  <Search className="ks-cat-search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search categories..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="ks-cat-search-input"
+                  />
                 </div>
               </div>
 
-              {/* Search */}
-              <div className="ks-cat-search-wrap">
-                <Search className="ks-cat-search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search categories..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="ks-cat-search-input"
-                />
-              </div>
-            </div>
-
-            {/* Stats strip */}
-            <div className="ks-cat-stats-strip">
-              <div className="ks-cat-stat">
-                <LayoutGrid className="w-[18px] h-[18px] text-orange-500" />
-                <span className="ks-cat-stat-value">{categories.length}</span>
-                <span className="ks-cat-stat-label">Categories</span>
-              </div>
-              <div className="ks-cat-stat-sep" />
-              <div className="ks-cat-stat">
-                <TrendingUp className="w-[18px] h-[18px] text-emerald-500" />
-                <span className="ks-cat-stat-value">11,190+</span>
-                <span className="ks-cat-stat-label">Products</span>
-              </div>
-              <div className="ks-cat-stat-sep" />
-              <div className="ks-cat-stat">
-                <Flame className="w-[18px] h-[18px] text-amber-500" />
-                <span className="ks-cat-stat-value">968</span>
-                <span className="ks-cat-stat-label">Verified Sellers</span>
+              {/* Stats */}
+              <div className="ks-cat-stats-strip">
+                <div className="ks-cat-stat">
+                  <LayoutGrid className="w-[18px] h-[18px] text-orange-500" />
+                  <span className="ks-cat-stat-value">{categories.length}</span>
+                  <span className="ks-cat-stat-label">Categories</span>
+                </div>
+                <div className="ks-cat-stat-sep" />
+                <div className="ks-cat-stat">
+                  <TrendingUp className="w-[18px] h-[18px] text-emerald-500" />
+                  <span className="ks-cat-stat-value">11,190+</span>
+                  <span className="ks-cat-stat-label">Products</span>
+                </div>
+                <div className="ks-cat-stat-sep" />
+                <div className="ks-cat-stat">
+                  <Flame className="w-[18px] h-[18px] text-amber-500" />
+                  <span className="ks-cat-stat-value">968</span>
+                  <span className="ks-cat-stat-label">Verified Sellers</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Category Grid ── */}
-      <section className="site-container">
-        <div className="bg-white rounded-2xl p-5 sm:p-6">
+        {/* ── Category Grid ── */}
+        <section className="site-container">
+          <div className="bg-white rounded-2xl p-5 sm:p-6">
+            {search && filtered.length === 0 && (
+              <div className="flex flex-col items-center py-16 text-center">
+                <Search className="w-10 h-10 text-[#ddd] mb-4" />
+                <p className="text-base font-semibold text-[#555] mb-1">No categories found</p>
+                <p className="text-sm text-[#999]">Try a different search term</p>
+              </div>
+            )}
 
+            <div className="ks-cat-grid">
+              {filtered.map((cat) => {
+                const Icon = cat.icon;
+                return (
+                  <Link
+                    key={cat.slug}
+                    href={`/category/${cat.slug}`}
+                    className="ks-cat-card group"
+                  >
+                    {/* Image */}
+                    <div className="ks-cat-card-img-area">
+                      <Image
+                        src={cat.image}
+                        alt={cat.name}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                      <div className="ks-cat-card-img-fade" />
 
-          {search && filtered.length === 0 && (
-            <div className="flex flex-col items-center py-16 text-center">
-              <Search className="w-10 h-10 text-[#ddd] mb-4" />
-              <p className="text-base font-semibold text-[#555] mb-1">No categories found</p>
-              <p className="text-sm text-[#999]">Try a different search term</p>
-            </div>
-          )}
-
-          <div className="ks-cat-grid">
-            {filtered.map((cat) => {
-              const Icon = cat.icon;
-              return (
-                <Link
-                  key={cat.slug}
-                  href={`/category/${cat.slug}`}
-                  className="ks-cat-card group"
-                >
-                  {/* Image */}
-                  <div className="ks-cat-card-img-area">
-                    <Image
-                      src={cat.image}
-                      alt={cat.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                    <div className="ks-cat-card-img-fade" />
-
-                    {/* Product count on image */}
-                    <div className="absolute bottom-3.5 left-3.5 z-[2] flex items-baseline gap-1.5">
-                      <span className="text-white text-xl font-extrabold leading-none drop-shadow-md">
-                        {cat.count}
-                      </span>
-                      <span className="text-white/70 text-xs font-semibold drop-shadow-md">
-                        products
-                      </span>
-                    </div>
-
-                    {/* Trending */}
-                    {cat.trending && (
-                      <span className="absolute top-3 right-3 z-[2] flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-[11px] font-bold text-orange-500 shadow-sm">
-                        <TrendingUp className="w-3.5 h-3.5" />
-                        Trending
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Body */}
-                  <div className="p-5">
-                    {/* Icon + Name */}
-                    <div className="flex items-center gap-3.5 mb-3">
-                      <div
-                        className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
-                        style={{ backgroundColor: cat.bg }}
-                      >
-                        <Icon className="w-6 h-6" style={{ color: cat.color }} />
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="text-[17px] font-bold text-[#111] group-hover:text-orange-500 transition-colors leading-tight truncate">
-                          {cat.name}
-                        </h3>
-                        <p className="text-[12.5px] font-semibold mt-0.5" style={{ color: cat.color }}>
-                          {cat.vendors} sellers
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-[13.5px] text-[#777] leading-relaxed line-clamp-2 mb-4">
-                      {cat.description}
-                    </p>
-
-                    {/* Subcategory pills */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {cat.subcategories.slice(0, 4).map((sub) => (
-                        <span
-                          key={sub}
-                          className="ks-cat-sub-pill"
-                        >
-                          {sub}
+                      {/* Product count on image */}
+                      <div className="absolute bottom-3.5 left-3.5 z-[2] flex items-baseline gap-1.5">
+                        <span className="text-white text-xl font-extrabold leading-none drop-shadow-md">
+                          {cat.count}
                         </span>
-                      ))}
-                      {cat.subcategories.length > 4 && (
-                        <span className="text-[11.5px] font-bold px-2 py-1" style={{ color: cat.color }}>
-                          +{cat.subcategories.length - 4}
+                        <span className="text-white/70 text-xs font-semibold drop-shadow-md">
+                          products
+                        </span>
+                      </div>
+
+                      {/* Trending */}
+                      {cat.trending && (
+                        <span className="absolute top-3 right-3 z-[2] flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-[11px] font-bold text-orange-500 shadow-sm">
+                          <TrendingUp className="w-3.5 h-3.5" />
+                          Trending
                         </span>
                       )}
                     </div>
 
-                    {/* CTA */}
-                    <div className="flex items-center justify-center gap-1.5 pt-3.5 border-t border-gray-100 text-[14px] font-semibold text-orange-500 group-hover:text-orange-600 transition-colors">
-                      Browse category
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    {/* Body */}
+                    <div className="p-5">
+                      {/* Icon + Name */}
+                      <div className="flex items-center gap-3.5 mb-3">
+                        <div
+                          className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
+                          style={{ backgroundColor: cat.bg }}
+                        >
+                          <Icon className="w-6 h-6" style={{ color: cat.color }} />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="text-[17px] font-bold text-[#111] group-hover:text-orange-500 transition-colors leading-tight truncate">
+                            {cat.name}
+                          </h3>
+                          <p className="text-[12.5px] font-semibold mt-0.5" style={{ color: cat.color }}>
+                            {cat.vendors} sellers
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-[13.5px] text-[#777] leading-relaxed line-clamp-2 mb-4">
+                        {cat.description}
+                      </p>
+
+                      {/* Subcategory pills */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {cat.subcategories.slice(0, 4).map((sub) => (
+                          <span key={sub} className="ks-cat-sub-pill">
+                            {sub}
+                          </span>
+                        ))}
+                        {cat.subcategories.length > 4 && (
+                          <span className="text-[11.5px] font-bold px-2 py-1" style={{ color: cat.color }}>
+                            +{cat.subcategories.length - 4}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* CTA */}
+                      <div className="flex items-center justify-center gap-1.5 pt-3.5 border-t border-gray-100 text-[14px] font-semibold text-orange-500 group-hover:text-orange-600 transition-colors">
+                        Browse category
+                        <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              );
-            })}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
     </>
   );
 }
