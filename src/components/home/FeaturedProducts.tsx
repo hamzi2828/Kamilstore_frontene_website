@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, TrendingUp, Sparkles, Flame, LayoutGrid, ArrowRight } from "lucide-react";
 import ProductCard from "@/components/ui/ProductCard";
+import "@/styling/FeaturedProducts.css";
 
 const products = [
   { _id: "1", name: "Apple MacBook Pro 14-inch M3 Pro", slug: "macbook-pro-14-m3", images: ["https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop"], sellingPrice: 1999.99, rating: 4.9, reviewCount: 234, vendor: { name: "TechZone", slug: "techzone" }, tag: "trending" },
@@ -17,10 +18,10 @@ const products = [
 ];
 
 const tabs = [
-  { id: "all", label: "All" },
-  { id: "trending", label: "Trending" },
-  { id: "new", label: "New Arrivals" },
-  { id: "popular", label: "Most Popular" },
+  { id: "all", label: "All", icon: LayoutGrid, count: products.length },
+  { id: "trending", label: "Trending", icon: TrendingUp, count: products.filter((p) => p.tag === "trending").length },
+  { id: "new", label: "New Arrivals", icon: Sparkles, count: products.filter((p) => p.tag === "new").length },
+  { id: "popular", label: "Most Popular", icon: Flame, count: products.filter((p) => p.tag === "popular").length },
 ];
 
 export default function FeaturedProducts() {
@@ -29,36 +30,74 @@ export default function FeaturedProducts() {
 
   return (
     <section className="site-container">
-      <div className="bg-white rounded-2xl p-5 sm:p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-[#333]">Featured Products</h2>
-          <Link href="/products" className="text-sm text-orange-500 hover:text-orange-600 font-medium flex items-center gap-0.5">
-            View all <ChevronRight className="w-4 h-4" />
+      <div className="ks-fp-wrap">
+        {/* ── Header ── */}
+        <div className="ks-fp-header">
+          <div className="ks-fp-header-left">
+            <div className="ks-fp-icon">
+              <Sparkles className="ks-fp-icon-svg" />
+            </div>
+            <div>
+              <h2 className="ks-fp-title">Featured Products</h2>
+              <p className="ks-fp-subtitle">Hand-picked by our curators</p>
+            </div>
+          </div>
+          <Link href="/products" className="ks-fp-viewall">
+            View All
+            <ArrowRight className="ks-fp-viewall-icon" />
           </Link>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-1 mb-5 overflow-x-auto scrollbar-hide border-b border-gray-100">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors relative ${
-                activeTab === tab.id ? "text-orange-500" : "text-[#999] hover:text-[#666]"
-              }`}
-            >
-              {tab.label}
-              {activeTab === tab.id && (
-                <span className="absolute bottom-0 left-1 right-1 h-0.5 bg-orange-500 rounded-full" />
-              )}
-            </button>
-          ))}
+        {/* ── Tabs ── */}
+        <div className="ks-fp-tabs-wrap">
+          <div className="ks-fp-tabs">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`ks-fp-tab ${isActive ? "ks-fp-tab-active" : ""}`}
+                >
+                  <Icon className="ks-fp-tab-icon" />
+                  <span className="ks-fp-tab-label">{tab.label}</span>
+                  <span className={`ks-fp-tab-count ${isActive ? "ks-fp-tab-count-active" : ""}`}>
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {filtered.map((p) => (
-            <ProductCard key={p._id} product={p} />
-          ))}
+        {/* ── Product Grid ── */}
+        <div className="ks-fp-grid-area">
+          <div className="ks-fp-grid">
+            {filtered.map((p) => (
+              <div key={p._id} className="ks-fp-product">
+                <ProductCard product={p} />
+              </div>
+            ))}
+          </div>
+
+          {filtered.length === 0 && (
+            <div className="ks-fp-empty">
+              <Sparkles className="ks-fp-empty-icon" />
+              <p>No products found in this category</p>
+            </div>
+          )}
+        </div>
+
+        {/* ── Bottom strip ── */}
+        <div className="ks-fp-bottom">
+          <span className="ks-fp-bottom-text">
+            Showing <strong>{filtered.length}</strong> of <strong>{products.length}</strong> featured products
+          </span>
+          <Link href="/products" className="ks-fp-bottom-link">
+            Browse all products
+            <ChevronRight className="ks-fp-bottom-link-icon" />
+          </Link>
         </div>
       </div>
     </section>
