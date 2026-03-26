@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Home } from "lucide-react";
+import { Home } from "lucide-react";
 
 interface BreadcrumbItem {
   label: string;
@@ -12,37 +12,43 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <div className="bg-white border-b border-gray-100">
-      <nav className="site-container flex items-center gap-1.5 py-3 overflow-x-auto">
-        <Link
-          href="/"
-          className="flex items-center gap-1 text-[13px] text-[#999] hover:text-orange-500 transition-colors font-medium flex-shrink-0"
-        >
-          <Home className="w-3.5 h-3.5" />
-          <span>Home</span>
-        </Link>
+    <nav className="bg-white border-b border-gray-100">
+      <div className="site-container h-[44px] flex items-center">
+        <ol className="flex items-center gap-2 text-sm">
+          <li>
+            <Link
+              href="/"
+              className="flex items-center gap-1.5 text-gray-500 hover:text-orange-500 transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
+          </li>
 
-        {items.map((item, i) => {
-          const isLast = i === items.length - 1;
-          return (
-            <span key={i} className="flex items-center gap-1.5 flex-shrink-0">
-              <ChevronRight className="w-3 h-3 text-[#ddd]" />
-              {isLast || !item.href ? (
-                <span className="text-[13px] font-semibold text-[#333]">
-                  {item.label}
-                </span>
-              ) : (
-                <Link
-                  href={item.href}
-                  className="text-[13px] text-[#999] hover:text-orange-500 transition-colors font-medium"
-                >
-                  {item.label}
-                </Link>
-              )}
-            </span>
-          );
-        })}
-      </nav>
-    </div>
+          {items.map((item, i) => {
+            const isLast = i === items.length - 1;
+            return (
+              <>
+                <li key={`sep-${i}`} className="text-gray-300">/</li>
+                <li key={`item-${i}`}>
+                  {isLast || !item.href ? (
+                    <span className="text-gray-900 font-medium">
+                      {item.label}
+                    </span>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="text-gray-500 hover:text-orange-500 transition-colors"
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </li>
+              </>
+            );
+          })}
+        </ol>
+      </div>
+    </nav>
   );
 }

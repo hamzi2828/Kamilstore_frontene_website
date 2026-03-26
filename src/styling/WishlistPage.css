@@ -1,0 +1,388 @@
+/* ═══════════════════════════════════════════
+   WishlistPage — KamilStore
+   ═══════════════════════════════════════════ */
+
+/* ── Header icon box ── */
+.ks-wl-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+  border: 1.5px solid #fecdd3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Action buttons ── */
+.ks-wl-share-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.ks-wl-share-btn:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.ks-wl-addall-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  background: #ea6b0e;
+  border: none;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.ks-wl-addall-btn:hover {
+  background: #d45d00;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(234, 107, 14, 0.25);
+}
+
+/* ── Grid ── */
+.ks-wl-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+/* ── Card ── */
+.ks-wl-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1.5px solid #f1f5f9;
+  transition: border-color 0.2s, box-shadow 0.25s, transform 0.25s;
+}
+
+.ks-wl-card:hover {
+  border-color: #fdba74;
+  box-shadow: 0 10px 32px rgba(234, 107, 14, 0.08);
+  transform: translateY(-3px);
+}
+
+/* Image area */
+.ks-wl-card-img-area {
+  position: relative;
+  aspect-ratio: 1;
+  background: #f8f8f8;
+  overflow: hidden;
+}
+
+/* Out of stock */
+.ks-wl-oos-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.ks-wl-oos-badge {
+  padding: 8px 18px;
+  background: #fff;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+}
+
+/* Discount badge */
+.ks-wl-discount-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  padding: 4px 10px;
+  background: #ef4444;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* Remove button */
+.ks-wl-remove-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: none;
+  border-radius: 10px;
+  color: #9ca3af;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transition: opacity 0.2s, color 0.15s, background 0.15s;
+}
+
+.ks-wl-card:hover .ks-wl-remove-btn {
+  opacity: 1;
+}
+
+.ks-wl-remove-btn:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+/* Card body */
+.ks-wl-card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.ks-wl-vendor {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ea6b0e;
+  text-decoration: none;
+  transition: color 0.15s;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+
+.ks-wl-vendor:hover {
+  color: #c2410c;
+}
+
+.ks-wl-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0 0 8px;
+  transition: color 0.15s;
+}
+
+.ks-wl-card-name:hover {
+  color: #ea6b0e;
+}
+
+/* Price */
+.ks-wl-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.ks-wl-price {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.ks-wl-price-old {
+  font-size: 13px;
+  font-weight: 500;
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+.ks-wl-added-date {
+  font-size: 11.5px;
+  color: #bbb;
+  font-weight: 500;
+  margin: 0 0 14px;
+}
+
+/* Add to cart button */
+.ks-wl-cart-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px;
+  background: #ea6b0e;
+  border: none;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  margin-top: auto;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.ks-wl-cart-btn:hover {
+  background: #d45d00;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(234, 107, 14, 0.25);
+}
+
+.ks-wl-cart-btn-disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Continue shopping ── */
+.ks-wl-continue {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #f5f5f5;
+}
+
+.ks-wl-continue-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ea6b0e;
+  text-decoration: none;
+  transition: color 0.15s, gap 0.15s;
+}
+
+.ks-wl-continue-link:hover {
+  color: #c2410c;
+  gap: 10px;
+}
+
+/* ── Empty state ── */
+.ks-wl-empty-card {
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #f1f5f9;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ks-wl-empty-icon-box {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #fef2f2;
+  border: 1.5px solid #fecdd3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.ks-wl-empty-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.ks-wl-empty-sub {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0 0 28px;
+  max-width: 360px;
+  line-height: 1.6;
+}
+
+.ks-wl-empty-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: #ea6b0e;
+  color: #fff;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.ks-wl-empty-btn:hover {
+  background: #d45d00;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(234, 107, 14, 0.25);
+}
+
+/* ═══════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════ */
+
+@media (max-width: 1023px) {
+  .ks-wl-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .ks-wl-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .ks-wl-remove-btn {
+    opacity: 1;
+  }
+
+  .ks-wl-card-body {
+    padding: 14px 14px 16px;
+  }
+
+  .ks-wl-card-name {
+    font-size: 13px;
+  }
+
+  .ks-wl-price {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ks-wl-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .ks-wl-card {
+    border-radius: 14px;
+  }
+
+  .ks-wl-cart-btn {
+    padding: 10px;
+    font-size: 12px;
+  }
+}

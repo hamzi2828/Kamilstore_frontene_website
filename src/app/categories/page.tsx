@@ -132,13 +132,10 @@ export default function CategoriesPage() {
       {/* ── Breadcrumb bar — separate layer under navbar ── */}
       <Breadcrumb items={[{ label: "Categories" }]} />
 
-      <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
+      <div className="flex flex-col gap-5 sm:gap-6 pt-6 sm:pt-8 pb-20 sm:pb-28">
       {/* ── Header Card ── */}
       <section className="site-container">
         <div className="bg-white rounded-2xl overflow-hidden">
-          {/* Top accent */}
-          <div className="h-[3px] bg-gradient-to-r from-orange-400 via-orange-500 to-amber-400" />
-
           <div className="p-5 sm:p-6">
             {/* Title row */}
             <div className="flex items-start sm:items-center justify-between gap-4 flex-col sm:flex-row mb-5">
@@ -150,9 +147,6 @@ export default function CategoriesPage() {
                   <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
                     All Categories
                   </h1>
-                  <p className="text-sm text-[#999] font-medium mt-1.5">
-                    Discover products across every department
-                  </p>
                 </div>
               </div>
 

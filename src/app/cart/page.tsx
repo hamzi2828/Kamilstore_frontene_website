@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, Tag } from "lucide-react";
+import {
+  Trash2, Minus, Plus, ShoppingBag, ArrowRight, Tag,
+  ShoppingCart, ShieldCheck, Truck, Package, RotateCcw,
+} from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import "@/styling/CartPage.css";
 
-// Mock cart data
 const initialCartItems = [
   {
     _id: "1",
@@ -14,7 +18,7 @@ const initialCartItems = [
       _id: "p1",
       name: "Apple MacBook Pro 14-inch M3 Pro",
       slug: "macbook-pro-14-m3",
-      image: "/products/macbook.jpg",
+      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop",
       sellingPrice: 1999.99,
       discountPrice: 1849.99,
       vendor: { name: "TechZone", slug: "techzone" },
@@ -28,7 +32,7 @@ const initialCartItems = [
       _id: "p2",
       name: "Sony WH-1000XM5 Wireless Headphones",
       slug: "sony-wh-1000xm5",
-      image: "/products/sony-headphones.jpg",
+      image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop",
       sellingPrice: 399.99,
       discountPrice: 349.99,
       vendor: { name: "AudioMax", slug: "audiomax" },
@@ -42,7 +46,7 @@ const initialCartItems = [
       _id: "p3",
       name: "USB-C Hub Adapter 7-in-1",
       slug: "usb-c-hub-adapter",
-      image: "/products/hub.jpg",
+      image: "https://images.unsplash.com/photo-1625842268584-8f3296236761?w=400&h=400&fit=crop",
       sellingPrice: 49.99,
       discountPrice: 39.99,
       vendor: { name: "TechZone", slug: "techzone" },
@@ -56,17 +60,15 @@ export default function CartPage() {
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
 
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity < 1) return;
+  const updateQuantity = (id: string, qty: number) => {
+    if (qty < 1) return;
     setCartItems((items) =>
-      items.map((item) =>
-        item._id === id ? { ...item, quantity: newQuantity } : item
-      )
+      items.map((i) => (i._id === id ? { ...i, quantity: qty } : i))
     );
   };
 
   const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((item) => item._id !== id));
+    setCartItems((items) => items.filter((i) => i._id !== id));
   };
 
   const applyCoupon = () => {
@@ -76,285 +78,281 @@ export default function CartPage() {
   };
 
   const subtotal = cartItems.reduce(
-    (sum, item) =>
-      sum +
-      (item.product.discountPrice || item.product.sellingPrice) * item.quantity,
+    (sum, i) =>
+      sum + (i.product.discountPrice || i.product.sellingPrice) * i.quantity,
     0
   );
   const discount = appliedCoupon ? subtotal * 0.1 : 0;
   const shipping = subtotal > 50 ? 0 : 9.99;
   const total = subtotal - discount + shipping;
+  const totalItems = cartItems.reduce((s, i) => s + i.quantity, 0);
 
+  // ── Empty state ──
   if (cartItems.length === 0) {
     return (
-      <div className="bg-gray-50 min-h-screen">
-        <div className="site-container py-16">
-          <div className="max-w-md mx-auto text-center">
-            <ShoppingBag className="w-24 h-24 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              Your cart is empty
-            </h1>
-            <p className="text-gray-500 mb-8">
-              Looks like you haven&apos;t added any items to your cart yet.
-            </p>
-            <Link
-              href="/products"
-              className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
-            >
-              Start Shopping
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-          </div>
+      <>
+        <Breadcrumb items={[{ label: "Cart" }]} />
+        <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
+          <section className="site-container">
+            <div className="ks-cart-empty-card">
+              <div className="ks-cart-empty-icon-box">
+                <ShoppingBag className="w-10 h-10 text-[#ddd]" />
+              </div>
+              <h1 className="ks-cart-empty-title">Your cart is empty</h1>
+              <p className="ks-cart-empty-sub">
+                Looks like you haven&apos;t added any items to your cart yet.
+              </p>
+              <Link href="/products" className="ks-cart-empty-btn">
+                <ShoppingBag className="w-[18px] h-[18px]" />
+                Start Shopping
+              </Link>
+            </div>
+          </section>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <div className="site-container py-8">
-        {/* Breadcrumb */}
-        <nav className="text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-orange-500">
-            Home
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-gray-900">Shopping Cart</span>
-        </nav>
+    <>
+      <Breadcrumb items={[{ label: "Shopping Cart" }]} />
 
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">Shopping Cart</h1>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              {/* Header */}
-              <div className="hidden md:grid grid-cols-12 gap-4 p-4 bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-600">
-                <div className="col-span-6">Product</div>
-                <div className="col-span-2 text-center">Price</div>
-                <div className="col-span-2 text-center">Quantity</div>
-                <div className="col-span-2 text-right">Total</div>
+      <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
+        {/* ── Header ── */}
+        <section className="site-container">
+          <div className="bg-white rounded-2xl overflow-hidden">
+            <div className="h-[3px] bg-gradient-to-r from-orange-400 via-orange-500 to-amber-400" />
+            <div className="p-5 sm:p-6">
+              <div className="flex items-center gap-3.5">
+                <div className="ks-cart-icon-box">
+                  <ShoppingCart className="w-[22px] h-[22px] text-orange-500" />
+                </div>
+                <div>
+                  <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
+                    Shopping Cart
+                  </h1>
+                  <p className="text-sm text-[#999] font-medium mt-1.5">
+                    {totalItems} items in your cart
+                  </p>
+                </div>
               </div>
+            </div>
+          </div>
+        </section>
 
-              {/* Items */}
-              <div className="divide-y divide-gray-200">
-                {cartItems.map((item) => (
-                  <div key={item._id} className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                      {/* Product Info */}
-                      <div className="md:col-span-6 flex gap-4">
-                        <div className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                          <ProductImage
-                            src={item.product.image}
-                            alt={item.product.name}
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="flex-1">
+        {/* ── Cart Content ── */}
+        <section className="site-container">
+          <div className="ks-cart-layout">
+            {/* ── Left: Items ── */}
+            <div className="ks-cart-items-col">
+              <div className="bg-white rounded-2xl overflow-hidden border border-[#f1f5f9]">
+                {/* Table header */}
+                <div className="ks-cart-table-head">
+                  <div className="ks-cart-th-product">Product</div>
+                  <div className="ks-cart-th">Price</div>
+                  <div className="ks-cart-th">Quantity</div>
+                  <div className="ks-cart-th ks-cart-th-right">Total</div>
+                </div>
+
+                {/* Items */}
+                <div className="ks-cart-items">
+                  {cartItems.map((item) => {
+                    const price = item.product.discountPrice || item.product.sellingPrice;
+                    const lineTotal = price * item.quantity;
+
+                    return (
+                      <div key={item._id} className="ks-cart-item">
+                        {/* Product */}
+                        <div className="ks-cart-item-product">
                           <Link
                             href={`/product/${item.product.slug}`}
-                            className="font-medium text-gray-800 hover:text-orange-500 line-clamp-2"
+                            className="ks-cart-item-img"
                           >
-                            {item.product.name}
+                            <ProductImage
+                              src={item.product.image}
+                              alt={item.product.name}
+                              className="object-cover"
+                            />
                           </Link>
-                          <p className="text-sm text-gray-500 mt-1">
-                            Sold by:{" "}
+                          <div className="ks-cart-item-info">
                             <Link
-                              href={`/vendor/${item.product.vendor.slug}`}
-                              className="text-orange-500 hover:underline"
+                              href={`/product/${item.product.slug}`}
+                              className="ks-cart-item-name"
                             >
-                              {item.product.vendor.name}
+                              {item.product.name}
                             </Link>
-                          </p>
-                          {item.variant && (
-                            <p className="text-sm text-gray-500">
-                              {Object.entries(item.variant)
-                                .map(([key, value]) => `${key}: ${value}`)
-                                .join(", ")}
+                            <p className="ks-cart-item-vendor">
+                              Sold by{" "}
+                              <Link
+                                href={`/vendor/${item.product.vendor.slug}`}
+                                className="ks-cart-item-vendor-link"
+                              >
+                                {item.product.vendor.name}
+                              </Link>
                             </p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Price */}
-                      <div className="md:col-span-2 flex md:justify-center items-center gap-2">
-                        <span className="md:hidden text-sm text-gray-500">
-                          Price:
-                        </span>
-                        <div>
-                          <span className="font-medium">
-                            {formatPrice(
-                              item.product.discountPrice ||
-                                item.product.sellingPrice
+                            {item.variant && (
+                              <p className="ks-cart-item-variant">
+                                {Object.entries(item.variant)
+                                  .map(([k, v]) => `${k}: ${v}`)
+                                  .join(" · ")}
+                              </p>
                             )}
-                          </span>
+                          </div>
+                        </div>
+
+                        {/* Price */}
+                        <div className="ks-cart-item-price">
+                          <span className="ks-cart-label">Price</span>
+                          <span className="ks-cart-item-price-current">{formatPrice(price)}</span>
                           {item.product.discountPrice && (
-                            <span className="text-sm text-gray-400 line-through ml-2">
+                            <span className="ks-cart-item-price-old">
                               {formatPrice(item.product.sellingPrice)}
                             </span>
                           )}
                         </div>
-                      </div>
 
-                      {/* Quantity */}
-                      <div className="md:col-span-2 flex md:justify-center items-center gap-2">
-                        <span className="md:hidden text-sm text-gray-500">
-                          Qty:
-                        </span>
-                        <div className="flex items-center border border-gray-300 rounded-lg">
+                        {/* Quantity */}
+                        <div className="ks-cart-item-qty">
+                          <span className="ks-cart-label">Qty</span>
+                          <div className="ks-cart-qty-control">
+                            <button
+                              onClick={() => updateQuantity(item._id, item.quantity - 1)}
+                              className="ks-cart-qty-btn"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="ks-cart-qty-value">{item.quantity}</span>
+                            <button
+                              onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                              className="ks-cart-qty-btn"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Total + Remove */}
+                        <div className="ks-cart-item-total">
+                          <span className="ks-cart-label">Total</span>
+                          <span className="ks-cart-item-total-value">{formatPrice(lineTotal)}</span>
                           <button
-                            onClick={() =>
-                              updateQuantity(item._id, item.quantity - 1)
-                            }
-                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-100"
+                            onClick={() => removeItem(item._id)}
+                            className="ks-cart-remove-btn"
+                            aria-label="Remove item"
                           >
-                            <Minus className="w-4 h-4" />
-                          </button>
-                          <span className="w-10 text-center font-medium">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() =>
-                              updateQuantity(item._id, item.quantity + 1)
-                            }
-                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-100"
-                          >
-                            <Plus className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
+                    );
+                  })}
+                </div>
+              </div>
 
-                      {/* Total */}
-                      <div className="md:col-span-2 flex justify-between md:justify-end items-center gap-4">
-                        <span className="md:hidden text-sm text-gray-500">
-                          Total:
-                        </span>
-                        <span className="font-semibold text-orange-500">
-                          {formatPrice(
-                            (item.product.discountPrice ||
-                              item.product.sellingPrice) * item.quantity
-                          )}
-                        </span>
-                        <button
-                          onClick={() => removeItem(item._id)}
-                          className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      </div>
+              {/* Actions */}
+              <div className="ks-cart-actions">
+                <Link href="/products" className="ks-cart-continue-link">
+                  <Package className="w-4 h-4" />
+                  Continue Shopping
+                </Link>
+                <button onClick={() => setCartItems([])} className="ks-cart-clear-btn">
+                  <Trash2 className="w-4 h-4" />
+                  Clear Cart
+                </button>
+              </div>
+            </div>
+
+            {/* ── Right: Order Summary ── */}
+            <div className="ks-cart-summary-col">
+              <div className="ks-cart-summary-card">
+                <h2 className="ks-cart-summary-title">Order Summary</h2>
+
+                {/* Coupon */}
+                <div className="ks-cart-coupon">
+                  <label className="ks-cart-coupon-label">Coupon Code</label>
+                  <div className="ks-cart-coupon-row">
+                    <div className="ks-cart-coupon-field">
+                      <Tag className="ks-cart-coupon-icon" />
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        placeholder="Enter code"
+                        className="ks-cart-coupon-input"
+                      />
                     </div>
+                    <button onClick={applyCoupon} className="ks-cart-coupon-btn">
+                      Apply
+                    </button>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Continue Shopping */}
-            <div className="mt-4 flex justify-between items-center">
-              <Link
-                href="/products"
-                className="text-orange-500 hover:underline font-medium"
-              >
-                ← Continue Shopping
-              </Link>
-              <button
-                onClick={() => setCartItems([])}
-                className="text-gray-500 hover:text-red-500"
-              >
-                Clear Cart
-              </button>
-            </div>
-          </div>
-
-          {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm p-6 sticky top-24">
-              <h2 className="text-xl font-bold text-gray-800 mb-6">
-                Order Summary
-              </h2>
-
-              {/* Coupon Code */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Coupon Code
-                </label>
-                <div className="flex gap-2">
-                  <div className="flex-1 relative">
-                    <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input
-                      type="text"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      placeholder="Enter code"
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
-                    />
-                  </div>
-                  <button
-                    onClick={applyCoupon}
-                    className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800"
-                  >
-                    Apply
-                  </button>
-                </div>
-                {appliedCoupon && (
-                  <p className="mt-2 text-sm text-green-600">
-                    Coupon &quot;{appliedCoupon}&quot; applied! 10% off
+                  {appliedCoupon && (
+                    <p className="ks-cart-coupon-success">
+                      Coupon &quot;{appliedCoupon}&quot; applied! 10% off
+                    </p>
+                  )}
+                  <p className="ks-cart-coupon-hint">
+                    Try &quot;SAVE10&quot; for 10% off
                   </p>
-                )}
-                <p className="mt-1 text-xs text-gray-500">
-                  Try &quot;SAVE10&quot; for 10% off
-                </p>
-              </div>
+                </div>
 
-              {/* Summary Details */}
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">
-                    Subtotal ({cartItems.length} items)
-                  </span>
-                  <span className="font-medium">{formatPrice(subtotal)}</span>
-                </div>
-                {discount > 0 && (
-                  <div className="flex justify-between text-green-600">
-                    <span>Discount</span>
-                    <span>-{formatPrice(discount)}</span>
+                {/* Summary rows */}
+                <div className="ks-cart-summary-rows">
+                  <div className="ks-cart-summary-row">
+                    <span>Subtotal ({totalItems} items)</span>
+                    <span className="ks-cart-summary-row-value">{formatPrice(subtotal)}</span>
                   </div>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="font-medium">
-                    {shipping === 0 ? "Free" : formatPrice(shipping)}
-                  </span>
-                </div>
-                {shipping > 0 && (
-                  <p className="text-xs text-gray-500">
-                    Free shipping on orders over $50
-                  </p>
-                )}
-                <div className="border-t border-gray-200 pt-3 mt-3">
-                  <div className="flex justify-between text-lg font-bold">
+                  {discount > 0 && (
+                    <div className="ks-cart-summary-row ks-cart-summary-discount">
+                      <span>Discount</span>
+                      <span>-{formatPrice(discount)}</span>
+                    </div>
+                  )}
+                  <div className="ks-cart-summary-row">
+                    <span>Shipping</span>
+                    <span className="ks-cart-summary-row-value">
+                      {shipping === 0 ? (
+                        <span className="ks-cart-free-shipping">FREE</span>
+                      ) : (
+                        formatPrice(shipping)
+                      )}
+                    </span>
+                  </div>
+                  {shipping > 0 && (
+                    <p className="ks-cart-shipping-hint">Free shipping on orders over $50</p>
+                  )}
+
+                  <div className="ks-cart-summary-total-row">
                     <span>Total</span>
-                    <span className="text-orange-500">{formatPrice(total)}</span>
+                    <span className="ks-cart-summary-total-value">{formatPrice(total)}</span>
+                  </div>
+                </div>
+
+                {/* Checkout */}
+                <Link href="/checkout" className="ks-cart-checkout-btn">
+                  Proceed to Checkout
+                  <ArrowRight className="w-[18px] h-[18px]" />
+                </Link>
+
+                {/* Trust badges */}
+                <div className="ks-cart-trust">
+                  <div className="ks-cart-trust-item">
+                    <ShieldCheck className="ks-cart-trust-icon" />
+                    <span>Secure checkout</span>
+                  </div>
+                  <div className="ks-cart-trust-item">
+                    <Truck className="ks-cart-trust-icon" />
+                    <span>Fast delivery</span>
+                  </div>
+                  <div className="ks-cart-trust-item">
+                    <RotateCcw className="ks-cart-trust-icon" />
+                    <span>30-day returns</span>
                   </div>
                 </div>
               </div>
-
-              {/* Checkout Button */}
-              <Link
-                href="/checkout"
-                className="w-full mt-6 bg-orange-500 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-orange-600 transition-colors"
-              >
-                Proceed to Checkout
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-
-              {/* Security Note */}
-              <p className="mt-4 text-xs text-gray-500 text-center">
-                🔒 Secure checkout powered by Stripe
-              </p>
             </div>
           </div>
-        </div>
+        </section>
       </div>
-    </div>
+    </>
   );
 }
