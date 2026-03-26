@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import "@/styling/Header.css";
 import {
   Search, ShoppingCart, Heart, User, Menu, X, ChevronDown,
   Smartphone, Shirt, Home, Dumbbell, Sparkles, Gamepad2,
@@ -120,34 +121,6 @@ export default function Header() {
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        .ks-header * { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .ks-search-glow:focus-within { box-shadow: 0 0 0 3px rgba(249,115,22,0.15); }
-        .ks-mega { transform-origin: top left; }
-        .ks-cat-item { transition: background 0.12s, color 0.12s; }
-        .ks-cat-item.active { background: #FFF7ED; }
-        .ks-cat-item.active span { color: #EA6B0E; }
-        .ks-badge { animation: ks-pulse 2s infinite; }
-        @keyframes ks-pulse { 0%,100% { opacity:1; } 50% { opacity:.7; } }
-        .ks-nav-link { position: relative; }
-        .ks-nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: -1px; left: 50%; right: 50%;
-          height: 2px;
-          background: #EA6B0E;
-          transition: left 0.2s, right 0.2s;
-          border-radius: 2px;
-        }
-        .ks-nav-link:hover::after { left: 8px; right: 8px; }
-        .ks-cart-btn { transition: transform 0.15s, box-shadow 0.15s; }
-        .ks-cart-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
-        .ks-cart-btn:active { transform: translateY(0); }
-        .ks-logo-dot { transition: transform 0.3s cubic-bezier(.34,1.56,.64,1); }
-        .ks-logo:hover .ks-logo-dot { transform: scale(1.6) translateY(-1px); }
-      `}</style>
-
       <header className={`ks-header fixed top-0 left-0 right-0 z-50 ${scrolled ? "drop-shadow-md" : ""}`}>
 
         {/* ── Top Bar ── */}
