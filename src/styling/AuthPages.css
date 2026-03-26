@@ -1,0 +1,209 @@
+/* ═══════════════════════════════════════════
+   Auth Pages (Login & Register) — KamilStore
+   ═══════════════════════════════════════════ */
+
+/* ── Page layout ── */
+.ks-auth-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Left: Brand panel ── */
+.ks-auth-brand {
+  position: relative;
+  width: 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  overflow: hidden;
+}
+
+.ks-auth-brand-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #111827 0%, #1a1a2e 50%, #0f3460 100%);
+}
+
+.ks-auth-brand-dots {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.ks-auth-brand-glow-1 {
+  position: absolute; top: -100px; right: -60px;
+  width: 350px; height: 350px; border-radius: 50%;
+  background: rgba(234,107,14,0.12); filter: blur(80px);
+}
+
+.ks-auth-brand-glow-2 {
+  position: absolute; bottom: -80px; left: 10%;
+  width: 250px; height: 250px; border-radius: 50%;
+  background: rgba(99,102,241,0.08); filter: blur(80px);
+}
+
+.ks-auth-brand-content {
+  position: relative; z-index: 1; max-width: 400px;
+}
+
+/* Logo */
+.ks-auth-logo {
+  display: inline-flex; align-items: baseline;
+  text-decoration: none; margin-bottom: 36px;
+  font-size: 28px; font-weight: 800;
+}
+.ks-auth-logo-k { color: #ea6b0e; }
+.ks-auth-logo-s { color: #fff; }
+.ks-auth-logo-dot { width: 7px; height: 7px; border-radius: 50%; background: #ea6b0e; margin-left: 2px; display: inline-block; }
+
+.ks-auth-brand-title {
+  font-size: 32px; font-weight: 800; color: #fff;
+  line-height: 1.2; margin: 0 0 16px; letter-spacing: -0.5px;
+}
+
+.ks-auth-brand-sub {
+  font-size: 15px; color: rgba(255,255,255,0.45);
+  line-height: 1.65; margin: 0 0 32px; font-weight: 500;
+}
+
+.ks-auth-brand-features { display: flex; flex-direction: column; gap: 14px; }
+
+.ks-auth-brand-feature {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.7);
+}
+
+/* ── Right: Form side ── */
+.ks-auth-form-side {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 24px;
+  background: #fff;
+}
+
+.ks-auth-form-wrap { width: 100%; max-width: 420px; }
+
+/* Mobile logo (hidden on desktop) */
+.ks-auth-mobile-logo {
+  display: none; text-decoration: none; font-size: 24px; font-weight: 800;
+  margin-bottom: 28px;
+}
+.ks-auth-mobile-logo .ks-auth-logo-s { color: #111827; }
+
+/* Form header */
+.ks-auth-form-header { margin-bottom: 28px; }
+.ks-auth-form-title { font-size: 26px; font-weight: 800; color: #111827; margin: 0 0 6px; letter-spacing: -0.3px; }
+.ks-auth-form-sub { font-size: 14px; color: #9ca3af; margin: 0; font-weight: 500; }
+
+/* Form */
+.ks-auth-form { display: flex; flex-direction: column; gap: 18px; }
+
+.ks-auth-field { display: flex; flex-direction: column; }
+.ks-auth-label { font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px; }
+
+.ks-auth-input-wrap { position: relative; }
+
+.ks-auth-input-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; color: #bbb; pointer-events: none;
+}
+
+.ks-auth-input {
+  width: 100%; padding: 12px 14px 12px 44px;
+  background: #f9fafb; border: 1.5px solid #f1f5f9;
+  border-radius: 12px; font-size: 14px; font-weight: 500; color: #111827;
+  outline: none; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.ks-auth-input::placeholder { color: #bbb; }
+.ks-auth-input:focus { border-color: #ea6b0e; background: #fff; box-shadow: 0 0 0 3px rgba(234,107,14,0.08); }
+.ks-auth-input-password { padding-right: 44px; }
+
+.ks-auth-eye-btn {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: #9ca3af; cursor: pointer;
+  padding: 4px; transition: color 0.15s;
+}
+.ks-auth-eye-btn:hover { color: #6b7280; }
+
+/* Options row */
+.ks-auth-options {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.ks-auth-checkbox-wrap {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 13px; font-weight: 500; color: #6b7280; cursor: pointer;
+}
+
+.ks-auth-checkbox {
+  width: 18px; height: 18px; border-radius: 5px;
+  accent-color: #ea6b0e; margin-top: 1px; flex-shrink: 0;
+}
+
+.ks-auth-link {
+  font-size: 13px; font-weight: 700; color: #ea6b0e;
+  text-decoration: none; transition: color 0.15s;
+}
+.ks-auth-link:hover { color: #c2410c; }
+
+/* Submit */
+.ks-auth-submit {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px;
+  background: #ea6b0e; color: #fff; border: none;
+  border-radius: 12px; font-size: 15px; font-weight: 700;
+  cursor: pointer; margin-top: 4px;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.ks-auth-submit:hover {
+  background: #d45d00; transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(234,107,14,0.25);
+}
+
+/* Divider */
+.ks-auth-divider {
+  position: relative; margin: 24px 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.ks-auth-divider::before {
+  content: ""; position: absolute; inset: 0;
+  display: flex; align-items: center;
+}
+.ks-auth-divider::before {
+  top: 50%; height: 1px; background: #f1f5f9;
+}
+.ks-auth-divider span {
+  position: relative; z-index: 1;
+  padding: 0 14px; background: #fff;
+  font-size: 12.5px; font-weight: 600; color: #bbb;
+}
+
+/* Social buttons */
+.ks-auth-social-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.ks-auth-social-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px; background: #fff;
+  border: 1.5px solid #f1f5f9; border-radius: 12px;
+  font-size: 14px; font-weight: 700; color: #374151;
+  cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.ks-auth-social-btn:hover { border-color: #e5e7eb; background: #f9fafb; }
+
+/* Switch link */
+.ks-auth-switch {
+  text-align: center; margin-top: 24px;
+  font-size: 14px; font-weight: 500; color: #9ca3af;
+}
+.ks-auth-switch-link { font-weight: 700; color: #ea6b0e; text-decoration: none; }
+.ks-auth-switch-link:hover { color: #c2410c; }
+
+/* ═══════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════ */
+
+@media (max-width: 1023px) {
+  .ks-auth-brand { display: none; }
+  .ks-auth-mobile-logo { display: inline-flex; }
+  .ks-auth-form-side { padding: 32px 20px; }
+}
