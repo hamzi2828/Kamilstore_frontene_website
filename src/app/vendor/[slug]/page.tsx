@@ -2,28 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
-  Star,
-  CheckCircle,
-  MapPin,
-  Calendar,
-  Package,
-  MessageCircle,
-  ChevronDown,
-  Grid,
-  List,
+  Star, ShieldCheck, MapPin, Calendar, Package,
+  MessageCircle, ChevronDown, Grid, List, ChevronRight,
+  Clock, Percent, ThumbsUp, ArrowRight, Store,
 } from "lucide-react";
 import ProductCard from "@/components/ui/ProductCard";
-import ProductImage from "@/components/ui/ProductImage";
-import VendorAvatar from "@/components/ui/VendorAvatar";
+import Breadcrumb from "@/components/ui/Breadcrumb";
+import "@/styling/VendorPage.css";
 
-// Mock vendor data
 const vendor = {
   _id: "v1",
   name: "TechZone Electronics",
   slug: "techzone",
   logo: "/vendors/techzone.jpg",
-  coverImage: "/vendors/techzone-cover.jpg",
+  coverImage: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1440&h=400&fit=crop&q=80",
   description:
     "Your trusted source for premium electronics and gadgets. We offer a wide range of products from leading brands including Apple, Samsung, Sony, and more. Quality products at competitive prices with fast shipping and excellent customer service.",
   rating: 4.8,
@@ -34,6 +28,7 @@ const vendor = {
   location: "New York, USA",
   responseRate: "98%",
   responseTime: "Within 2 hours",
+  followers: "12.4k",
 };
 
 const vendorProducts = [
@@ -41,7 +36,7 @@ const vendorProducts = [
     _id: "1",
     name: "Apple MacBook Pro 14-inch M3 Pro",
     slug: "macbook-pro-14-m3",
-    images: ["/products/macbook.jpg"],
+    images: ["https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop"],
     sellingPrice: 1999.99,
     discountPrice: 1849.99,
     rating: 4.9,
@@ -52,7 +47,7 @@ const vendorProducts = [
     _id: "2",
     name: "Samsung Galaxy S24 Ultra 256GB",
     slug: "samsung-galaxy-s24-ultra",
-    images: ["/products/samsung-phone.jpg"],
+    images: ["https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=400&fit=crop"],
     sellingPrice: 1299.99,
     rating: 4.7,
     reviewCount: 432,
@@ -62,7 +57,7 @@ const vendorProducts = [
     _id: "3",
     name: "Sony WH-1000XM5 Wireless Headphones",
     slug: "sony-wh-1000xm5",
-    images: ["/products/sony-headphones.jpg"],
+    images: ["https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop"],
     sellingPrice: 399.99,
     discountPrice: 349.99,
     rating: 4.8,
@@ -73,7 +68,7 @@ const vendorProducts = [
     _id: "4",
     name: "iPad Pro 12.9-inch M2 WiFi 256GB",
     slug: "ipad-pro-12-m2",
-    images: ["/products/ipad.jpg"],
+    images: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop"],
     sellingPrice: 1099.99,
     rating: 4.9,
     reviewCount: 345,
@@ -83,7 +78,7 @@ const vendorProducts = [
     _id: "5",
     name: "Apple Watch Series 9 GPS 45mm",
     slug: "apple-watch-series-9",
-    images: ["/products/apple-watch.jpg"],
+    images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop"],
     sellingPrice: 429.99,
     discountPrice: 399.99,
     rating: 4.8,
@@ -94,7 +89,7 @@ const vendorProducts = [
     _id: "6",
     name: "AirPods Pro 2nd Generation",
     slug: "airpods-pro-2",
-    images: ["/products/airpods.jpg"],
+    images: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop"],
     sellingPrice: 249.99,
     rating: 4.7,
     reviewCount: 678,
@@ -117,148 +112,163 @@ export default function VendorPage() {
   const [sortBy, setSortBy] = useState("featured");
   const [selectedCategory, setSelectedCategory] = useState("All Products");
 
+  const joinDate = new Date(vendor.joinedAt).toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+  });
+
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Cover Image */}
-      <div className="relative h-48 md:h-64 bg-gradient-to-r from-orange-500 to-orange-600">
-        {vendor.coverImage && (
-          <ProductImage
+    <>
+      <Breadcrumb
+        items={[
+          { label: "Vendors", href: "/vendors" },
+          { label: vendor.name },
+        ]}
+      />
+
+      <div className="flex flex-col gap-5 sm:gap-6 pb-20 sm:pb-28">
+        {/* ── Cover Image ── */}
+        <div className="ks-vp-cover">
+          <Image
             src={vendor.coverImage}
             alt={vendor.name}
-            className="object-cover opacity-50"
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
           />
-        )}
-      </div>
+          <div className="ks-vp-cover-overlay" />
+        </div>
 
-      {/* Vendor Info */}
-      <div className="site-container">
-        <div className="relative -mt-16 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex flex-col md:flex-row gap-6">
-              {/* Logo */}
-              <div className="flex-shrink-0 -mt-20 md:-mt-12">
-                <VendorAvatar
-                  src={vendor.logo}
-                  name={vendor.name}
-                  size="lg"
-                  className="!w-32 !h-32 border-4 border-white shadow-lg"
-                />
-              </div>
+        {/* ── Vendor Profile Card ── */}
+        <section className="site-container" style={{ marginTop: -60 }}>
+          <div className="ks-vp-profile-card">
+            {/* Avatar */}
+            <div className="ks-vp-avatar">
+              <span className="ks-vp-avatar-letter">
+                {vendor.name.charAt(0)}
+              </span>
+            </div>
 
-              {/* Info */}
-              <div className="flex-1">
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h1 className="text-2xl font-bold text-gray-800">
-                        {vendor.name}
-                      </h1>
-                      {vendor.isVerified && (
-                        <CheckCircle className="w-6 h-6 text-blue-500" />
-                      )}
-                    </div>
-                    <p className="text-gray-600 mt-2 max-w-2xl">
-                      {vendor.description}
-                    </p>
+            <div className="ks-vp-profile-body">
+              {/* Top row: name + actions */}
+              <div className="ks-vp-profile-top">
+                <div>
+                  <div className="ks-vp-name-row">
+                    <h1 className="ks-vp-name">{vendor.name}</h1>
+                    {vendor.isVerified && (
+                      <span className="ks-vp-verified-badge">
+                        <ShieldCheck className="ks-vp-verified-icon" />
+                        Verified
+                      </span>
+                    )}
                   </div>
+                  <p className="ks-vp-desc">{vendor.description}</p>
+                </div>
 
-                  <button className="flex items-center gap-2 px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
-                    <MessageCircle className="w-5 h-5" />
+                <div className="ks-vp-actions">
+                  <button className="ks-vp-contact-btn">
+                    <MessageCircle className="ks-vp-contact-icon" />
                     Contact Seller
                   </button>
+                  <button className="ks-vp-follow-btn">
+                    <Store className="ks-vp-follow-icon" />
+                    Follow
+                  </button>
                 </div>
+              </div>
 
-                {/* Stats */}
-                <div className="flex flex-wrap gap-6 mt-6">
-                  <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                    <span className="font-semibold">{vendor.rating}</span>
-                    <span className="text-gray-500">
-                      ({vendor.reviewCount} reviews)
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Package className="w-5 h-5" />
-                    <span>{vendor.productCount} Products</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <MapPin className="w-5 h-5" />
-                    <span>{vendor.location}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Calendar className="w-5 h-5" />
-                    <span>Joined {new Date(vendor.joinedAt).toLocaleDateString()}</span>
+              {/* Stats grid */}
+              <div className="ks-vp-stats-grid">
+                <div className="ks-vp-stat-card">
+                  <Star className="ks-vp-stat-icon" style={{ color: "#F59E0B" }} />
+                  <div>
+                    <span className="ks-vp-stat-value">{vendor.rating}</span>
+                    <span className="ks-vp-stat-label">{vendor.reviewCount.toLocaleString()} reviews</span>
                   </div>
                 </div>
-
-                {/* Response Info */}
-                <div className="flex gap-6 mt-4 text-sm">
+                <div className="ks-vp-stat-card">
+                  <Package className="ks-vp-stat-icon" style={{ color: "#3B82F6" }} />
                   <div>
-                    <span className="text-gray-500">Response Rate:</span>
-                    <span className="ml-2 font-medium text-green-600">
-                      {vendor.responseRate}
-                    </span>
+                    <span className="ks-vp-stat-value">{vendor.productCount}</span>
+                    <span className="ks-vp-stat-label">Products</span>
                   </div>
+                </div>
+                <div className="ks-vp-stat-card">
+                  <ThumbsUp className="ks-vp-stat-icon" style={{ color: "#10B981" }} />
                   <div>
-                    <span className="text-gray-500">Response Time:</span>
-                    <span className="ml-2 font-medium">
-                      {vendor.responseTime}
-                    </span>
+                    <span className="ks-vp-stat-value">{vendor.responseRate}</span>
+                    <span className="ks-vp-stat-label">Response rate</span>
+                  </div>
+                </div>
+                <div className="ks-vp-stat-card">
+                  <Clock className="ks-vp-stat-icon" style={{ color: "#8B5CF6" }} />
+                  <div>
+                    <span className="ks-vp-stat-value">{vendor.responseTime}</span>
+                    <span className="ks-vp-stat-label">Avg response</span>
+                  </div>
+                </div>
+                <div className="ks-vp-stat-card">
+                  <MapPin className="ks-vp-stat-icon" style={{ color: "#EF4444" }} />
+                  <div>
+                    <span className="ks-vp-stat-value">{vendor.location}</span>
+                    <span className="ks-vp-stat-label">Location</span>
+                  </div>
+                </div>
+                <div className="ks-vp-stat-card">
+                  <Calendar className="ks-vp-stat-icon" style={{ color: "#F97316" }} />
+                  <div>
+                    <span className="ks-vp-stat-value">{joinDate}</span>
+                    <span className="ks-vp-stat-label">Member since</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Products Section */}
-        <div className="flex gap-8 pb-12">
-          {/* Sidebar */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="bg-white rounded-xl p-6 shadow-sm sticky top-24">
-              <h3 className="font-semibold text-lg mb-4">Categories</h3>
-              <ul className="space-y-2">
-                {categories.map((category) => (
-                  <li key={category}>
-                    <button
-                      onClick={() => setSelectedCategory(category)}
-                      className={`w-full text-left py-2 px-3 rounded-lg ${
-                        selectedCategory === category
-                          ? "bg-orange-100 text-orange-600"
-                          : "hover:bg-gray-100"
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </aside>
+        {/* ── Products Section ── */}
+        <section className="site-container">
+          <div className="ks-vp-products-layout">
+            {/* Sidebar */}
+            <aside className="ks-vp-sidebar">
+              <div className="ks-vp-sidebar-card">
+                <h3 className="ks-vp-sidebar-title">Categories</h3>
+                <ul className="ks-vp-sidebar-list">
+                  {categories.map((cat) => (
+                    <li key={cat}>
+                      <button
+                        onClick={() => setSelectedCategory(cat)}
+                        className={`ks-vp-sidebar-item ${selectedCategory === cat ? "ks-vp-sidebar-item-active" : ""}`}
+                      >
+                        {cat}
+                        <ChevronRight className="ks-vp-sidebar-item-arrow" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </aside>
 
-          {/* Products */}
-          <div className="flex-1">
-            {/* Header */}
-            <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            {/* Main */}
+            <div className="ks-vp-main">
+              {/* Toolbar */}
+              <div className="ks-vp-toolbar">
                 <div>
-                  <h2 className="text-xl font-semibold">
-                    {selectedCategory === "All Products"
-                      ? "All Products"
-                      : selectedCategory}
+                  <h2 className="ks-vp-toolbar-title">
+                    {selectedCategory}
                   </h2>
-                  <p className="text-gray-500 text-sm">
-                    {vendorProducts.length} products
+                  <p className="ks-vp-toolbar-count">
+                    {vendorProducts.length} products found
                   </p>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  {/* Sort */}
-                  <div className="relative">
+                <div className="ks-vp-toolbar-controls">
+                  <div className="ks-vp-sort-wrap">
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:border-orange-500"
+                      className="ks-vp-sort-select"
                     >
                       <option value="featured">Featured</option>
                       <option value="newest">Newest</option>
@@ -266,69 +276,46 @@ export default function VendorPage() {
                       <option value="price-high">Price: High to Low</option>
                       <option value="rating">Best Rating</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+                    <ChevronDown className="ks-vp-sort-arrow" />
                   </div>
 
-                  {/* View Toggle */}
-                  <div className="hidden md:flex border border-gray-300 rounded-lg overflow-hidden">
+                  <div className="ks-vp-view-toggle">
                     <button
                       onClick={() => setViewMode("grid")}
-                      className={`p-2 ${
-                        viewMode === "grid"
-                          ? "bg-orange-500 text-white"
-                          : "hover:bg-gray-100"
-                      }`}
+                      className={`ks-vp-view-btn ${viewMode === "grid" ? "ks-vp-view-btn-active" : ""}`}
                     >
-                      <Grid className="w-5 h-5" />
+                      <Grid className="w-[18px] h-[18px]" />
                     </button>
                     <button
                       onClick={() => setViewMode("list")}
-                      className={`p-2 ${
-                        viewMode === "list"
-                          ? "bg-orange-500 text-white"
-                          : "hover:bg-gray-100"
-                      }`}
+                      className={`ks-vp-view-btn ${viewMode === "list" ? "ks-vp-view-btn-active" : ""}`}
                     >
-                      <List className="w-5 h-5" />
+                      <List className="w-[18px] h-[18px]" />
                     </button>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Products Grid */}
-            <div
-              className={`grid gap-4 md:gap-6 ${
-                viewMode === "grid"
-                  ? "grid-cols-2 md:grid-cols-3"
-                  : "grid-cols-1"
-              }`}
-            >
-              {vendorProducts.map((product) => (
-                <ProductCard key={product._id} product={product} />
-              ))}
-            </div>
+              {/* Grid */}
+              <div className={`ks-vp-grid ${viewMode === "list" ? "ks-vp-grid-list" : ""}`}>
+                {vendorProducts.map((product) => (
+                  <div key={product._id} className="ks-vp-product-wrap">
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
 
-            {/* Pagination */}
-            <div className="flex justify-center mt-8">
-              <nav className="flex items-center gap-2">
-                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  Previous
-                </button>
-                <button className="px-4 py-2 bg-orange-500 text-white rounded-lg">
-                  1
-                </button>
-                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  2
-                </button>
-                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  Next
-                </button>
-              </nav>
+              {/* Pagination */}
+              <div className="ks-vp-pagination">
+                <button className="ks-vp-page-btn">Previous</button>
+                <button className="ks-vp-page-btn ks-vp-page-btn-active">1</button>
+                <button className="ks-vp-page-btn">2</button>
+                <button className="ks-vp-page-btn">Next</button>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
-    </div>
+    </>
   );
 }

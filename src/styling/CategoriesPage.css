@@ -1,0 +1,227 @@
+/* ═══════════════════════════════════════════
+   CategoriesPage — KamilStore
+   ═══════════════════════════════════════════ */
+
+/* ── Header icon box ── */
+.ks-cat-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border: 1.5px solid #fed7aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Search ── */
+.ks-cat-search-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+}
+
+.ks-cat-search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #bbb;
+  pointer-events: none;
+}
+
+.ks-cat-search-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  background: #f9fafb;
+  border: 1.5px solid #f1f5f9;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.ks-cat-search-input::placeholder {
+  color: #bbb;
+}
+
+.ks-cat-search-input:focus {
+  border-color: #f97316;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08);
+}
+
+/* ── Stats strip ── */
+.ks-cat-stats-strip {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 24px;
+  background: #f9fafb;
+  border: 1.5px solid #f1f5f9;
+  border-radius: 16px;
+}
+
+.ks-cat-stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ks-cat-stat-value {
+  font-size: 17px;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1;
+}
+
+.ks-cat-stat-label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #9ca3af;
+  line-height: 1;
+}
+
+.ks-cat-stat-sep {
+  width: 1px;
+  height: 24px;
+  background: #e5e7eb;
+  flex-shrink: 0;
+}
+
+/* ── Grid ── */
+.ks-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* ── Card ── */
+.ks-cat-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1.5px solid #f1f5f9;
+  text-decoration: none;
+  transition: border-color 0.2s, box-shadow 0.25s, transform 0.25s;
+}
+
+.ks-cat-card:hover {
+  border-color: #fdba74;
+  box-shadow: 0 12px 36px rgba(234, 107, 14, 0.1);
+  transform: translateY(-4px);
+}
+
+/* Image area */
+.ks-cat-card-img-area {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.ks-cat-card-img-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.05) 60%, transparent 100%);
+  z-index: 1;
+}
+
+/* Sub pills */
+.ks-cat-sub-pill {
+  display: inline-flex;
+  padding: 5px 12px;
+  background: #f9fafb;
+  border: 1px solid #f1f5f9;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.ks-cat-card:hover .ks-cat-sub-pill {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #ea6b0e;
+}
+
+/* ═══════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════ */
+
+@media (max-width: 1023px) {
+  .ks-cat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .ks-cat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .ks-cat-card-img-area {
+    height: 140px;
+  }
+
+  .ks-cat-search-wrap {
+    max-width: 100%;
+  }
+
+  .ks-cat-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+
+  .ks-cat-stats-strip {
+    gap: 10px;
+    padding: 14px 16px;
+    flex-wrap: wrap;
+  }
+
+  .ks-cat-stat-sep {
+    display: none;
+  }
+
+  .ks-cat-stat {
+    padding: 8px 14px;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    gap: 7px;
+  }
+
+  .ks-cat-stat-value {
+    font-size: 14px;
+  }
+
+  .ks-cat-stat-label {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ks-cat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ks-cat-card {
+    flex-direction: row;
+  }
+
+  .ks-cat-card-img-area {
+    width: 140px;
+    height: auto;
+    min-height: 180px;
+    flex-shrink: 0;
+  }
+}
