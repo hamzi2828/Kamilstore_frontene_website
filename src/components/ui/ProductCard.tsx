@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Star } from "lucide-react";
+import { Star, ShoppingBag, Truck, ShieldCheck } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
 
@@ -30,40 +30,61 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product.slug}`} className="block group">
-      <div className="bg-white rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
+      <div className="bg-white rounded-2xl overflow-hidden border border-[#f0f0f0] group-hover:border-orange-200 group-hover:shadow-[0_8px_30px_rgba(234,107,14,0.08)] transition-all duration-300">
         {/* Image */}
-        <div className="relative aspect-square bg-[#f8f8f8] overflow-hidden">
+        <div className="relative aspect-square bg-gradient-to-b from-[#fafafa] to-[#f3f3f3] overflow-hidden">
           <ProductImage
             src={product.images[0]}
             alt={product.name}
-            className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+            className="object-contain p-5 group-hover:scale-105 transition-transform duration-500 ease-out"
           />
 
-          {/* Badge */}
+          {/* Discount Badge — top left */}
           {discount > 0 && (
-            <span className="absolute top-2.5 left-2.5 bg-red-500 text-white text-[11px] font-bold px-2 py-0.5 rounded">
-              {discount}% OFF
+            <span className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-rose-500 text-white text-[10.5px] font-extrabold px-2.5 py-1 rounded-lg shadow-sm tracking-wide">
+              -{discount}%
             </span>
           )}
+
+          {/* Save Badge — top right */}
+          {discount > 0 && (
+            <span className="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
+              Save {formatPrice(product.sellingPrice - (product.discountPrice || product.sellingPrice))}
+            </span>
+          )}
+
+          {/* Quick Add — appears on hover */}
+          <div className="absolute inset-x-0 bottom-0 p-3 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              className="w-full flex items-center justify-center gap-2 bg-[#111] text-white text-[12px] font-bold py-2.5 rounded-xl hover:bg-orange-500 transition-colors duration-200"
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              Add to Cart
+            </button>
+          </div>
         </div>
 
         {/* Info */}
-        <div className="p-3.5">
+        <div className="px-4 pt-4 pb-4">
+          {/* Vendor */}
+          {product.vendor && (
+            <span className="text-[10.5px] font-semibold text-orange-500 tracking-wider uppercase">
+              {product.vendor.name}
+            </span>
+          )}
+
           {/* Title */}
-          <h3 className="text-sm font-medium text-[#333] line-clamp-2 leading-snug group-hover:text-orange-500 transition-colors">
+          <h3 className="text-[13.5px] font-bold text-[#111] line-clamp-2 leading-[1.45] mt-1 group-hover:text-orange-500 transition-colors duration-200">
             {product.name}
           </h3>
 
-          {/* Vendor */}
-          {product.vendor && (
-            <p className="text-xs text-[#999] mt-1">
-              by {product.vendor.name}
-            </p>
-          )}
-
           {/* Rating */}
-          <div className="flex items-center gap-1 mt-2">
-            <div className="flex">
+          <div className="flex items-center gap-1.5 mt-2.5">
+            <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
@@ -75,27 +96,45 @@ export default function ProductCard({ product }: ProductCardProps) {
                 />
               ))}
             </div>
-            <span className="text-[11px] text-[#999]">
-              ({product.reviewCount})
+            <span className="text-[11px] font-semibold text-[#555]">
+              {product.rating}
+            </span>
+            <span className="text-[10.5px] text-[#bbb]">
+              ({product.reviewCount.toLocaleString()})
             </span>
           </div>
 
+          {/* Divider */}
+          <div className="h-px bg-[#f0f0f0] my-3" />
+
           {/* Price */}
-          <div className="mt-2.5">
+          <div>
             {product.discountPrice ? (
-              <div className="flex items-baseline gap-2">
-                <span className="text-base font-bold text-[#333]">
+              <div className="flex items-baseline gap-2.5">
+                <span className="text-[18px] font-extrabold text-[#111]">
                   {formatPrice(product.discountPrice)}
                 </span>
-                <span className="text-xs text-[#999] line-through">
+                <span className="text-[12px] text-[#bbb] line-through">
                   {formatPrice(product.sellingPrice)}
                 </span>
               </div>
             ) : (
-              <span className="text-base font-bold text-[#333]">
+              <span className="text-[18px] font-extrabold text-[#111]">
                 {formatPrice(product.sellingPrice)}
               </span>
             )}
+          </div>
+
+          {/* Trust Signals */}
+          <div className="flex items-center gap-3 mt-3">
+            <div className="flex items-center gap-1">
+              <Truck className="w-3 h-3 text-emerald-500" />
+              <span className="text-[10px] font-semibold text-[#999]">Free Shipping</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3 text-emerald-500" />
+              <span className="text-[10px] font-semibold text-[#999]">Warranty</span>
+            </div>
           </div>
         </div>
       </div>
