@@ -5,7 +5,8 @@
       "Bash(npm install:*)",
       "Bash(npx next:*)",
       "WebFetch(domain:www.alibaba.com)",
-      "WebFetch(domain:zextons.co.uk)"
+      "WebFetch(domain:zextons.co.uk)",
+      "Bash(npm run:*)"
     ]
   }
 }

@@ -66,9 +66,9 @@ const relatedProducts = [
 ];
 
 const reviews = [
-  { _id: "rev1", user: { name: "John D.", avatar: "/avatars/user1.jpg" }, rating: 5, comment: "Absolutely love this MacBook! The M3 Pro chip is blazing fast and the battery life is incredible. Perfect for my work as a software developer.", date: "2024-01-15", verified: true, helpful: 24 },
-  { _id: "rev2", user: { name: "Sarah M.", avatar: "/avatars/user2.jpg" }, rating: 4, comment: "Great laptop overall. Display is stunning and performance is top-notch. Only wish it had more ports.", date: "2024-01-10", verified: true, helpful: 12 },
-  { _id: "rev3", user: { name: "Mike R.", avatar: "/avatars/user3.jpg" }, rating: 5, comment: "Best laptop I've ever owned. The build quality is exceptional and it handles everything I throw at it.", date: "2024-01-05", verified: false, helpful: 8 },
+  { _id: "rev1", user: { name: "John D.", avatar: "" }, rating: 5, comment: "Absolutely love this MacBook! The M3 Pro chip is blazing fast and the battery life is incredible. Perfect for my work as a software developer.", date: "2024-01-15", verified: true, helpful: 24 },
+  { _id: "rev2", user: { name: "Sarah M.", avatar: "" }, rating: 4, comment: "Great laptop overall. Display is stunning and performance is top-notch. Only wish it had more ports.", date: "2024-01-10", verified: true, helpful: 12 },
+  { _id: "rev3", user: { name: "Mike R.", avatar: "" }, rating: 5, comment: "Best laptop I've ever owned. The build quality is exceptional and it handles everything I throw at it.", date: "2024-01-05", verified: false, helpful: 8 },
 ];
 
 export default function ProductDetailPage() {

@@ -90,10 +90,10 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeCategory, setActiveCategory] = useState(null);
+  const [activeCategory, setActiveCategory] = useState<typeof categories[number] | null>(null);
   const [megaOpen, setMegaOpen] = useState(false);
   const megaRef = useRef(null);
-  const megaTimeout = useRef(null);
+  const megaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -107,7 +107,7 @@ export default function Header() {
   }, [mobileMenuOpen]);
 
   const openMega = () => {
-    clearTimeout(megaTimeout.current);
+    if (megaTimeout.current) clearTimeout(megaTimeout.current);
     setMegaOpen(true);
     if (!activeCategory) setActiveCategory(categories[0]);
   };
