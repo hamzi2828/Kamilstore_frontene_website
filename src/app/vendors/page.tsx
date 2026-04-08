@@ -1,55 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
-  Search, ChevronDown, Store, Star, ShieldCheck,
-  Package, MessageSquare, ArrowRight, TrendingUp,
-  Users, ChevronRight, Award,
+  Search, ChevronDown, Store,
+  ArrowRight, Users, Package,
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { VendorCard, VendorsEmpty, VendorsLoading } from "./components";
+import { getVendors, type Vendor, type VendorsPagination } from "./services/vendorsApi";
 import "@/styling/VendorsPage.css";
-
-const allVendors = [
-  { _id: "1", name: "TechZone Electronics", slug: "techzone", description: "Your trusted source for premium electronics and gadgets. Quality products at competitive prices.", rating: 4.8, reviewCount: 1250, productCount: 342, isVerified: true, badge: "Top Rated", color: "#3B82F6" },
-  { _id: "2", name: "FashionPlus", slug: "fashionplus", description: "Trendy fashion for everyone. Stay stylish with our latest collections from top brands.", rating: 4.6, reviewCount: 890, productCount: 567, isVerified: true, badge: "Best Seller", color: "#EC4899" },
-  { _id: "3", name: "HomeStyle Decor", slug: "homestyle", description: "Transform your living space with our beautiful home decor and furniture collection.", rating: 4.7, reviewCount: 456, productCount: 234, isVerified: true, badge: "Featured", color: "#10B981" },
-  { _id: "4", name: "SportsFit Pro", slug: "sportsfit", description: "Premium sports equipment and fitness gear for athletes and fitness enthusiasts.", rating: 4.5, reviewCount: 678, productCount: 189, isVerified: false, color: "#F59E0B" },
-  { _id: "5", name: "AudioMax", slug: "audiomax", description: "High-quality audio equipment for music lovers. From headphones to speakers.", rating: 4.9, reviewCount: 543, productCount: 156, isVerified: true, badge: "Top Rated", color: "#8B5CF6" },
-  { _id: "6", name: "BeautyGlow", slug: "beautyglow", description: "Premium skincare and beauty products from leading brands worldwide.", rating: 4.4, reviewCount: 321, productCount: 278, isVerified: true, color: "#A855F7" },
-  { _id: "7", name: "KidsWorld", slug: "kidsworld", description: "Everything for kids! Toys, clothing, and educational materials for all ages.", rating: 4.6, reviewCount: 432, productCount: 445, isVerified: false, color: "#EF4444" },
-  { _id: "8", name: "GardenPro", slug: "gardenpro", description: "Quality gardening tools, plants, and outdoor living essentials.", rating: 4.7, reviewCount: 234, productCount: 167, isVerified: true, color: "#059669" },
-];
-
-const categoryFilters = [
-  "All",
-  "Electronics",
-  "Fashion",
-  "Home & Garden",
-  "Sports",
-  "Beauty",
-  "Kids",
-];
-
-const badgeStyles: Record<string, { bg: string; color: string; border: string }> = {
-  "Top Rated": { bg: "#FFFBEB", color: "#D97706", border: "#FDE68A" },
-  "Best Seller": { bg: "#ECFDF5", color: "#059669", border: "#A7F3D0" },
-  Featured: { bg: "#FAF5FF", color: "#7C3AED", border: "#DDD6FE" },
-};
-
-function formatCount(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k`;
-  return n.toString();
-}
 
 export default function VendorsPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [sortBy, setSortBy] = useState("featured");
+  const [sortBy, setSortBy] = useState("newest");
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [pagination, setPagination] = useState<VendorsPagination | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
-  const filtered = allVendors.filter((v) =>
-    v.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const fetchVendors = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await getVendors({
+        search: searchQuery || undefined,
+        sort: sortBy === "newest" ? undefined : sortBy,
+        page,
+        limit: 12,
+      });
+      setVendors(res.data);
+      setPagination(res.pagination);
+    } catch {
+      setVendors([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [searchQuery, sortBy, page]);
+
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      fetchVendors();
+    }, 300);
+    return () => clearTimeout(debounce);
+  }, [fetchVendors]);
+
+  // Reset page when search/sort changes
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, sortBy]);
 
   return (
     <>
@@ -73,7 +71,7 @@ export default function VendorsPage() {
                       Our Vendors
                     </h1>
                     <p className="text-sm text-[#999] font-medium mt-1.5">
-                      Shop from {allVendors.length} trusted sellers on KamilStore
+                      Shop from {pagination?.total ?? "..."} trusted sellers on KamilStore
                     </p>
                   </div>
                 </div>
@@ -95,42 +93,28 @@ export default function VendorsPage() {
               <div className="ks-vs-stats-strip">
                 <div className="ks-vs-stat">
                   <Store className="w-[18px] h-[18px] text-orange-500" />
-                  <span className="ks-vs-stat-value">{allVendors.length}</span>
+                  <span className="ks-vs-stat-value">{pagination?.total ?? "..."}</span>
                   <span className="ks-vs-stat-label">Vendors</span>
                 </div>
                 <div className="ks-vs-stat-sep" />
                 <div className="ks-vs-stat">
-                  <Package className="w-[18px] h-[18px] text-blue-500" />
-                  <span className="ks-vs-stat-value">2,378</span>
-                  <span className="ks-vs-stat-label">Total Products</span>
-                </div>
-                <div className="ks-vs-stat-sep" />
-                <div className="ks-vs-stat">
                   <Users className="w-[18px] h-[18px] text-emerald-500" />
-                  <span className="ks-vs-stat-value">98%</span>
-                  <span className="ks-vs-stat-label">Verified Sellers</span>
+                  <span className="ks-vs-stat-value">Verified</span>
+                  <span className="ks-vs-stat-label">Sellers</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Filters + Grid ── */}
+        {/* ── Sort + Grid ── */}
         <section className="site-container">
           <div className="bg-white rounded-2xl p-5 sm:p-6">
-            {/* Filter bar */}
+            {/* Sort bar */}
             <div className="ks-vs-filter-bar">
-              <div className="ks-vs-category-pills">
-                {categoryFilters.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`ks-vs-pill ${selectedCategory === cat ? "ks-vs-pill-active" : ""}`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
+              <p className="text-[13px] text-[#999] font-medium">
+                Showing <strong className="text-[#555]">{vendors.length}</strong> of {pagination?.total ?? 0} vendors
+              </p>
 
               <div className="ks-vs-sort-wrap">
                 <select
@@ -138,117 +122,56 @@ export default function VendorsPage() {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="ks-vs-sort-select"
                 >
-                  <option value="featured">Featured</option>
-                  <option value="rating">Highest Rated</option>
-                  <option value="products">Most Products</option>
-                  <option value="reviews">Most Reviews</option>
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                  <option value="name-asc">A — Z</option>
+                  <option value="name-desc">Z — A</option>
                 </select>
                 <ChevronDown className="ks-vs-sort-arrow" />
               </div>
             </div>
 
-            {/* Result count */}
-            <p className="text-[13px] text-[#999] font-medium mb-5">
-              Showing <strong className="text-[#555]">{filtered.length}</strong> vendors
-            </p>
-
-            {/* Empty */}
-            {filtered.length === 0 && (
-              <div className="flex flex-col items-center py-16 text-center">
-                <Search className="w-10 h-10 text-[#ddd] mb-4" />
-                <p className="text-base font-semibold text-[#555] mb-1">No vendors found</p>
-                <p className="text-sm text-[#999]">Try a different search term</p>
+            {/* Content */}
+            {loading ? (
+              <VendorsLoading />
+            ) : vendors.length === 0 ? (
+              <VendorsEmpty />
+            ) : (
+              <div className="ks-vs-grid">
+                {vendors.map((v, i) => (
+                  <VendorCard key={v._id} vendor={v} index={i} />
+                ))}
               </div>
             )}
 
-            {/* Vendors Grid */}
-            <div className="ks-vs-grid">
-              {filtered.map((v, i) => {
-                const bs = v.badge ? badgeStyles[v.badge] : null;
-                return (
-                  <Link
-                    key={v._id}
-                    href={`/vendor/${v.slug}`}
-                    className="ks-vs-card group"
-                  >
-                    {/* Rank for top 3 */}
-                    {i < 3 && (
-                      <div className={`ks-vs-rank ks-vs-rank-${i + 1}`}>
-                        {i + 1}
-                      </div>
-                    )}
-
-                    {/* Header */}
-                    <div className="ks-vs-card-header">
-                      <div
-                        className="ks-vs-avatar"
-                        style={{ background: `linear-gradient(135deg, ${v.color}22, ${v.color}11)`, borderColor: `${v.color}30` }}
-                      >
-                        <span style={{ color: v.color }}>{v.name.charAt(0)}</span>
-                      </div>
-                      <div className="ks-vs-card-info">
-                        <div className="ks-vs-name-row">
-                          <h3 className="ks-vs-card-name">{v.name}</h3>
-                          {v.isVerified && (
-                            <ShieldCheck className="ks-vs-verified" />
-                          )}
-                        </div>
-                        <div className="ks-vs-stars">
-                          {[...Array(5)].map((_, j) => (
-                            <Star
-                              key={j}
-                              className={`ks-vs-star ${j < Math.floor(v.rating) ? "ks-vs-star-filled" : ""}`}
-                            />
-                          ))}
-                          <span className="ks-vs-rating-num">{v.rating.toFixed(1)}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Badge */}
-                    {bs && v.badge && (
-                      <span
-                        className="ks-vs-badge"
-                        style={{ background: bs.bg, color: bs.color, borderColor: bs.border }}
-                      >
-                        <Award className="ks-vs-badge-icon" />
-                        {v.badge}
-                      </span>
-                    )}
-
-                    {/* Description */}
-                    <p className="ks-vs-card-desc">{v.description}</p>
-
-                    {/* Stats */}
-                    <div className="ks-vs-card-stats">
-                      <div className="ks-vs-card-stat">
-                        <Package className="ks-vs-card-stat-icon" />
-                        {formatCount(v.productCount)} products
-                      </div>
-                      <div className="ks-vs-card-stat">
-                        <MessageSquare className="ks-vs-card-stat-icon" />
-                        {formatCount(v.reviewCount)} reviews
-                      </div>
-                    </div>
-
-                    {/* CTA */}
-                    <div className="ks-vs-card-cta">
-                      Visit store
-                      <ArrowRight className="ks-vs-card-cta-icon" />
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-
             {/* Pagination */}
-            <div className="ks-vs-pagination">
-              <button className="ks-vs-page-btn">Previous</button>
-              <button className="ks-vs-page-btn ks-vs-page-active">1</button>
-              <button className="ks-vs-page-btn">2</button>
-              <button className="ks-vs-page-btn">3</button>
-              <button className="ks-vs-page-btn">Next</button>
-            </div>
+            {pagination && pagination.pages > 1 && (
+              <div className="ks-vs-pagination">
+                <button
+                  className="ks-vs-page-btn"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  Previous
+                </button>
+                {[...Array(pagination.pages)].map((_, i) => (
+                  <button
+                    key={i}
+                    className={`ks-vs-page-btn ${page === i + 1 ? "ks-vs-page-active" : ""}`}
+                    onClick={() => setPage(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  className="ks-vs-page-btn"
+                  disabled={page >= pagination.pages}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </section>
 
