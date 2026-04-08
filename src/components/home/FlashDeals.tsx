@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Zap, ChevronRight, Flame, Clock, TrendingUp, ArrowRight } from "lucide-react";
-import ProductCard from "@/components/ui/ProductCard";
+import FlashDealCard from "@/components/ui/FlashDealCard";
 import "@/styling/FlashDeals.css";
 
 const flashProducts = [
@@ -173,7 +173,7 @@ export default function FlashDeals() {
               const isHot = pct >= 80;
               return (
                 <div key={p._id} className="ks-flash-product">
-                  <ProductCard product={p} />
+                  <FlashDealCard product={p} />
 
                   {/* Sold progress */}
                   <div className="ks-flash-sold-section">

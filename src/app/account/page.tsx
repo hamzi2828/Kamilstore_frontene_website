@@ -1,19 +1,14 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   User, Package, Heart, MapPin, CreditCard, Settings,
   LogOut, ChevronRight, Edit2, ShieldCheck, Star, Clock,
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useAuth } from "@/lib/auth-context";
 import "@/styling/AccountPage.css";
-
-const user = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  phone: "+1 (555) 123-4567",
-  memberSince: "January 2023",
-};
 
 const recentOrders = [
   { _id: "ORD001", date: "2024-01-15", status: "Delivered", total: 2199.98, items: 2 },
@@ -43,6 +38,31 @@ const statusStyles: Record<string, { bg: string; color: string; border: string }
 };
 
 export default function AccountPage() {
+  const { user, loading, logout } = useAuth();
+  const router = useRouter();
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+        <div style={{ fontSize: 14, color: "#9CA3AF" }}>Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    router.replace("/login");
+    return null;
+  }
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
+
+  const memberSince = user.createdAt
+    ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })
+    : "Recently";
+
   return (
     <>
       <Breadcrumb items={[{ label: "My Account" }]} />
@@ -64,7 +84,7 @@ export default function AccountPage() {
                   <p className="ks-acc-user-email">{user.email}</p>
                   <div className="ks-acc-member-badge">
                     <Star className="w-3 h-3" />
-                    Member since {user.memberSince}
+                    Member since {memberSince}
                   </div>
                 </div>
 
@@ -87,7 +107,7 @@ export default function AccountPage() {
                       </Link>
                     );
                   })}
-                  <button className="ks-acc-menu-item ks-acc-logout group">
+                  <button onClick={handleLogout} className="ks-acc-menu-item ks-acc-logout group">
                     <div className="ks-acc-menu-icon" style={{ background: "#FEF2F2", color: "#EF4444" }}>
                       <LogOut className="w-[18px] h-[18px]" />
                     </div>
@@ -185,8 +205,8 @@ export default function AccountPage() {
                   {[
                     { label: "Full Name", value: user.name },
                     { label: "Email Address", value: user.email },
-                    { label: "Phone Number", value: user.phone },
-                    { label: "Member Since", value: user.memberSince },
+                    { label: "Phone Number", value: user.phone || "Not set" },
+                    { label: "Member Since", value: memberSince },
                   ].map((f) => (
                     <div key={f.label} className="ks-acc-profile-field">
                       <span className="ks-acc-profile-label">{f.label}</span>

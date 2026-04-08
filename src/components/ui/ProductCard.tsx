@@ -49,21 +49,22 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
             alt={product.name}
             className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-1000 ease-out"
           />
+        </Link>
 
         {/* Premium Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
-        {/* Discount badges — corners */}
+        {/* Discount badges */}
         {discount > 0 && (
           <>
-            <div className="absolute top-4 left-4 z-30 pointer-events-none">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black text-[10px] font-semibold tracking-widest uppercase shadow-lg transition-transform duration-300 group-hover:scale-105 pointer-events-auto text-red-500">
-                <Zap className="w-3 h-3 shrink-0 text-red-500" />
+            <div className="absolute top-3 left-3 z-30">
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-600/90 backdrop-blur-sm text-white text-[11px] font-bold tracking-wide shadow-md transition-transform duration-300 group-hover:scale-105">
+                <Zap className="w-3 h-3 shrink-0" />
                 {discount}% OFF
               </div>
             </div>
-            <div className="absolute top-4 right-4 z-30 pointer-events-none">
-              <div className="px-3 py-1.5 rounded-full bg-black text-[10px] font-semibold normal-case tracking-normal tabular-nums shadow-lg transition-transform duration-300 group-hover:scale-105 pointer-events-auto text-emerald-400">
+            <div className="absolute top-3 right-3 z-30">
+              <div className="px-2.5 py-1 rounded-lg bg-emerald-600/90 backdrop-blur-sm text-white text-[11px] font-semibold tabular-nums shadow-md transition-transform duration-300 group-hover:scale-105">
                 Save {formatPrice(savingsCents)}
               </div>
             </div>
@@ -153,6 +154,6 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

@@ -1,14 +1,16 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import "@/styling/Header.css";
 import {
   Search, ShoppingCart, Heart, User, Menu, X, ChevronDown,
   Smartphone, Shirt, Home, Dumbbell, Sparkles, Gamepad2,
   Watch, Car, ChevronRight, LayoutGrid, Store, Zap, Tag,
   TrendingUp, Package, MapPin, Headphones, Bell, Globe,
-  ArrowRight, Star, Shield,
+  ArrowRight, Star, Shield, LogOut,
 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 const categories = [
   {
@@ -94,6 +96,13 @@ export default function Header() {
   const [megaOpen, setMegaOpen] = useState(false);
   const megaRef = useRef(null);
   const megaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -361,19 +370,55 @@ export default function Header() {
                 </a>
 
                 {/* Account */}
-                <a href="/account" style={{
-                  display: "flex", alignItems: "center", gap: 7,
-                  padding: "10px 14px", borderRadius: 10,
-                  border: "1.5px solid #E5E7EB", background: "#F9FAFB",
-                  textDecoration: "none", color: "#374151",
-                  fontWeight: 600, fontSize: 13,
-                  transition: "border 0.15s, background 0.15s, color 0.15s",
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#FDBA74"; e.currentTarget.style.background = "#FFF7ED"; e.currentTarget.style.color = "#EA6B0E"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.color = "#374151"; }}>
-                  <User style={{ width: 17, height: 17 }} />
-                  <span>Sign In</span>
-                </a>
+                {user ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <a href="/account" style={{
+                      display: "flex", alignItems: "center", gap: 7,
+                      padding: "10px 14px", borderRadius: 10,
+                      border: "1.5px solid #E5E7EB", background: "#F9FAFB",
+                      textDecoration: "none", color: "#374151",
+                      fontWeight: 600, fontSize: 13,
+                      transition: "border 0.15s, background 0.15s, color 0.15s",
+                    }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = "#FDBA74"; e.currentTarget.style.background = "#FFF7ED"; e.currentTarget.style.color = "#EA6B0E"; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.color = "#374151"; }}>
+                      <div style={{
+                        width: 22, height: 22, borderRadius: "50%",
+                        background: "#EA6B0E", color: "#fff",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 11, fontWeight: 800,
+                      }}>
+                        {user.name.charAt(0).toUpperCase()}
+                      </div>
+                      <span>{user.name.split(" ")[0]}</span>
+                    </a>
+                    <button onClick={handleLogout} style={{
+                      width: 44, height: 44,
+                      borderRadius: 10, border: "1.5px solid #E5E7EB",
+                      background: "#F9FAFB", display: "flex", alignItems: "center", justifyContent: "center",
+                      cursor: "pointer", transition: "border 0.15s, background 0.15s",
+                    }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = "#FECACA"; e.currentTarget.style.background = "#FEF2F2"; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#F9FAFB"; }}
+                      title="Sign Out">
+                      <LogOut style={{ width: 17, height: 17, color: "#EF4444" }} />
+                    </button>
+                  </div>
+                ) : (
+                  <a href="/login" style={{
+                    display: "flex", alignItems: "center", gap: 7,
+                    padding: "10px 14px", borderRadius: 10,
+                    border: "1.5px solid #E5E7EB", background: "#F9FAFB",
+                    textDecoration: "none", color: "#374151",
+                    fontWeight: 600, fontSize: 13,
+                    transition: "border 0.15s, background 0.15s, color 0.15s",
+                  }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = "#FDBA74"; e.currentTarget.style.background = "#FFF7ED"; e.currentTarget.style.color = "#EA6B0E"; }}
+                    onMouseLeave={e => { e.currentTarget.style.borderColor = "#E5E7EB"; e.currentTarget.style.background = "#F9FAFB"; e.currentTarget.style.color = "#374151"; }}>
+                    <User style={{ width: 17, height: 17 }} />
+                    <span>Sign In</span>
+                  </a>
+                )}
 
                 {/* Cart — CTA */}
                 <a href="/cart" className="ks-cart-btn" style={{
@@ -499,7 +544,7 @@ export default function Header() {
                 {/* Quick Actions */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 20 }}>
                   {[
-                    { label: "Sign In", icon: User, href: "/account" },
+                    { label: user ? user.name.split(" ")[0] : "Sign In", icon: User, href: user ? "/account" : "/login" },
                     { label: "Wishlist", icon: Heart, href: "/wishlist" },
                     { label: "Cart (3)", icon: ShoppingCart, href: "/cart" },
                     { label: "Track Order", icon: Package, href: "/track-order" },

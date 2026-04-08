@@ -1,23 +1,55 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Settings, User, Lock, Bell, Globe, Eye, EyeOff,
-  Save, ShieldCheck, Smartphone, Mail,
+  Save, ShieldCheck, Smartphone, Mail, Loader2, CheckCircle2, AlertCircle,
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useAuth } from "@/lib/auth-context";
+import { updateProfile, updatePassword as updatePw } from "@/app/account/services/accountApi";
 import "@/styling/SettingsPage.css";
 
 export default function SettingsPage() {
-  const [profile, setProfile] = useState({
-    firstName: "John", lastName: "Doe",
-    email: "john.doe@example.com", phone: "+1 (555) 123-4567",
-  });
+  const { user, loading, logout } = useAuth();
+  const router = useRouter();
+
+  const [profile, setProfile] = useState({ name: "", email: "", phone: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [passwords, setPasswords] = useState({ current: "", newPass: "", confirm: "" });
   const [notifications, setNotifications] = useState({
     orderUpdates: true, promotions: true, newsletter: false, sms: false,
   });
+
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileMsg, setProfileMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordMsg, setPasswordMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Populate form when user loads
+  useEffect(() => {
+    if (user) {
+      setProfile({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+      });
+    }
+  }, [user]);
+
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+        <div style={{ fontSize: 14, color: "#9CA3AF" }}>Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    router.replace("/login");
+    return null;
+  }
 
   const handleProfile = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfile((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -28,6 +60,63 @@ export default function SettingsPage() {
   const toggleNotif = (key: keyof typeof notifications) => {
     setNotifications((p) => ({ ...p, [key]: !p[key] }));
   };
+
+  const saveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileSaving(true);
+    setProfileMsg(null);
+    try {
+      await updateProfile(user._id, {
+        name: profile.name,
+        email: profile.email,
+        phone: profile.phone,
+      });
+      setProfileMsg({ type: "success", text: "Profile updated successfully" });
+      window.location.reload();
+    } catch (err: unknown) {
+      setProfileMsg({ type: "error", text: err instanceof Error ? err.message : "Update failed" });
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
+  const savePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordMsg(null);
+
+    if (passwords.newPass !== passwords.confirm) {
+      setPasswordMsg({ type: "error", text: "New passwords do not match" });
+      return;
+    }
+    if (passwords.newPass.length < 6) {
+      setPasswordMsg({ type: "error", text: "New password must be at least 6 characters" });
+      return;
+    }
+
+    setPasswordSaving(true);
+    try {
+      await updatePw(passwords.current, passwords.newPass);
+      setPasswords({ current: "", newPass: "", confirm: "" });
+      setPasswordMsg({ type: "success", text: "Password updated successfully" });
+    } catch (err: unknown) {
+      setPasswordMsg({ type: "error", text: err instanceof Error ? err.message : "Update failed" });
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+
+  const MsgBanner = ({ msg }: { msg: { type: "success" | "error"; text: string } }) => (
+    <div style={{
+      padding: "10px 14px", borderRadius: 10, fontSize: 13, fontWeight: 500,
+      display: "flex", alignItems: "center", gap: 8, marginBottom: 4,
+      background: msg.type === "success" ? "#ECFDF5" : "#FEF2F2",
+      border: `1px solid ${msg.type === "success" ? "#A7F3D0" : "#FECACA"}`,
+      color: msg.type === "success" ? "#059669" : "#DC2626",
+    }}>
+      {msg.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+      {msg.text}
+    </div>
+  );
 
   return (
     <>
@@ -58,85 +147,95 @@ export default function SettingsPage() {
 
         {/* ── Profile Section ── */}
         <section className="site-container">
-          <div className="ks-set-card">
-            <div className="ks-set-card-header">
-              <div className="ks-set-section-icon" style={{ background: "#FFF7ED", color: "#EA6B0E" }}>
-                <User className="w-[18px] h-[18px]" />
-              </div>
-              <div>
-                <h2 className="ks-set-card-title">Personal Information</h2>
-                <p className="ks-set-card-sub">Update your name, email, and contact details</p>
-              </div>
-            </div>
-
-            <div className="ks-set-form-grid">
-              <div className="ks-set-field">
-                <label className="ks-set-label">First Name</label>
-                <input type="text" name="firstName" value={profile.firstName} onChange={handleProfile} className="ks-set-input" />
-              </div>
-              <div className="ks-set-field">
-                <label className="ks-set-label">Last Name</label>
-                <input type="text" name="lastName" value={profile.lastName} onChange={handleProfile} className="ks-set-input" />
-              </div>
-              <div className="ks-set-field">
-                <label className="ks-set-label">Email Address</label>
-                <div className="ks-set-input-icon-wrap">
-                  <Mail className="ks-set-input-pre-icon" />
-                  <input type="email" name="email" value={profile.email} onChange={handleProfile} className="ks-set-input ks-set-input-with-icon" />
+          <form onSubmit={saveProfile}>
+            <div className="ks-set-card">
+              <div className="ks-set-card-header">
+                <div className="ks-set-section-icon" style={{ background: "#FFF7ED", color: "#EA6B0E" }}>
+                  <User className="w-[18px] h-[18px]" />
+                </div>
+                <div>
+                  <h2 className="ks-set-card-title">Personal Information</h2>
+                  <p className="ks-set-card-sub">Update your name, email, and contact details</p>
                 </div>
               </div>
-              <div className="ks-set-field">
-                <label className="ks-set-label">Phone Number</label>
-                <div className="ks-set-input-icon-wrap">
-                  <Smartphone className="ks-set-input-pre-icon" />
-                  <input type="tel" name="phone" value={profile.phone} onChange={handleProfile} className="ks-set-input ks-set-input-with-icon" />
+
+              {profileMsg && <div style={{ padding: "0 24px" }}><MsgBanner msg={profileMsg} /></div>}
+
+              <div className="ks-set-form-grid">
+                <div className="ks-set-field" style={{ gridColumn: "1 / -1" }}>
+                  <label className="ks-set-label">Full Name</label>
+                  <input type="text" name="name" value={profile.name} onChange={handleProfile} className="ks-set-input" required disabled={profileSaving} />
+                </div>
+                <div className="ks-set-field">
+                  <label className="ks-set-label">Email Address</label>
+                  <div className="ks-set-input-icon-wrap">
+                    <Mail className="ks-set-input-pre-icon" />
+                    <input type="email" name="email" value={profile.email} onChange={handleProfile} className="ks-set-input ks-set-input-with-icon" required disabled={profileSaving} />
+                  </div>
+                </div>
+                <div className="ks-set-field">
+                  <label className="ks-set-label">Phone Number</label>
+                  <div className="ks-set-input-icon-wrap">
+                    <Smartphone className="ks-set-input-pre-icon" />
+                    <input type="tel" name="phone" value={profile.phone} onChange={handleProfile} className="ks-set-input ks-set-input-with-icon" disabled={profileSaving} />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="ks-set-card-footer">
-              <button className="ks-set-save-btn"><Save className="w-4 h-4" /> Save Changes</button>
+              <div className="ks-set-card-footer">
+                <button type="submit" className="ks-set-save-btn" disabled={profileSaving}>
+                  {profileSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {profileSaving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
             </div>
-          </div>
+          </form>
         </section>
 
         {/* ── Password Section ── */}
         <section className="site-container">
-          <div className="ks-set-card">
-            <div className="ks-set-card-header">
-              <div className="ks-set-section-icon" style={{ background: "#FEF2F2", color: "#EF4444" }}>
-                <Lock className="w-[18px] h-[18px]" />
-              </div>
-              <div>
-                <h2 className="ks-set-card-title">Change Password</h2>
-                <p className="ks-set-card-sub">Update your password to keep your account secure</p>
-              </div>
-            </div>
-
-            <div className="ks-set-form-grid ks-set-form-single">
-              <div className="ks-set-field">
-                <label className="ks-set-label">Current Password</label>
-                <div className="ks-set-input-icon-wrap">
-                  <input type={showPassword ? "text" : "password"} name="current" value={passwords.current} onChange={handlePassword} className="ks-set-input" placeholder="Enter current password" />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="ks-set-input-post-icon">
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+          <form onSubmit={savePassword}>
+            <div className="ks-set-card">
+              <div className="ks-set-card-header">
+                <div className="ks-set-section-icon" style={{ background: "#FEF2F2", color: "#EF4444" }}>
+                  <Lock className="w-[18px] h-[18px]" />
+                </div>
+                <div>
+                  <h2 className="ks-set-card-title">Change Password</h2>
+                  <p className="ks-set-card-sub">Update your password to keep your account secure</p>
                 </div>
               </div>
-              <div className="ks-set-field">
-                <label className="ks-set-label">New Password</label>
-                <input type={showPassword ? "text" : "password"} name="newPass" value={passwords.newPass} onChange={handlePassword} className="ks-set-input" placeholder="Enter new password" />
-              </div>
-              <div className="ks-set-field">
-                <label className="ks-set-label">Confirm New Password</label>
-                <input type={showPassword ? "text" : "password"} name="confirm" value={passwords.confirm} onChange={handlePassword} className="ks-set-input" placeholder="Confirm new password" />
-              </div>
-            </div>
 
-            <div className="ks-set-card-footer">
-              <button className="ks-set-save-btn"><Lock className="w-4 h-4" /> Update Password</button>
+              {passwordMsg && <div style={{ padding: "0 24px" }}><MsgBanner msg={passwordMsg} /></div>}
+
+              <div className="ks-set-form-grid ks-set-form-single">
+                <div className="ks-set-field">
+                  <label className="ks-set-label">Current Password</label>
+                  <div className="ks-set-input-icon-wrap">
+                    <input type={showPassword ? "text" : "password"} name="current" value={passwords.current} onChange={handlePassword} className="ks-set-input" placeholder="Enter current password" required disabled={passwordSaving} />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="ks-set-input-post-icon">
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+                <div className="ks-set-field">
+                  <label className="ks-set-label">New Password</label>
+                  <input type={showPassword ? "text" : "password"} name="newPass" value={passwords.newPass} onChange={handlePassword} className="ks-set-input" placeholder="Enter new password" required minLength={6} disabled={passwordSaving} />
+                </div>
+                <div className="ks-set-field">
+                  <label className="ks-set-label">Confirm New Password</label>
+                  <input type={showPassword ? "text" : "password"} name="confirm" value={passwords.confirm} onChange={handlePassword} className="ks-set-input" placeholder="Confirm new password" required disabled={passwordSaving} />
+                </div>
+              </div>
+
+              <div className="ks-set-card-footer">
+                <button type="submit" className="ks-set-save-btn" disabled={passwordSaving}>
+                  {passwordSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
+                  {passwordSaving ? "Updating..." : "Update Password"}
+                </button>
+              </div>
             </div>
-          </div>
+          </form>
         </section>
 
         {/* ── Notifications ── */}

@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, ShieldCheck, Store } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, ShieldCheck, Store, Loader2 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { registerUser } from "@/app/(auth)/services/authApi";
 import "@/styling/AuthPages.css";
 
 export default function RegisterPage() {
@@ -10,15 +13,47 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: "", email: "", phone: "", password: "", confirmPassword: "", agreeToTerms: false,
   });
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const { user, login } = useAuth();
+  const router = useRouter();
+
+  if (user) {
+    router.replace("/account");
+    return null;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((p) => ({ ...p, [name]: type === "checkbox" ? checked : value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    setError("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await registerUser({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone || undefined,
+      });
+
+      // Auto-login after successful registration
+      await login(formData.email, formData.password);
+      router.push("/account");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Registration failed");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -69,12 +104,27 @@ export default function RegisterPage() {
             <p className="ks-auth-form-sub">Fill in your details to get started</p>
           </div>
 
+          {error && (
+            <div style={{
+              padding: "12px 16px",
+              borderRadius: 10,
+              background: "#FEF2F2",
+              border: "1px solid #FECACA",
+              color: "#DC2626",
+              fontSize: 13,
+              fontWeight: 500,
+              marginBottom: 4,
+            }}>
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="ks-auth-form">
             <div className="ks-auth-field">
               <label className="ks-auth-label">Full Name</label>
               <div className="ks-auth-input-wrap">
                 <User className="ks-auth-input-icon" />
-                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="John Doe" className="ks-auth-input" required />
+                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="John Doe" className="ks-auth-input" required disabled={submitting} />
               </div>
             </div>
 
@@ -82,7 +132,7 @@ export default function RegisterPage() {
               <label className="ks-auth-label">Email Address</label>
               <div className="ks-auth-input-wrap">
                 <Mail className="ks-auth-input-icon" />
-                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" className="ks-auth-input" required />
+                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" className="ks-auth-input" required disabled={submitting} />
               </div>
             </div>
 
@@ -90,7 +140,7 @@ export default function RegisterPage() {
               <label className="ks-auth-label">Phone Number</label>
               <div className="ks-auth-input-wrap">
                 <Phone className="ks-auth-input-icon" />
-                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+1 (555) 123-4567" className="ks-auth-input" />
+                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+1 (555) 123-4567" className="ks-auth-input" disabled={submitting} />
               </div>
             </div>
 
@@ -98,7 +148,7 @@ export default function RegisterPage() {
               <label className="ks-auth-label">Password</label>
               <div className="ks-auth-input-wrap">
                 <Lock className="ks-auth-input-icon" />
-                <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder="Min 8 characters" className="ks-auth-input ks-auth-input-password" required minLength={8} />
+                <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder="Min 6 characters" className="ks-auth-input ks-auth-input-password" required minLength={6} disabled={submitting} />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="ks-auth-eye-btn">
                   {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
                 </button>
@@ -109,7 +159,7 @@ export default function RegisterPage() {
               <label className="ks-auth-label">Confirm Password</label>
               <div className="ks-auth-input-wrap">
                 <Lock className="ks-auth-input-icon" />
-                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Re-enter your password" className="ks-auth-input" required />
+                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Re-enter your password" className="ks-auth-input" required disabled={submitting} />
               </div>
             </div>
 
@@ -122,8 +172,17 @@ export default function RegisterPage() {
               </span>
             </label>
 
-            <button type="submit" className="ks-auth-submit">
-              Create Account <ArrowRight className="w-[18px] h-[18px]" />
+            <button type="submit" className="ks-auth-submit" disabled={submitting}>
+              {submitting ? (
+                <>
+                  <Loader2 className="w-[18px] h-[18px] animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                <>
+                  Create Account <ArrowRight className="w-[18px] h-[18px]" />
+                </>
+              )}
             </button>
           </form>
 
