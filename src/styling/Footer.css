@@ -90,15 +90,55 @@
 @media (max-width: 1024px) {
   .ks-footer-main {
     grid-template-columns: 1fr 1fr;
-    gap: 36px 40px;
+    gap: 36px 32px;
+    padding: 48px 20px 40px;
   }
 }
 
 @media (max-width: 640px) {
   .ks-footer-main {
     grid-template-columns: 1fr;
-    gap: 32px;
-    padding: 40px 20px 36px;
+    gap: 28px;
+    padding: 36px 18px 32px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ks-trust-inner {
+    padding: 0 18px;
+    gap: 8px;
+  }
+  .ks-trust-badge {
+    padding: 7px 14px;
+    font-size: 11.5px;
+  }
+  .ks-footer-bottom-inner {
+    padding: 16px 18px;
+    gap: 10px;
+    flex-direction: column;
+    text-align: center;
+  }
+  .ks-footer-legal {
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ks-footer-logo-k,
+  .ks-footer-logo-s {
+    font-size: 20px;
+  }
+  .ks-footer-tagline {
+    font-size: 12.5px;
+  }
+  .ks-footer-stat-num {
+    font-size: 16px;
+  }
+  .ks-footer-col-title {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+  .ks-footer-link {
+    font-size: 12.5px;
   }
 }
 

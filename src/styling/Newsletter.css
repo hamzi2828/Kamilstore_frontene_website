@@ -304,15 +304,27 @@
   font-weight: 700;
 }
 
+/* Tablet */
+@media (max-width: 960px) {
+  .ks-nl-wrap {
+    padding: 40px 32px;
+  }
+  .ks-nl-inner {
+    gap: 32px;
+  }
+}
+
 /* Mobile */
 @media (max-width: 768px) {
   .ks-nl-wrap {
-    padding: 36px 24px;
+    padding: 32px 22px;
+    border-radius: 16px;
   }
 
   .ks-nl-inner {
     flex-direction: column;
-    gap: 28px;
+    gap: 24px;
+    align-items: flex-start;
   }
 
   .ks-nl-divider {
@@ -326,5 +338,17 @@
 
   .ks-nl-sub {
     max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .ks-nl-wrap {
+    padding: 24px 16px;
+  }
+  .ks-nl-count {
+    padding: 8px 12px;
+  }
+  .ks-nl-count-text {
+    font-size: 11.5px;
   }
 }

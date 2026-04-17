@@ -13,6 +13,24 @@
   --font-sans: var(--font-inter);
 }
 
+/* Responsive root font size — scales all rem-based Tailwind utilities.
+   Mobile: 14px · Tablet: 15px · Desktop: 16px */
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
+  }
+}
+
 html,
 body {
   max-width: 100vw;

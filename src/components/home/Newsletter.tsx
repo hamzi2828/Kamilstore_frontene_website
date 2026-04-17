@@ -21,7 +21,7 @@ export default function Newsletter() {
 
 
   return (
-    <section className="ks-nl " style={{ maxWidth: 1380, margin: "0 auto", padding: "0 20px" }}>
+    <section className="ks-nl site-container">
       <div className="ks-nl-wrap">
         <div className="ks-nl-blob1" />
         <div className="ks-nl-blob2" />

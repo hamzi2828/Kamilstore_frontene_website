@@ -10,21 +10,23 @@ const badges = [
 export default function TrustBadges() {
   return (
     <section className="site-container">
-      <div className="bg-white rounded-2xl">
-        <div className="grid grid-cols-2 lg:grid-cols-4">
-          {badges.map((b, i) => {
+      <div className="bg-white rounded-2xl overflow-hidden">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-gray-100">
+          {badges.map((b) => {
             const Icon = b.icon;
             return (
               <div
                 key={b.title}
-                className={`flex items-center gap-3 px-5 py-4 ${
-                  i < badges.length - 1 ? "lg:border-r border-gray-100" : ""
-                }`}
+                className="flex items-center gap-2.5 sm:gap-3 px-3 py-3 sm:px-4 sm:py-4 lg:px-5 min-w-0"
               >
                 <Icon className="w-5 h-5 text-orange-500 flex-shrink-0" />
-                <div>
-                  <p className="font-medium text-[#333] text-sm">{b.title}</p>
-                  <p className="text-xs text-[#999]">{b.desc}</p>
+                <div className="min-w-0">
+                  <p className="font-semibold text-[#333] text-[13px] sm:text-sm leading-tight truncate">
+                    {b.title}
+                  </p>
+                  <p className="text-[11px] sm:text-xs text-[#999] leading-snug mt-0.5 line-clamp-2">
+                    {b.desc}
+                  </p>
                 </div>
               </div>
             );

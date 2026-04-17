@@ -28,13 +28,8 @@ const badgeClass: Record<string, string> = {
 
 export default function TopVendors() {
   return (
-    <section className="ks-vendors" style={{ maxWidth: 1380, margin: "0 auto", padding: "0 20px" }}>
-      <div style={{
-        background: "#fff",
-        borderRadius: 20,
-        border: "1px solid #F1F5F9",
-        padding: "32px 28px",
-      }}>
+    <section className="ks-vendors site-container">
+      <div className="ks-vendors-card">
         {/* Section Header */}
         <div style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -69,11 +64,7 @@ export default function TopVendors() {
         </div>
 
         {/* Vendor Grid */}
-        <div className="ks-vendors-grid" style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 16,
-        }}>
+        <div className="ks-vendors-grid">
           {vendors.map((v, i) => (
             <Link key={v._id} href={`/vendor/${v.slug}`} className="ks-vendor-card">
               {/* Rank */}
@@ -160,12 +151,7 @@ export default function TopVendors() {
         </div>
 
         {/* Bottom promo strip */}
-        <div style={{
-          display: "flex", alignItems: "center", justifyContent: "center", gap: 20,
-          marginTop: 24, padding: "14px 20px",
-          background: "#F9FAFB", borderRadius: 12,
-          border: "1px solid #F1F5F9",
-        }}>
+        <div className="ks-vendors-promo">
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <ShieldCheck style={{ width: 14, height: 14, color: "#2563EB" }} />
             <span style={{ fontSize: 12.5, fontWeight: 600, color: "#374151" }}>All vendors verified</span>

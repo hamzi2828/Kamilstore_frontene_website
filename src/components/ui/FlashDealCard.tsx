@@ -36,19 +36,19 @@ export default function FlashDealCard({ product }: FlashDealCardProps) {
           <ProductImage
             src={product.images[0]}
             alt={product.name}
-            className="object-contain p-5 group-hover:scale-105 transition-transform duration-500 ease-out"
+            className="object-contain p-2 sm:p-5 group-hover:scale-105 transition-transform duration-500 ease-out"
           />
 
           {/* Discount Badge — top left */}
           {discount > 0 && (
-            <span className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-rose-500 text-white text-[10.5px] font-extrabold px-2.5 py-1 rounded-lg shadow-sm tracking-wide">
+            <span className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 bg-gradient-to-r from-red-500 to-rose-500 text-white text-[9px] sm:text-[10.5px] font-extrabold px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg shadow-sm tracking-wide">
               -{discount}%
             </span>
           )}
 
           {/* Save Badge — top right */}
           {discount > 0 && (
-            <span className="absolute top-3 right-3 bg-emerald-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
+            <span className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-emerald-500 text-white text-[8.5px] sm:text-[10px] font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md sm:rounded-lg shadow-sm">
               Save {formatPrice(product.sellingPrice - (product.discountPrice || product.sellingPrice))}
             </span>
           )}
@@ -69,26 +69,26 @@ export default function FlashDealCard({ product }: FlashDealCardProps) {
         </div>
 
         {/* Info */}
-        <div className="px-4 pt-4 pb-4">
+        <div className="px-2.5 pt-2.5 pb-2.5 sm:px-4 sm:pt-4 sm:pb-4">
           {/* Vendor */}
           {product.vendor && (
-            <span className="text-[10.5px] font-semibold text-orange-500 tracking-wider uppercase">
+            <span className="text-[9px] sm:text-[10.5px] font-semibold text-orange-500 tracking-wider uppercase">
               {product.vendor.name}
             </span>
           )}
 
           {/* Title */}
-          <h3 className="text-[13.5px] font-bold text-[#111] line-clamp-2 leading-[1.45] mt-1 group-hover:text-orange-500 transition-colors duration-200">
+          <h3 className="text-[11.5px] sm:text-[13.5px] font-bold text-[#111] line-clamp-2 leading-[1.4] sm:leading-[1.45] mt-0.5 sm:mt-1 group-hover:text-orange-500 transition-colors duration-200">
             {product.name}
           </h3>
 
           {/* Rating */}
-          <div className="flex items-center gap-1.5 mt-2.5">
+          <div className="flex items-center gap-1 sm:gap-1.5 mt-1.5 sm:mt-2.5">
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-3 h-3 ${
+                  className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${
                     i < Math.floor(product.rating)
                       ? "text-amber-400 fill-amber-400"
                       : "text-gray-200 fill-gray-200"
@@ -96,44 +96,44 @@ export default function FlashDealCard({ product }: FlashDealCardProps) {
                 />
               ))}
             </div>
-            <span className="text-[11px] font-semibold text-[#555]">
+            <span className="text-[10px] sm:text-[11px] font-semibold text-[#555]">
               {product.rating}
             </span>
-            <span className="text-[10.5px] text-[#bbb]">
+            <span className="text-[9.5px] sm:text-[10.5px] text-[#bbb]">
               ({product.reviewCount.toLocaleString()})
             </span>
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-[#f0f0f0] my-3" />
+          <div className="h-px bg-[#f0f0f0] my-2 sm:my-3" />
 
           {/* Price */}
           <div>
             {product.discountPrice ? (
-              <div className="flex items-baseline gap-2.5">
-                <span className="text-[18px] font-extrabold text-[#111]">
+              <div className="flex items-baseline gap-1.5 sm:gap-2.5 flex-wrap">
+                <span className="text-[14px] sm:text-[18px] font-extrabold text-[#111]">
                   {formatPrice(product.discountPrice)}
                 </span>
-                <span className="text-[12px] text-[#bbb] line-through">
+                <span className="text-[10.5px] sm:text-[12px] text-[#bbb] line-through">
                   {formatPrice(product.sellingPrice)}
                 </span>
               </div>
             ) : (
-              <span className="text-[18px] font-extrabold text-[#111]">
+              <span className="text-[14px] sm:text-[18px] font-extrabold text-[#111]">
                 {formatPrice(product.sellingPrice)}
               </span>
             )}
           </div>
 
           {/* Trust Signals */}
-          <div className="flex items-center gap-3 mt-3">
+          <div className="flex items-center gap-2 sm:gap-3 mt-2 sm:mt-3">
             <div className="flex items-center gap-1">
-              <Truck className="w-3 h-3 text-emerald-500" />
-              <span className="text-[10px] font-semibold text-[#999]">Free Shipping</span>
+              <Truck className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500" />
+              <span className="text-[9px] sm:text-[10px] font-semibold text-[#999]">Free Shipping</span>
             </div>
             <div className="flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-emerald-500" />
-              <span className="text-[10px] font-semibold text-[#999]">Warranty</span>
+              <ShieldCheck className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500" />
+              <span className="text-[9px] sm:text-[10px] font-semibold text-[#999]">Warranty</span>
             </div>
           </div>
         </div>

@@ -26,7 +26,8 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <AuthProvider>
           <Header />
-          <div id="header-spacer" className="h-[160px]" />
+          {/* Spacer: mobile 72 (24 topbar + 48 main); desktop 160 (36 + 80 + 44) */}
+          <div id="header-spacer" className="h-[72px] lg:h-[160px]" />
           <main className="min-h-screen">{children}</main>
           <Footer />
         </AuthProvider>
