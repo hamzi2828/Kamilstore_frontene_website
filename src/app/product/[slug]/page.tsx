@@ -1,100 +1,167 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   Star, Heart, ShoppingCart, Truck, Shield,
   RotateCcw, Share2, Minus, Plus, CheckCircle,
-  Flame, ChevronRight, Store, ThumbsUp,
+  Flame, ChevronRight,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductCard from "@/components/ui/ProductCard";
 import ProductImage from "@/components/ui/ProductImage";
-import VendorAvatar from "@/components/ui/VendorAvatar";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import "@/styling/ProductPage.css";
+import { useProduct } from "../hooks/useProduct";
+import { productApi } from "../service/productApi";
+import type { ProductVariantPricing } from "../types";
 
-const product = {
-  _id: "1",
-  name: "Apple MacBook Pro 14-inch M3 Pro Chip - Space Gray",
-  slug: "macbook-pro-14-m3",
-  images: [
-    "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=800&fit=crop",
-    "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=800&h=800&fit=crop",
-    "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&h=800&fit=crop",
-    "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=800&fit=crop",
-  ],
-  description: `The most advanced MacBook Pro ever. The M3 Pro chip delivers exceptional performance for demanding workflows like editing photos in Lightroom, working with massive data sets in Excel, compiling in Xcode, or adding effects in Logic Pro.
+const PLACEHOLDER =
+  "https://png.pngtree.com/png-vector/20241018/ourmid/pngtree-running-shoes-or-sneakers-on-a-transparent-background-png-image_14112954.png";
 
-Features:
-• 14.2-inch Liquid Retina XDR display
-• M3 Pro chip with 11-core CPU and 14-core GPU
-• 18GB unified memory
-• 512GB SSD storage
-• Up to 17 hours of battery life
-• Three Thunderbolt 4 ports, HDMI port, SDXC card slot, MagSafe 3 port
-• Magic Keyboard with Touch ID`,
-  category: { name: "Electronics", slug: "electronics" },
-  vendor: {
-    _id: "v1", name: "TechZone Electronics", slug: "techzone",
-    logo: "/vendors/techzone.jpg", rating: 4.8, reviewCount: 1250, isVerified: true, productCount: 342,
-  },
-  sellingPrice: 1999.99,
-  discountPrice: 1849.99,
-  quantity: 50,
-  rating: 4.9,
-  reviewCount: 234,
-  specifications: [
-    { label: "Processor", value: "Apple M3 Pro chip" },
-    { label: "Memory", value: "18GB unified memory" },
-    { label: "Storage", value: "512GB SSD" },
-    { label: "Display", value: '14.2" Liquid Retina XDR' },
-    { label: "Battery", value: "Up to 17 hours" },
-    { label: "Weight", value: "1.6 kg" },
-  ],
-  variants: [
-    { label: "Storage", options: ["512GB", "1TB", "2TB"] },
-    { label: "Color", options: ["Space Gray", "Silver"] },
-  ],
+const variantMatchesSelection = (
+  variant: ProductVariantPricing,
+  selected: Record<string, string>
+): boolean => {
+  return variant.combination.every(
+    (c) => selected[c.attributeName] === c.value
+  );
 };
 
-const relatedProducts = [
-  { _id: "r1", name: "Apple Magic Keyboard for Mac", slug: "apple-magic-keyboard", images: ["https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&h=400&fit=crop"], sellingPrice: 99.99, rating: 4.7, reviewCount: 189, vendor: { name: "TechZone", slug: "techzone" } },
-  { _id: "r2", name: "Wireless Mouse Ergonomic", slug: "wireless-mouse", images: ["https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&h=400&fit=crop"], sellingPrice: 79.99, rating: 4.5, reviewCount: 234, vendor: { name: "TechZone", slug: "techzone" } },
-  { _id: "r3", name: "USB-C Hub Adapter 7-in-1", slug: "usb-c-hub-adapter", images: ["https://images.unsplash.com/photo-1625842268584-8f3296236761?w=400&h=400&fit=crop"], sellingPrice: 49.99, discountPrice: 39.99, rating: 4.6, reviewCount: 567, vendor: { name: "TechZone", slug: "techzone" } },
-  { _id: "r4", name: "Laptop Sleeve Case Premium", slug: "laptop-sleeve-case", images: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop"], sellingPrice: 34.99, rating: 4.4, reviewCount: 345, vendor: { name: "FashionPlus", slug: "fashionplus" } },
-];
-
-const reviews = [
-  { _id: "rev1", user: { name: "John D.", avatar: "" }, rating: 5, comment: "Absolutely love this MacBook! The M3 Pro chip is blazing fast and the battery life is incredible. Perfect for my work as a software developer.", date: "2024-01-15", verified: true, helpful: 24 },
-  { _id: "rev2", user: { name: "Sarah M.", avatar: "" }, rating: 4, comment: "Great laptop overall. Display is stunning and performance is top-notch. Only wish it had more ports.", date: "2024-01-10", verified: true, helpful: 12 },
-  { _id: "rev3", user: { name: "Mike R.", avatar: "" }, rating: 5, comment: "Best laptop I've ever owned. The build quality is exceptional and it handles everything I throw at it.", date: "2024-01-05", verified: false, helpful: 8 },
-];
-
 export default function ProductDetailPage() {
+  const params = useParams();
+  const slug = params.slug as string;
+  const { data, isLoading, error } = useProduct(slug);
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({
-    Storage: "512GB", Color: "Space Gray",
-  });
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<"description" | "specifications" | "reviews">("description");
   const [wishlisted, setWishlisted] = useState(false);
 
-  const discount = product.discountPrice
-    ? Math.round(((product.sellingPrice - product.discountPrice) / product.sellingPrice) * 100)
+  const product = data?.product;
+  const vendor = data?.vendor;
+  const related = data?.related || [];
+
+  const images = useMemo(() => {
+    if (!product) return [PLACEHOLDER];
+    const gallery = [
+      product.thumbnailImage,
+      ...(product.galleryImages || []),
+      ...(product.images || []),
+    ].filter(Boolean) as string[];
+    const resolved = gallery
+      .map((src) => productApi.getImageUrl(src))
+      .filter((v): v is string => Boolean(v));
+    return resolved.length ? resolved : [PLACEHOLDER];
+  }, [product]);
+
+  // Build variant groups from the combinations actually present in variantPricing
+  const variantGroups = useMemo(() => {
+    if (!product?.variantPricing?.length) return [] as Array<{ label: string; options: Array<{ value: string; valueName: string }> }>;
+    const map = new Map<string, Map<string, string>>(); // attributeName -> (value -> valueName)
+    for (const vp of product.variantPricing) {
+      for (const c of vp.combination) {
+        if (!map.has(c.attributeName)) map.set(c.attributeName, new Map());
+        map.get(c.attributeName)!.set(c.value, c.valueName);
+      }
+    }
+    return Array.from(map.entries()).map(([label, values]) => ({
+      label,
+      options: Array.from(values.entries()).map(([value, valueName]) => ({
+        value,
+        valueName,
+      })),
+    }));
+  }, [product]);
+
+  // Default selected variants once product loads
+  useEffect(() => {
+    if (!product?.variantPricing?.length) return;
+    const initial: Record<string, string> = {};
+    const first = product.variantPricing[0];
+    for (const c of first.combination) {
+      initial[c.attributeName] = c.value;
+    }
+    setSelectedVariants((prev) =>
+      Object.keys(prev).length ? prev : initial
+    );
+  }, [product]);
+
+  const activeVariant = useMemo<ProductVariantPricing | null>(() => {
+    if (!product?.variantPricing?.length) return null;
+    return (
+      product.variantPricing.find((v) =>
+        variantMatchesSelection(v, selectedVariants)
+      ) || product.variantPricing[0]
+    );
+  }, [product, selectedVariants]);
+
+  const sellingPrice = activeVariant?.sellingPrice ?? 0;
+  const discountPrice =
+    activeVariant?.discountType === "percentage" && activeVariant.discountValue
+      ? sellingPrice * (1 - activeVariant.discountValue / 100)
+      : activeVariant?.discountType === "flat" && activeVariant.discountValue
+        ? Math.max(0, sellingPrice - activeVariant.discountValue)
+        : undefined;
+  const discountPct = discountPrice
+    ? Math.round(((sellingPrice - discountPrice) / sellingPrice) * 100)
     : 0;
+  const stockQty = activeVariant?.quantity ?? 0;
+  const inStock = stockQty > 0;
+
+  const specifications = useMemo(() => {
+    if (!product) return [] as Array<{ label: string; value: string }>;
+    const specs: Array<{ label: string; value: string }> = [];
+    if (product.sku) specs.push({ label: "SKU", value: product.sku });
+    if (product.category?.name) specs.push({ label: "Category", value: product.category.name });
+    if (product.subCategory?.name) specs.push({ label: "Sub-category", value: product.subCategory.name });
+    if (product.sellingType) specs.push({ label: "Selling type", value: product.sellingType });
+    if (product.minOrderQuantity) specs.push({ label: "Min order qty", value: String(product.minOrderQuantity) });
+    if (product.taxType) specs.push({ label: "Tax type", value: product.taxType });
+    if (activeVariant?.sku) specs.push({ label: "Variant SKU", value: activeVariant.sku });
+    if (activeVariant) specs.push({ label: "Variant stock", value: String(activeVariant.quantity) });
+    return specs;
+  }, [product, activeVariant]);
+
+  if (isLoading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+        <div style={{ fontSize: 14, color: "#9CA3AF" }}>Loading product...</div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh", flexDirection: "column", gap: 8 }}>
+        <div style={{ fontSize: 16, color: "#111", fontWeight: 600 }}>Product not found</div>
+        <div style={{ fontSize: 13, color: "#6B7280" }}>
+          {error || "We couldn't find a product matching this URL."}
+        </div>
+        <Link href="/products" style={{ marginTop: 8, color: "#EA6B0E", fontWeight: 600 }}>
+          Browse all products
+        </Link>
+      </div>
+    );
+  }
+
+  const ratingDisplay = 4.8; // rating/review data not modeled yet
+  const reviewCount = 0;
 
   return (
     <>
       <Breadcrumb
         items={[
-          { label: product.category.name, href: `/category/${product.category.slug}` },
+          ...(product.category
+            ? [{ label: product.category.name, href: `/category/${product.category.slug}` }]
+            : []),
           { label: product.name },
         ]}
       />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
-        {/* ── Product Section ── */}
         <section className="site-container">
           <div className="bg-white rounded-2xl overflow-hidden border border-[#f1f5f9]">
             <div className="p-5 sm:p-6 lg:p-8">
@@ -103,12 +170,12 @@ export default function ProductDetailPage() {
                 <div>
                   <div className="ks-pd-main-img">
                     <ProductImage
-                      src={product.images[selectedImage]}
+                      src={images[selectedImage] || PLACEHOLDER}
                       alt={product.name}
                       className="object-contain p-4"
                     />
-                    {discount > 0 && (
-                      <span className="ks-pd-discount-badge">-{discount}%</span>
+                    {discountPct > 0 && (
+                      <span className="ks-pd-discount-badge">-{discountPct}%</span>
                     )}
                     <button
                       onClick={() => setWishlisted(!wishlisted)}
@@ -117,82 +184,97 @@ export default function ProductDetailPage() {
                       <Heart className={`w-5 h-5 ${wishlisted ? "fill-current" : ""}`} />
                     </button>
                   </div>
-                  <div className="ks-pd-thumbs">
-                    {product.images.map((image, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedImage(index)}
-                        className={`ks-pd-thumb ${selectedImage === index ? "ks-pd-thumb-active" : ""}`}
-                      >
-                        <ProductImage
-                          src={image}
-                          alt={`${product.name} ${index + 1}`}
-                          className="object-cover"
-                        />
-                      </button>
-                    ))}
-                  </div>
+                  {images.length > 1 && (
+                    <div className="ks-pd-thumbs">
+                      {images.map((image, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedImage(index)}
+                          className={`ks-pd-thumb ${selectedImage === index ? "ks-pd-thumb-active" : ""}`}
+                        >
+                          <ProductImage
+                            src={image}
+                            alt={`${product.name} ${index + 1}`}
+                            className="object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Product Info */}
                 <div>
-                  {/* Vendor */}
-                  <Link href={`/vendor/${product.vendor.slug}`} className="ks-pd-vendor-link">
-                    <div className="ks-pd-vendor-avatar">
-                      {product.vendor.name.charAt(0)}
-                    </div>
-                    <span>{product.vendor.name}</span>
-                    {product.vendor.isVerified && <CheckCircle className="w-4 h-4 text-blue-500" />}
-                  </Link>
+                  {vendor && (
+                    <Link href={`/vendor/${vendor._id}`} className="ks-pd-vendor-link">
+                      <div className="ks-pd-vendor-avatar">
+                        {vendor.name.charAt(0).toUpperCase()}
+                      </div>
+                      <span>{vendor.name}</span>
+                      <CheckCircle className="w-4 h-4 text-blue-500" />
+                    </Link>
+                  )}
 
                   <h1 className="ks-pd-title">{product.name}</h1>
 
-                  {/* Rating */}
                   <div className="ks-pd-rating-row">
                     <div className="ks-pd-stars">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={`w-[18px] h-[18px] ${i < Math.floor(product.rating) ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"}`} />
+                        <Star key={i} className={`w-[18px] h-[18px] ${i < Math.floor(ratingDisplay) ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"}`} />
                       ))}
-                      <span className="ks-pd-rating-num">{product.rating}</span>
+                      <span className="ks-pd-rating-num">{ratingDisplay}</span>
                     </div>
-                    <span className="ks-pd-review-count">({product.reviewCount} reviews)</span>
-                    <span className="ks-pd-stock-badge">
-                      <span className="ks-pd-stock-dot" /> In Stock
+                    <span className="ks-pd-review-count">({reviewCount} reviews)</span>
+                    <span className="ks-pd-stock-badge" style={!inStock ? { color: "#EF4444" } : undefined}>
+                      <span className="ks-pd-stock-dot" style={!inStock ? { background: "#EF4444" } : undefined} />
+                      {inStock ? `In Stock (${stockQty})` : "Out of stock"}
                     </span>
                   </div>
 
-                  {/* Price */}
                   <div className="ks-pd-price-row">
-                    <span className="ks-pd-price">{formatPrice(product.discountPrice || product.sellingPrice)}</span>
-                    {product.discountPrice && (
+                    <span className="ks-pd-price">{formatPrice(discountPrice ?? sellingPrice)}</span>
+                    {discountPrice !== undefined && (
                       <>
-                        <span className="ks-pd-price-old">{formatPrice(product.sellingPrice)}</span>
-                        <span className="ks-pd-save-badge">Save {discount}%</span>
+                        <span className="ks-pd-price-old">{formatPrice(sellingPrice)}</span>
+                        <span className="ks-pd-save-badge">Save {discountPct}%</span>
                       </>
                     )}
                   </div>
 
-                  {/* Variants */}
-                  {product.variants.map((variant) => (
-                    <div key={variant.label} className="ks-pd-variant-group">
+                  {variantGroups.map((group) => (
+                    <div key={group.label} className="ks-pd-variant-group">
                       <label className="ks-pd-variant-label">
-                        {variant.label}: <span className="ks-pd-variant-selected">{selectedVariants[variant.label]}</span>
+                        {group.label}:{" "}
+                        <span className="ks-pd-variant-selected">
+                          {
+                            group.options.find(
+                              (o) => o.value === selectedVariants[group.label]
+                            )?.valueName || ""
+                          }
+                        </span>
                       </label>
                       <div className="ks-pd-variant-options">
-                        {variant.options.map((option) => (
-                          <button
-                            key={option}
-                            onClick={() => setSelectedVariants((p) => ({ ...p, [variant.label]: option }))}
-                            className={`ks-pd-variant-btn ${selectedVariants[variant.label] === option ? "ks-pd-variant-btn-active" : ""}`}
-                          >
-                            {option}
-                          </button>
-                        ))}
+                        {group.options.map((option) => {
+                          const active = selectedVariants[group.label] === option.value;
+                          return (
+                            <button
+                              key={option.value}
+                              onClick={() =>
+                                setSelectedVariants((p) => ({
+                                  ...p,
+                                  [group.label]: option.value,
+                                }))
+                              }
+                              className={`ks-pd-variant-btn ${active ? "ks-pd-variant-btn-active" : ""}`}
+                            >
+                              {option.valueName}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
 
-                  {/* Quantity */}
                   <div className="ks-pd-variant-group">
                     <label className="ks-pd-variant-label">Quantity</label>
                     <div className="ks-pd-qty">
@@ -200,24 +282,25 @@ export default function ProductDetailPage() {
                         <Minus className="w-4 h-4" />
                       </button>
                       <span className="ks-pd-qty-value">{quantity}</span>
-                      <button onClick={() => setQuantity(quantity + 1)} className="ks-pd-qty-btn">
+                      <button
+                        onClick={() => setQuantity(Math.min(stockQty || 99, quantity + 1))}
+                        className="ks-pd-qty-btn"
+                      >
                         <Plus className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
 
-                  {/* Actions */}
                   <div className="ks-pd-actions">
-                    <button className="ks-pd-add-cart-btn">
+                    <button className="ks-pd-add-cart-btn" disabled={!inStock}>
                       <ShoppingCart className="w-5 h-5" /> Add to Cart
                     </button>
-                    <button className="ks-pd-buy-btn">Buy Now</button>
+                    <button className="ks-pd-buy-btn" disabled={!inStock}>Buy Now</button>
                     <button className="ks-pd-icon-btn">
                       <Share2 className="w-5 h-5" />
                     </button>
                   </div>
 
-                  {/* Features */}
                   <div className="ks-pd-features">
                     {[
                       { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "#3B82F6" },
@@ -235,35 +318,33 @@ export default function ProductDetailPage() {
                     ))}
                   </div>
 
-                  {/* Vendor card */}
-                  <Link href={`/vendor/${product.vendor.slug}`} className="ks-pd-vendor-card group">
-                    <div className="ks-pd-vendor-card-avatar">
-                      {product.vendor.name.charAt(0)}
-                    </div>
-                    <div className="ks-pd-vendor-card-info">
-                      <div className="ks-pd-vendor-card-name-row">
-                        <span className="ks-pd-vendor-card-name">{product.vendor.name}</span>
-                        {product.vendor.isVerified && (
+                  {vendor && (
+                    <Link href={`/vendor/${vendor._id}`} className="ks-pd-vendor-card group">
+                      <div className="ks-pd-vendor-card-avatar">
+                        {vendor.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="ks-pd-vendor-card-info">
+                        <div className="ks-pd-vendor-card-name-row">
+                          <span className="ks-pd-vendor-card-name">{vendor.name}</span>
                           <span className="ks-pd-vendor-verified-pill">
                             <CheckCircle className="w-3 h-3" /> Verified
                           </span>
-                        )}
+                        </div>
+                        <div className="ks-pd-vendor-card-stats">
+                          {vendor.address && <span>{vendor.address}</span>}
+                          {vendor.address && <span className="ks-pd-vendor-card-dot" />}
+                          <span>{vendor.productCount} products</span>
+                        </div>
                       </div>
-                      <div className="ks-pd-vendor-card-stats">
-                        <span>{product.vendor.rating} rating</span>
-                        <span className="ks-pd-vendor-card-dot" />
-                        <span>{product.vendor.productCount} products</span>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-[#ccc] group-hover:text-orange-500 transition-colors" />
-                  </Link>
+                      <ChevronRight className="w-5 h-5 text-[#ccc] group-hover:text-orange-500 transition-colors" />
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Tabs Section ── */}
         <section className="site-container">
           <div className="bg-white rounded-2xl overflow-hidden border border-[#f1f5f9]">
             <div className="border-b border-[#f1f5f9] px-5 sm:px-6">
@@ -274,7 +355,7 @@ export default function ProductDetailPage() {
                     onClick={() => setActiveTab(tab)}
                     className={`ks-pd-tab ${activeTab === tab ? "ks-pd-tab-active" : ""}`}
                   >
-                    {tab === "reviews" ? `Reviews (${product.reviewCount})` : tab}
+                    {tab === "reviews" ? `Reviews (${reviewCount})` : tab}
                     {activeTab === tab && <span className="ks-pd-tab-bar" />}
                   </button>
                 ))}
@@ -284,88 +365,53 @@ export default function ProductDetailPage() {
             <div className="p-5 sm:p-6">
               {activeTab === "description" && (
                 <div className="max-w-3xl">
-                  <p className="whitespace-pre-line text-[14.5px] text-[#555] leading-[1.75]">{product.description}</p>
+                  <p className="whitespace-pre-line text-[14.5px] text-[#555] leading-[1.75]">
+                    {product.description || "No description provided for this product yet."}
+                  </p>
                 </div>
               )}
 
               {activeTab === "specifications" && (
                 <div className="max-w-2xl">
-                  {product.specifications.map((spec, i) => (
-                    <div key={spec.label} className={`ks-pd-spec-row ${i % 2 === 0 ? "ks-pd-spec-row-alt" : ""}`}>
-                      <span className="ks-pd-spec-label">{spec.label}</span>
-                      <span className="ks-pd-spec-value">{spec.value}</span>
-                    </div>
-                  ))}
+                  {specifications.length === 0 ? (
+                    <p className="text-sm text-[#6B7280]">No specifications available.</p>
+                  ) : (
+                    specifications.map((spec, i) => (
+                      <div key={spec.label} className={`ks-pd-spec-row ${i % 2 === 0 ? "ks-pd-spec-row-alt" : ""}`}>
+                        <span className="ks-pd-spec-label">{spec.label}</span>
+                        <span className="ks-pd-spec-value">{spec.value}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               )}
 
               {activeTab === "reviews" && (
-                <div>
-                  <div className="ks-pd-rating-summary">
-                    <div className="ks-pd-rating-big">
-                      <span className="ks-pd-rating-big-num">{product.rating}</span>
-                      <div className="flex gap-0.5 mt-2">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={`w-5 h-5 ${i < Math.floor(product.rating) ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"}`} />
-                        ))}
-                      </div>
-                      <span className="ks-pd-rating-big-count">{product.reviewCount} reviews</span>
-                    </div>
-                  </div>
-
-                  <div className="ks-pd-reviews-list">
-                    {reviews.map((review) => (
-                      <div key={review._id} className="ks-pd-review">
-                        <VendorAvatar src={review.user.avatar} name={review.user.name} size="sm" className="!rounded-full flex-shrink-0" />
-                        <div className="flex-1">
-                          <div className="ks-pd-review-header">
-                            <span className="ks-pd-review-name">{review.user.name}</span>
-                            {review.verified && (
-                              <span className="ks-pd-review-verified">Verified</span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2.5 mt-1">
-                            <div className="flex gap-0.5">
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? "text-amber-400 fill-amber-400" : "text-gray-200 fill-gray-200"}`} />
-                              ))}
-                            </div>
-                            <span className="text-[12px] text-[#bbb] font-medium">
-                              {new Date(review.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                            </span>
-                          </div>
-                          <p className="ks-pd-review-text">{review.comment}</p>
-                          <button className="ks-pd-review-helpful">
-                            <ThumbsUp className="w-3.5 h-3.5" /> Helpful ({review.helpful})
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button className="ks-pd-write-review-btn">Write a Review</button>
+                <div className="text-sm text-[#6B7280]">
+                  No reviews yet. Be the first to review this product.
                 </div>
               )}
             </div>
           </div>
         </section>
 
-        {/* ── Related Products ── */}
-        <section className="site-container">
-          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#f1f5f9]">
-            <div className="flex items-center gap-2.5 mb-5">
-              <Flame className="w-[18px] h-[18px] text-orange-400" />
-              <h2 className="text-lg font-extrabold text-[#111]">You May Also Like</h2>
+        {related.length > 0 && (
+          <section className="site-container">
+            <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#f1f5f9]">
+              <div className="flex items-center gap-2.5 mb-5">
+                <Flame className="w-[18px] h-[18px] text-orange-400" />
+                <h2 className="text-lg font-extrabold text-[#111]">More from this vendor</h2>
+              </div>
+              <div className="ks-pd-related-grid">
+                {related.map((p) => (
+                  <div key={p._id} className="ks-pd-related-card">
+                    <ProductCard product={p} />
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="ks-pd-related-grid">
-              {relatedProducts.map((p) => (
-                <div key={p._id} className="ks-pd-related-card">
-                  <ProductCard product={p} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
       </div>
     </>
   );
