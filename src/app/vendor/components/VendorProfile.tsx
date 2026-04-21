@@ -2,15 +2,15 @@ import {
   ShieldCheck, MapPin, Calendar,
   MessageCircle, Mail, Phone, UserCircle,
 } from "lucide-react";
-import type { VendorDetail } from "../services/vendorApi";
-import { getLogoUrl } from "../services/vendorApi";
+import type { VendorDetail } from "../types";
+import { vendorApi } from "../service/vendorApi";
 
 export default function VendorProfile({ vendor }: { vendor: VendorDetail }) {
   const joinDate = new Date(vendor.createdAt).toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
   });
-  const logoSrc = getLogoUrl(vendor.logo);
+  const logoSrc = vendorApi.getLogoUrl(vendor.logo);
 
   return (
     <div className="ks-vp-profile-card">

@@ -1,30 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Breadcrumb from "@/components/ui/Breadcrumb";
-import { getVendorDetail, type VendorDetail } from "../services/vendorApi";
+import { useVendor } from "../hooks/useVendor";
 import { VendorProfile, VendorProducts, VendorNotFound } from "../components";
 import "@/styling/VendorPage.css";
 
 export default function VendorPage() {
   const params = useParams();
   const slug = params.slug as string;
+  const { vendor, isLoading, error } = useVendor(slug);
 
-  const [vendor, setVendor] = useState<VendorDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (!slug) return;
-    setLoading(true);
-    getVendorDetail(slug)
-      .then((data) => setVendor(data))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [slug]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
         <div style={{ fontSize: 14, color: "#9CA3AF" }}>Loading...</div>
@@ -51,7 +38,7 @@ export default function VendorPage() {
         </section>
 
         <section className="site-container">
-          <VendorProducts />
+          <VendorProducts vendorId={vendor._id} />
         </section>
       </div>
     </>

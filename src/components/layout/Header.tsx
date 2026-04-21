@@ -7,19 +7,54 @@ import {
   ShoppingCart, Heart, Menu, X, User, LogOut, Search, ChevronDown, ChevronRight,
   MapPin, Shield, Headphones, Globe, LayoutGrid, Tag, Sparkles, Package,
   ArrowRight, Star, Store, Zap, TrendingUp, Bell,
-  Smartphone, Shirt, Home, Dumbbell, Gamepad2, Watch, Car,
+  Smartphone, Shirt, Home, Dumbbell, Gamepad2, Watch, Car, Tags,
+  type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useNavCategories } from "./hooks/useNavCategories";
+import type { NavCategory } from "./service/categoriesApi";
 
-const categories = [
-  { name: "Electronics", slug: "electronics", icon: Smartphone, color: "#3B82F6", bg: "#EFF6FF", sub: ["Phones", "Laptops", "Audio", "Cameras"] },
-  { name: "Fashion", slug: "fashion", icon: Shirt, color: "#EC4899", bg: "#FDF2F8", sub: ["Men", "Women", "Kids", "Accessories"] },
-  { name: "Home & Garden", slug: "home-garden", icon: Home, color: "#10B981", bg: "#ECFDF5", sub: ["Furniture", "Decor", "Kitchen", "Garden"] },
-  { name: "Sports", slug: "sports", icon: Dumbbell, color: "#F97316", bg: "#FFF7ED", sub: ["Fitness", "Outdoors", "Team Sports", "Cycling"] },
-  { name: "Beauty", slug: "beauty", icon: Sparkles, color: "#A855F7", bg: "#FAF5FF", sub: ["Skincare", "Makeup", "Haircare", "Fragrance"] },
-  { name: "Gaming", slug: "gaming", icon: Gamepad2, color: "#EF4444", bg: "#FEF2F2", sub: ["Consoles", "PC Games", "Accessories", "VR"] },
-  { name: "Watches", slug: "watches", icon: Watch, color: "#D97706", bg: "#FFFBEB", sub: ["Smartwatches", "Luxury", "Casual", "Sport"] },
-  { name: "Automotive", slug: "automotive", icon: Car, color: "#6B7280", bg: "#F9FAFB", sub: ["Parts", "Accessories", "Tools", "Care"] },
+type CategoryTheme = { icon: LucideIcon; color: string; bg: string };
+
+const categoryThemes: CategoryTheme[] = [
+  { icon: Smartphone, color: "#3B82F6", bg: "#EFF6FF" },
+  { icon: Shirt, color: "#EC4899", bg: "#FDF2F8" },
+  { icon: Home, color: "#10B981", bg: "#ECFDF5" },
+  { icon: Dumbbell, color: "#F97316", bg: "#FFF7ED" },
+  { icon: Sparkles, color: "#A855F7", bg: "#FAF5FF" },
+  { icon: Gamepad2, color: "#EF4444", bg: "#FEF2F2" },
+  { icon: Watch, color: "#D97706", bg: "#FFFBEB" },
+  { icon: Car, color: "#6B7280", bg: "#F9FAFB" },
+];
+
+const slugKeywordTheme: Record<string, CategoryTheme> = {
+  electronics: { icon: Smartphone, color: "#3B82F6", bg: "#EFF6FF" },
+  phone: { icon: Smartphone, color: "#3B82F6", bg: "#EFF6FF" },
+  clothing: { icon: Shirt, color: "#EC4899", bg: "#FDF2F8" },
+  apparel: { icon: Shirt, color: "#EC4899", bg: "#FDF2F8" },
+  fashion: { icon: Shirt, color: "#EC4899", bg: "#FDF2F8" },
+  home: { icon: Home, color: "#10B981", bg: "#ECFDF5" },
+  kitchen: { icon: Home, color: "#10B981", bg: "#ECFDF5" },
+  garden: { icon: Home, color: "#10B981", bg: "#ECFDF5" },
+  sport: { icon: Dumbbell, color: "#F97316", bg: "#FFF7ED" },
+  outdoor: { icon: Dumbbell, color: "#F97316", bg: "#FFF7ED" },
+  beauty: { icon: Sparkles, color: "#A855F7", bg: "#FAF5FF" },
+  gaming: { icon: Gamepad2, color: "#EF4444", bg: "#FEF2F2" },
+  watch: { icon: Watch, color: "#D97706", bg: "#FFFBEB" },
+  auto: { icon: Car, color: "#6B7280", bg: "#F9FAFB" },
+};
+
+const themeFor = (cat: NavCategory, index: number): CategoryTheme => {
+  const slug = (cat.slug || "").toLowerCase();
+  for (const [keyword, theme] of Object.entries(slugKeywordTheme)) {
+    if (slug.includes(keyword)) return theme;
+  }
+  return categoryThemes[index % categoryThemes.length];
+};
+
+const fallbackCategories: NavCategory[] = [
+  { _id: "electronics", name: "Electronics", slug: "electronics", subCategories: [] },
+  { _id: "fashion", name: "Fashion", slug: "fashion", subCategories: [] },
 ];
 
 const navLinks = [
@@ -50,9 +85,20 @@ export default function Header() {
   const [searchFocused, setSearchFocused] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<typeof categories[number]>(categories[0]);
   const megaRef = useRef<HTMLDivElement>(null);
   const megaTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const { categories: fetchedCategories } = useNavCategories();
+  const categories = fetchedCategories.length > 0 ? fetchedCategories : fallbackCategories;
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const activeCategory =
+    categories.find((c) => c.slug === activeSlug) || categories[0] || fallbackCategories[0];
+
+  useEffect(() => {
+    if (!activeSlug && categories[0]?.slug) {
+      setActiveSlug(categories[0].slug);
+    }
+  }, [categories, activeSlug]);
 
   const { user, logout } = useAuth();
   const router = useRouter();
@@ -187,19 +233,20 @@ export default function Header() {
                   >
                     {/* Left: category list */}
                     <div className="w-[240px] bg-gray-50 border-r border-gray-100 py-2 max-h-[420px] overflow-y-auto flex-shrink-0">
-                      {categories.map((cat) => {
-                        const Icon = cat.icon;
+                      {categories.map((cat, idx) => {
+                        const theme = themeFor(cat, idx);
+                        const Icon = theme.icon;
                         const active = activeCategory.slug === cat.slug;
                         return (
                           <div
-                            key={cat.slug}
-                            onMouseEnter={() => setActiveCategory(cat)}
+                            key={cat._id || cat.slug}
+                            onMouseEnter={() => setActiveSlug(cat.slug)}
                             className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors ${
                               active ? "bg-orange-50" : "hover:bg-gray-100"
                             }`}
                           >
-                            <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: cat.bg }}>
-                              <Icon className="w-4 h-4" style={{ color: cat.color }} />
+                            <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: theme.bg }}>
+                              <Icon className="w-4 h-4" style={{ color: theme.color }} />
                             </div>
                             <span className={`text-sm font-semibold flex-1 truncate ${active ? "text-orange-600" : "text-gray-700"}`}>
                               {cat.name}
@@ -212,30 +259,43 @@ export default function Header() {
 
                     {/* Right: subcategories */}
                     <div className="flex-1 p-6 min-w-0">
-                      <div className="flex items-center gap-3 mb-5">
-                        <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: activeCategory.bg }}>
-                          <activeCategory.icon className="w-5 h-5" style={{ color: activeCategory.color }} />
-                        </div>
-                        <div>
-                          <div className="font-extrabold text-base text-gray-900">{activeCategory.name}</div>
-                          <div className="text-xs text-gray-500">Browse all {activeCategory.name.toLowerCase()}</div>
-                        </div>
-                      </div>
+                      {(() => {
+                        const activeIdx = categories.findIndex((c) => c.slug === activeCategory.slug);
+                        const activeTheme = themeFor(activeCategory, activeIdx >= 0 ? activeIdx : 0);
+                        const ActiveIcon = activeTheme.icon;
+                        return (
+                          <div className="flex items-center gap-3 mb-5">
+                            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: activeTheme.bg }}>
+                              <ActiveIcon className="w-5 h-5" style={{ color: activeTheme.color }} />
+                            </div>
+                            <div>
+                              <div className="font-extrabold text-base text-gray-900">{activeCategory.name}</div>
+                              <div className="text-xs text-gray-500">Browse all {activeCategory.name.toLowerCase()}</div>
+                            </div>
+                          </div>
+                        );
+                      })()}
 
-                      <ul className="grid grid-cols-2 gap-2 mb-5">
-                        {activeCategory.sub.map((sub) => (
-                          <li key={sub}>
-                            <Link
-                              href={`/category/${activeCategory.slug}/${sub.toLowerCase().replace(/\s+/g, "-")}`}
-                              onClick={() => setMegaOpen(false)}
-                              className="group flex items-center gap-2 px-3 py-2.5 rounded-lg bg-gray-50 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
-                            >
-                              <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-orange-500" />
-                              <span className="truncate">{sub}</span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                      {activeCategory.subCategories.length > 0 ? (
+                        <ul className="grid grid-cols-2 gap-2 mb-5">
+                          {activeCategory.subCategories.map((sub) => (
+                            <li key={sub._id || sub.slug}>
+                              <Link
+                                href={`/category/${activeCategory.slug}/${sub.slug}`}
+                                onClick={() => setMegaOpen(false)}
+                                className="group flex items-center gap-2 px-3 py-2.5 rounded-lg bg-gray-50 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors"
+                              >
+                                <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-orange-500" />
+                                <span className="truncate">{sub.name}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-gray-500 mb-5">
+                          No sub-categories yet. Browse all products in this category.
+                        </p>
+                      )}
 
                       <Link
                         href={`/category/${activeCategory.slug}`}
@@ -561,21 +621,38 @@ export default function Header() {
               </button>
               {mobileShowCategories && (
                 <div className="space-y-1 mb-4 sm:mb-5">
-                  {categories.map((cat) => {
-                    const Icon = cat.icon;
+                  {categories.map((cat, idx) => {
+                    const theme = themeFor(cat, idx);
+                    const Icon = theme.icon;
                     return (
-                      <Link
-                        key={cat.slug}
-                        href={`/category/${cat.slug}`}
-                        onClick={closeMobileMenu}
-                        className="flex items-center gap-2.5 sm:gap-3 px-2.5 py-2 sm:px-3 sm:py-2.5 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-md sm:rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: cat.bg }}>
-                          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: cat.color }} />
-                        </div>
-                        <span className="text-xs sm:text-sm font-semibold text-gray-700 flex-1">{cat.name}</span>
-                        <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-300" />
-                      </Link>
+                      <div key={cat._id || cat.slug}>
+                        <Link
+                          href={`/category/${cat.slug}`}
+                          onClick={closeMobileMenu}
+                          className="flex items-center gap-2.5 sm:gap-3 px-2.5 py-2 sm:px-3 sm:py-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-md sm:rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: theme.bg }}>
+                            <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: theme.color }} />
+                          </div>
+                          <span className="text-xs sm:text-sm font-semibold text-gray-700 flex-1">{cat.name}</span>
+                          <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-300" />
+                        </Link>
+                        {cat.subCategories.length > 0 && (
+                          <div className="pl-10 sm:pl-12 space-y-0.5 mb-1">
+                            {cat.subCategories.map((sub) => (
+                              <Link
+                                key={sub._id || sub.slug}
+                                href={`/category/${cat.slug}/${sub.slug}`}
+                                onClick={closeMobileMenu}
+                                className="flex items-center gap-1.5 px-2 py-1.5 rounded-md text-xs text-gray-600 hover:bg-orange-50 hover:text-orange-600"
+                              >
+                                <Tags className="w-3 h-3 text-gray-300" />
+                                {sub.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     );
                   })}
                   <Link

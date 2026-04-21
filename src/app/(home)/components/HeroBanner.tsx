@@ -1,18 +1,33 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useBanners } from "../hooks/useBanners";
 
-const slides = [
-  { id: 1, src: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1440&h=460&fit=crop&q=80", alt: "Marketplace Sale - Up to 50% off", link: "/deals" },
-  { id: 2, src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1440&h=460&fit=crop&q=80", alt: "New Fashion Arrivals", link: "/new-arrivals" },
-  { id: 3, src: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1440&h=460&fit=crop&q=80", alt: "Premium Electronics", link: "/category/electronics" },
+type Slide = { id: string; src: string; alt: string; link: string };
+
+const fallbackSlides: Slide[] = [
+  { id: "f1", src: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1440&h=460&fit=crop&q=80", alt: "Marketplace Sale - Up to 50% off", link: "/deals" },
+  { id: "f2", src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1440&h=460&fit=crop&q=80", alt: "New Fashion Arrivals", link: "/new-arrivals" },
+  { id: "f3", src: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1440&h=460&fit=crop&q=80", alt: "Premium Electronics", link: "/category/electronics" },
 ];
 
 const INTERVAL = 3000;
 
 export default function HeroBanner() {
+  const { banners } = useBanners("hero");
+
+  const slides = useMemo<Slide[]>(() => {
+    if (banners.length === 0) return fallbackSlides;
+    return banners.map((b) => ({
+      id: b._id,
+      src: b.image,
+      alt: b.title,
+      link: b.link || "/",
+    }));
+  }, [banners]);
+
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -20,6 +35,12 @@ export default function HeroBanner() {
   const rafRef = useRef<number | null>(null);
   const lastTickRef = useRef(Date.now());
   const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    setCurrent(0);
+    progressRef.current = 0;
+    setProgress(0);
+  }, [slides]);
 
   const goTo = useCallback(
     (i: number) => {
@@ -36,11 +57,11 @@ export default function HeroBanner() {
 
   const next = useCallback(
     () => goTo((current + 1) % slides.length),
-    [current, goTo]
+    [current, goTo, slides.length]
   );
   const prev = useCallback(
     () => goTo((current - 1 + slides.length) % slides.length),
-    [current, goTo]
+    [current, goTo, slides.length]
   );
 
   useEffect(() => {
@@ -67,7 +88,6 @@ export default function HeroBanner() {
     };
   }, [paused, next]);
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prev();
@@ -77,7 +97,6 @@ export default function HeroBanner() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [prev, next]);
 
-  // Touch swipe
   const touchX = useRef<number | null>(null);
   const onTouchStart = (e: React.TouchEvent) => {
     touchX.current = e.touches[0].clientX;
@@ -98,7 +117,6 @@ export default function HeroBanner() {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {/* Slides */}
         {slides.map((slide, i) => (
           <a
             key={slide.id}
@@ -120,10 +138,8 @@ export default function HeroBanner() {
           </a>
         ))}
 
-        {/* Bottom gradient for better control visibility */}
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/40 to-transparent z-[11] pointer-events-none" />
 
-        {/* Arrows */}
         <button
           onClick={prev}
           className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center bg-white/90 hover:bg-white rounded-full text-gray-800 shadow-lg shadow-black/10 transition-all opacity-0 group-hover:opacity-100 hover:scale-105 active:scale-95"
@@ -139,7 +155,6 @@ export default function HeroBanner() {
           <ChevronRight className="w-5 h-5" />
         </button>
 
-        {/* Dots + slide counter */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
           <span className="text-white/60 text-[11px] font-semibold tabular-nums font-mono hidden sm:block">
             {String(current + 1).padStart(2, "0")}/{String(slides.length).padStart(2, "0")}
@@ -160,7 +175,6 @@ export default function HeroBanner() {
           </div>
         </div>
 
-        {/* Progress bar */}
         <div className="absolute bottom-0 left-0 right-0 z-20 h-[3px] bg-white/15">
           <div
             className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-r shadow-[0_0_8px_rgba(234,107,14,0.4)]"

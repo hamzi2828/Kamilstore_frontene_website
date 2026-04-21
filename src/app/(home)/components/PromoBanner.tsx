@@ -1,9 +1,26 @@
+"use client";
+
+import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Cpu, Shirt } from "lucide-react";
+import { ArrowRight, Cpu, Shirt, Sparkles, type LucideIcon } from "lucide-react";
 import "@/styling/PromoBanner.css";
+import { useBanners } from "../hooks/useBanners";
+import type { Banner } from "../types";
 
-const promos = [
+type Promo = {
+  href: string;
+  image: string;
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  icon: LucideIcon;
+  gradient: string;
+  badge: string;
+  badgeClass: string;
+};
+
+const fallbackPromos: Promo[] = [
   {
     href: "/category/electronics",
     image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&h=500&fit=crop&q=80",
@@ -28,16 +45,43 @@ const promos = [
   },
 ];
 
+const styleVariants: Array<Pick<Promo, "gradient" | "badgeClass" | "icon">> = [
+  { gradient: "ks-promo-grad-blue", badgeClass: "ks-promo-badge-blue", icon: Cpu },
+  { gradient: "ks-promo-grad-rose", badgeClass: "ks-promo-badge-rose", icon: Shirt },
+  { gradient: "ks-promo-grad-blue", badgeClass: "ks-promo-badge-blue", icon: Sparkles },
+];
+
+const toPromo = (b: Banner, index: number): Promo => {
+  const variant = styleVariants[index % styleVariants.length];
+  return {
+    href: b.link || "/",
+    image: b.image,
+    eyebrow: b.eyebrow || "Featured",
+    title: b.title,
+    subtitle: b.subtitle || "",
+    icon: variant.icon,
+    gradient: variant.gradient,
+    badge: b.badge || "SHOP",
+    badgeClass: variant.badgeClass,
+  };
+};
+
 export default function PromoBanner() {
+  const { banners } = useBanners("promo");
+
+  const promos = useMemo<Promo[]>(() => {
+    if (banners.length === 0) return fallbackPromos;
+    return banners.map(toPromo);
+  }, [banners]);
+
   return (
     <section className="site-container">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {promos.map((p) => {
+        {promos.map((p, idx) => {
           const Icon = p.icon;
           return (
-            <Link key={p.href} href={p.href} className="group">
+            <Link key={`${p.href}-${idx}`} href={p.href} className="group">
               <div className={`ks-promo-card ${p.gradient}`}>
-                {/* Background image */}
                 <div className="ks-promo-img">
                   <Image
                     src={p.image}
@@ -48,17 +92,14 @@ export default function PromoBanner() {
                   />
                 </div>
 
-                {/* Overlay */}
                 <div className="ks-promo-overlay" />
 
-                {/* Decorative elements */}
                 <div className="ks-promo-decor">
                   <div className="ks-promo-circle-1" />
                   <div className="ks-promo-circle-2" />
                   <div className="ks-promo-dots" />
                 </div>
 
-                {/* Content */}
                 <div className="ks-promo-content">
                   <div className="ks-promo-top">
                     <span className="ks-promo-eyebrow">
