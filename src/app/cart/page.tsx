@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Trash2, Minus, Plus, ShoppingBag, ArrowRight, Tag,
@@ -10,66 +10,31 @@ import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import "@/styling/CartPage.css";
+import { useCart } from "@/lib/cart-context";
 
-const initialCartItems = [
-  {
-    _id: "1",
-    product: {
-      _id: "p1",
-      name: "Apple MacBook Pro 14-inch M3 Pro",
-      slug: "macbook-pro-14-m3",
-      image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop",
-      sellingPrice: 1999.99,
-      discountPrice: 1849.99,
-      vendor: { name: "TechZone", slug: "techzone" },
-    },
-    quantity: 1,
-    variant: { Storage: "512GB", Color: "Space Gray" },
-  },
-  {
-    _id: "2",
-    product: {
-      _id: "p2",
-      name: "Sony WH-1000XM5 Wireless Headphones",
-      slug: "sony-wh-1000xm5",
-      image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop",
-      sellingPrice: 399.99,
-      discountPrice: 349.99,
-      vendor: { name: "AudioMax", slug: "audiomax" },
-    },
-    quantity: 2,
-    variant: { Color: "Black" },
-  },
-  {
-    _id: "3",
-    product: {
-      _id: "p3",
-      name: "USB-C Hub Adapter 7-in-1",
-      slug: "usb-c-hub-adapter",
-      image: "https://images.unsplash.com/photo-1625842268584-8f3296236761?w=400&h=400&fit=crop",
-      sellingPrice: 49.99,
-      discountPrice: 39.99,
-      vendor: { name: "TechZone", slug: "techzone" },
-    },
-    quantity: 1,
-  },
-];
+const PLACEHOLDER =
+  "https://png.pngtree.com/png-vector/20241018/ourmid/pngtree-running-shoes-or-sneakers-on-a-transparent-background-png-image_14112954.png";
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState(initialCartItems);
+  const {
+    items: cartItems,
+    totalItems,
+    subtotal,
+    isReady,
+    isAuthenticated,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    refresh,
+  } = useCart();
+
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
 
-  const updateQuantity = (id: string, qty: number) => {
-    if (qty < 1) return;
-    setCartItems((items) =>
-      items.map((i) => (i._id === id ? { ...i, quantity: qty } : i))
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setCartItems((items) => items.filter((i) => i._id !== id));
-  };
+  // Pull latest server cart for logged-in users on mount
+  useEffect(() => {
+    if (isAuthenticated) refresh();
+  }, [isAuthenticated, refresh]);
 
   const applyCoupon = () => {
     if (couponCode.toUpperCase() === "SAVE10") {
@@ -77,15 +42,34 @@ export default function CartPage() {
     }
   };
 
-  const subtotal = cartItems.reduce(
-    (sum, i) =>
-      sum + (i.product.discountPrice || i.product.sellingPrice) * i.quantity,
-    0
-  );
   const discount = appliedCoupon ? subtotal * 0.1 : 0;
-  const shipping = subtotal > 50 ? 0 : 9.99;
-  const total = subtotal - discount + shipping;
-  const totalItems = cartItems.reduce((s, i) => s + i.quantity, 0);
+  const shipping = subtotal > 50 || subtotal === 0 ? 0 : 9.99;
+  const total = Math.max(0, subtotal - discount + shipping);
+
+  // Hydration guard: render skeleton until localStorage is read
+  if (!isReady) {
+    return (
+      <>
+        <Breadcrumb items={[{ label: "Cart" }]} />
+        <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
+          <section className="site-container">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "48px 0",
+                color: "#9CA3AF",
+                fontSize: 14,
+              }}
+            >
+              Loading cart...
+            </div>
+          </section>
+        </div>
+      </>
+    );
+  }
 
   // ── Empty state ──
   if (cartItems.length === 0) {
@@ -118,7 +102,6 @@ export default function CartPage() {
       <Breadcrumb items={[{ label: "Shopping Cart" }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
-        {/* ── Header ── */}
         <section className="site-container">
           <div className="bg-white rounded-2xl overflow-hidden">
             <div className="h-[3px] bg-gradient-to-r from-orange-400 via-orange-500 to-amber-400" />
@@ -132,7 +115,7 @@ export default function CartPage() {
                     Shopping Cart
                   </h1>
                   <p className="text-sm text-[#999] font-medium mt-1.5">
-                    {totalItems} items in your cart
+                    {totalItems} {totalItems === 1 ? "item" : "items"} in your cart
                   </p>
                 </div>
               </div>
@@ -140,13 +123,10 @@ export default function CartPage() {
           </div>
         </section>
 
-        {/* ── Cart Content ── */}
         <section className="site-container">
           <div className="ks-cart-layout">
-            {/* ── Left: Items ── */}
             <div className="ks-cart-items-col">
               <div className="bg-white rounded-2xl overflow-hidden border border-[#f1f5f9]">
-                {/* Table header */}
                 <div className="ks-cart-table-head">
                   <div className="ks-cart-th-product">Product</div>
                   <div className="ks-cart-th">Price</div>
@@ -154,70 +134,70 @@ export default function CartPage() {
                   <div className="ks-cart-th ks-cart-th-right">Total</div>
                 </div>
 
-                {/* Items */}
                 <div className="ks-cart-items">
                   {cartItems.map((item) => {
-                    const price = item.product.discountPrice || item.product.sellingPrice;
+                    const price = item.unitPrice;
                     const lineTotal = price * item.quantity;
+                    const hasDiscount = item.sellingPrice > item.unitPrice;
 
                     return (
                       <div key={item._id} className="ks-cart-item">
-                        {/* Product */}
                         <div className="ks-cart-item-product">
                           <Link
-                            href={`/product/${item.product.slug}`}
+                            href={`/product/${item.slug}`}
                             className="ks-cart-item-img"
                           >
                             <ProductImage
-                              src={item.product.image}
-                              alt={item.product.name}
+                              src={item.image || PLACEHOLDER}
+                              alt={item.name}
                               className="object-cover"
                             />
                           </Link>
                           <div className="ks-cart-item-info">
                             <Link
-                              href={`/product/${item.product.slug}`}
+                              href={`/product/${item.slug}`}
                               className="ks-cart-item-name"
                             >
-                              {item.product.name}
+                              {item.name}
                             </Link>
-                            <p className="ks-cart-item-vendor">
-                              Sold by{" "}
-                              <Link
-                                href={`/vendor/${item.product.vendor.slug}`}
-                                className="ks-cart-item-vendor-link"
-                              >
-                                {item.product.vendor.name}
-                              </Link>
-                            </p>
-                            {item.variant && (
+                            {item.vendor && (
+                              <p className="ks-cart-item-vendor">
+                                Sold by{" "}
+                                <Link
+                                  href={`/vendor/${item.vendor._id}`}
+                                  className="ks-cart-item-vendor-link"
+                                >
+                                  {item.vendor.name}
+                                </Link>
+                              </p>
+                            )}
+                            {item.variantLabel && (
                               <p className="ks-cart-item-variant">
-                                {Object.entries(item.variant)
-                                  .map(([k, v]) => `${k}: ${v}`)
-                                  .join(" · ")}
+                                {item.variantLabel}
                               </p>
                             )}
                           </div>
                         </div>
 
-                        {/* Price */}
                         <div className="ks-cart-item-price">
                           <span className="ks-cart-label">Price</span>
-                          <span className="ks-cart-item-price-current">{formatPrice(price)}</span>
-                          {item.product.discountPrice && (
+                          <span className="ks-cart-item-price-current">
+                            {formatPrice(price)}
+                          </span>
+                          {hasDiscount && (
                             <span className="ks-cart-item-price-old">
-                              {formatPrice(item.product.sellingPrice)}
+                              {formatPrice(item.sellingPrice)}
                             </span>
                           )}
                         </div>
 
-                        {/* Quantity */}
                         <div className="ks-cart-item-qty">
                           <span className="ks-cart-label">Qty</span>
                           <div className="ks-cart-qty-control">
                             <button
                               onClick={() => updateQuantity(item._id, item.quantity - 1)}
                               className="ks-cart-qty-btn"
+                              disabled={item.quantity <= 1}
                             >
                               <Minus className="w-3.5 h-3.5" />
                             </button>
@@ -225,16 +205,18 @@ export default function CartPage() {
                             <button
                               onClick={() => updateQuantity(item._id, item.quantity + 1)}
                               className="ks-cart-qty-btn"
+                              disabled={item.quantity >= item.stock}
                             >
                               <Plus className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </div>
 
-                        {/* Total + Remove */}
                         <div className="ks-cart-item-total">
                           <span className="ks-cart-label">Total</span>
-                          <span className="ks-cart-item-total-value">{formatPrice(lineTotal)}</span>
+                          <span className="ks-cart-item-total-value">
+                            {formatPrice(lineTotal)}
+                          </span>
                           <button
                             onClick={() => removeItem(item._id)}
                             className="ks-cart-remove-btn"
@@ -249,25 +231,22 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Actions */}
               <div className="ks-cart-actions">
                 <Link href="/products" className="ks-cart-continue-link">
                   <Package className="w-4 h-4" />
                   Continue Shopping
                 </Link>
-                <button onClick={() => setCartItems([])} className="ks-cart-clear-btn">
+                <button onClick={clearCart} className="ks-cart-clear-btn">
                   <Trash2 className="w-4 h-4" />
                   Clear Cart
                 </button>
               </div>
             </div>
 
-            {/* ── Right: Order Summary ── */}
             <div className="ks-cart-summary-col">
               <div className="ks-cart-summary-card">
                 <h2 className="ks-cart-summary-title">Order Summary</h2>
 
-                {/* Coupon */}
                 <div className="ks-cart-coupon">
                   <label className="ks-cart-coupon-label">Coupon Code</label>
                   <div className="ks-cart-coupon-row">
@@ -295,7 +274,6 @@ export default function CartPage() {
                   </p>
                 </div>
 
-                {/* Summary rows */}
                 <div className="ks-cart-summary-rows">
                   <div className="ks-cart-summary-row">
                     <span>Subtotal ({totalItems} items)</span>
@@ -327,13 +305,11 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* Checkout */}
                 <Link href="/checkout" className="ks-cart-checkout-btn">
                   Proceed to Checkout
                   <ArrowRight className="w-[18px] h-[18px]" />
                 </Link>
 
-                {/* Trust badges */}
                 <div className="ks-cart-trust">
                   <div className="ks-cart-trust-item">
                     <ShieldCheck className="ks-cart-trust-icon" />

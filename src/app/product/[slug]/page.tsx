@@ -16,6 +16,12 @@ import "@/styling/ProductPage.css";
 import { useProduct } from "../hooks/useProduct";
 import { productApi } from "../service/productApi";
 import type { ProductVariantPricing } from "../types";
+import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
+import { useRouter } from "next/navigation";
+import ReviewsSection from "../components/ReviewsSection";
+import { reviewsApi } from "../service/reviewsApi";
+import type { ReviewsSummary } from "../service/reviewsApi";
 
 const PLACEHOLDER =
   "https://png.pngtree.com/png-vector/20241018/ourmid/pngtree-running-shoes-or-sneakers-on-a-transparent-background-png-image_14112954.png";
@@ -31,14 +37,34 @@ const variantMatchesSelection = (
 
 export default function ProductDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const slug = params.slug as string;
   const { data, isLoading, error } = useProduct(slug);
+  const { addItem } = useCart();
+  const { toggleItem: toggleWishlist, isWishlisted } = useWishlist();
+  const [addedFeedback, setAddedFeedback] = useState<string | null>(null);
+  const [reviewsSummary, setReviewsSummary] = useState<ReviewsSummary>({
+    total: 0,
+    average: 0,
+    breakdown: {},
+    reviews: [],
+  });
+
+  useEffect(() => {
+    if (!slug) return;
+    let active = true;
+    reviewsApi.listBySlug(slug).then((s) => {
+      if (active) setReviewsSummary(s);
+    });
+    return () => {
+      active = false;
+    };
+  }, [slug]);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState<"description" | "specifications" | "reviews">("description");
-  const [wishlisted, setWishlisted] = useState(false);
 
   const product = data?.product;
   const vendor = data?.vendor;
@@ -147,8 +173,8 @@ export default function ProductDetailPage() {
     );
   }
 
-  const ratingDisplay = 4.8; // rating/review data not modeled yet
-  const reviewCount = 0;
+  const ratingDisplay = reviewsSummary.total > 0 ? reviewsSummary.average : 0;
+  const reviewCount = reviewsSummary.total;
 
   return (
     <>
@@ -178,10 +204,26 @@ export default function ProductDetailPage() {
                       <span className="ks-pd-discount-badge">-{discountPct}%</span>
                     )}
                     <button
-                      onClick={() => setWishlisted(!wishlisted)}
-                      className={`ks-pd-wishlist-btn ${wishlisted ? "ks-pd-wishlist-active" : ""}`}
+                      onClick={() => {
+                        if (!product) return;
+                        toggleWishlist({
+                          productId: String(product._id),
+                          slug: product.slug,
+                          name: product.name,
+                          image: images[0] === PLACEHOLDER ? null : images[0],
+                          sellingPrice,
+                          unitPrice: discountPrice ?? sellingPrice,
+                          inStock,
+                          vendor: vendor
+                            ? { _id: String(vendor._id), name: vendor.name }
+                            : undefined,
+                        });
+                      }}
+                      className={`ks-pd-wishlist-btn ${product && isWishlisted(String(product._id)) ? "ks-pd-wishlist-active" : ""}`}
                     >
-                      <Heart className={`w-5 h-5 ${wishlisted ? "fill-current" : ""}`} />
+                      <Heart
+                        className={`w-5 h-5 ${product && isWishlisted(String(product._id)) ? "fill-current" : ""}`}
+                      />
                     </button>
                   </div>
                   {images.length > 1 && (
@@ -292,14 +334,86 @@ export default function ProductDetailPage() {
                   </div>
 
                   <div className="ks-pd-actions">
-                    <button className="ks-pd-add-cart-btn" disabled={!inStock}>
+                    <button
+                      className="ks-pd-add-cart-btn"
+                      disabled={!inStock}
+                      onClick={() => {
+                        if (!product || !inStock) return;
+                        const variantLabel = activeVariant
+                          ? activeVariant.combination
+                              .map((c) => `${c.attributeName}: ${c.valueName}`)
+                              .join(" · ")
+                          : undefined;
+                        addItem({
+                          productId: String(product._id),
+                          slug: product.slug,
+                          name: product.name,
+                          image: images[0] === PLACEHOLDER ? null : images[0],
+                          sellingPrice: sellingPrice,
+                          unitPrice: discountPrice ?? sellingPrice,
+                          stock: stockQty,
+                          quantity,
+                          variantSku: activeVariant?.sku,
+                          variantLabel,
+                          vendor: vendor
+                            ? { _id: String(vendor._id), name: vendor.name }
+                            : undefined,
+                        });
+                        setAddedFeedback(`Added ${quantity} × ${product.name} to cart`);
+                        setTimeout(() => setAddedFeedback(null), 2500);
+                      }}
+                    >
                       <ShoppingCart className="w-5 h-5" /> Add to Cart
                     </button>
-                    <button className="ks-pd-buy-btn" disabled={!inStock}>Buy Now</button>
+                    <button
+                      className="ks-pd-buy-btn"
+                      disabled={!inStock}
+                      onClick={() => {
+                        if (!product || !inStock) return;
+                        const variantLabel = activeVariant
+                          ? activeVariant.combination
+                              .map((c) => `${c.attributeName}: ${c.valueName}`)
+                              .join(" · ")
+                          : undefined;
+                        addItem({
+                          productId: String(product._id),
+                          slug: product.slug,
+                          name: product.name,
+                          image: images[0] === PLACEHOLDER ? null : images[0],
+                          sellingPrice: sellingPrice,
+                          unitPrice: discountPrice ?? sellingPrice,
+                          stock: stockQty,
+                          quantity,
+                          variantSku: activeVariant?.sku,
+                          variantLabel,
+                          vendor: vendor
+                            ? { _id: String(vendor._id), name: vendor.name }
+                            : undefined,
+                        });
+                        router.push("/cart");
+                      }}
+                    >
+                      Buy Now
+                    </button>
                     <button className="ks-pd-icon-btn">
                       <Share2 className="w-5 h-5" />
                     </button>
                   </div>
+                  {addedFeedback && (
+                    <div
+                      style={{
+                        marginTop: 10,
+                        padding: "8px 12px",
+                        borderRadius: 8,
+                        background: "#ECFDF5",
+                        color: "#047857",
+                        fontSize: 13,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {addedFeedback}
+                    </div>
+                  )}
 
                   <div className="ks-pd-features">
                     {[
@@ -387,9 +501,11 @@ export default function ProductDetailPage() {
               )}
 
               {activeTab === "reviews" && (
-                <div className="text-sm text-[#6B7280]">
-                  No reviews yet. Be the first to review this product.
-                </div>
+                <ReviewsSection
+                  slug={product.slug}
+                  productId={String(product._id)}
+                  onSummaryChange={setReviewsSummary}
+                />
               )}
             </div>
           </div>

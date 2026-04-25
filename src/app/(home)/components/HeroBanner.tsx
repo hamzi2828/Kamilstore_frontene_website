@@ -9,7 +9,7 @@ type Slide = { id: string; src: string; alt: string; link: string };
 
 const fallbackSlides: Slide[] = [
   { id: "f1", src: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1440&h=460&fit=crop&q=80", alt: "Marketplace Sale - Up to 50% off", link: "/deals" },
-  { id: "f2", src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1440&h=460&fit=crop&q=80", alt: "New Fashion Arrivals", link: "/new-arrivals" },
+  { id: "f2", src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1440&h=460&fit=crop&q=80", alt: "New Fashion Arrivals", link: "/products?newArrivals=1" },
   { id: "f3", src: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1440&h=460&fit=crop&q=80", alt: "Premium Electronics", link: "/category/electronics" },
 ];
 

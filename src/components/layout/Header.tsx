@@ -11,6 +11,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useCart } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import { useNavCategories } from "./hooks/useNavCategories";
 import type { NavCategory } from "./service/categoriesApi";
 
@@ -61,7 +63,7 @@ const navLinks = [
   { label: "Today's Deals", href: "/deals", icon: Tag, hot: false },
   { label: "Flash Sale", href: "/flash-sale", icon: Zap, live: true },
   { label: "Trending", href: "/trending", icon: TrendingUp, hot: false },
-  { label: "New Arrivals", href: "/new-arrivals", icon: Sparkles, hot: false },
+  { label: "New Arrivals", href: "/products?newArrivals=1", icon: Sparkles, hot: false },
   { label: "Our Vendors", href: "/vendors", icon: Store, hot: false },
 ];
 
@@ -104,8 +106,8 @@ export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const cartCount = 3;
-  const wishlistCount = 0;
+  const { totalItems: cartCount } = useCart();
+  const { totalItems: wishlistCount } = useWishlist();
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
   const toggleMobileMenu = () => {

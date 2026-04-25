@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Heart, ShoppingCart, Eye, Zap, Star } from "lucide-react";
+import { useWishlist } from "@/lib/wishlist-context";
+import { useCart } from "@/lib/cart-context";
 
 interface ProductCardProps {
   product: {
@@ -30,6 +32,8 @@ const PRODUCT_IMAGE_PLACEHOLDER =
 
 export default function PremiumProductCard({ product }: ProductCardProps) {
   const router = useRouter();
+  const { toggleItem: toggleWishlist, isWishlisted } = useWishlist();
+  const { addItem: addToCart } = useCart();
 
   const discount = product.discountPrice
     ? Math.round(
@@ -43,6 +47,12 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
       ? product.sellingPrice - product.discountPrice
       : 0;
 
+  const wishlisted = isWishlisted(String(product._id));
+  const productImage =
+    product.images && product.images[0] && !product.images[0].includes("pngtree")
+      ? product.images[0]
+      : null;
+
   const stop = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -51,6 +61,44 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
   const goToVendor = (e: React.MouseEvent) => {
     stop(e);
     if (product.vendor?.slug) router.push(`/vendor/${product.vendor.slug}`);
+  };
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    stop(e);
+    toggleWishlist({
+      productId: String(product._id),
+      slug: product.slug,
+      name: product.name,
+      image: productImage,
+      sellingPrice: product.sellingPrice,
+      unitPrice: product.discountPrice ?? product.sellingPrice,
+      inStock: true,
+      vendor: product.vendor
+        ? { _id: product.vendor.slug, name: product.vendor.name }
+        : undefined,
+    });
+  };
+
+  const handleQuickView = (e: React.MouseEvent) => {
+    stop(e);
+    router.push(`/product/${product.slug}`);
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    stop(e);
+    addToCart({
+      productId: String(product._id),
+      slug: product.slug,
+      name: product.name,
+      image: productImage,
+      sellingPrice: product.sellingPrice,
+      unitPrice: product.discountPrice ?? product.sellingPrice,
+      stock: 99,
+      quantity: 1,
+      vendor: product.vendor
+        ? { _id: product.vendor.slug, name: product.vendor.name }
+        : undefined,
+    });
   };
 
   return (
@@ -90,15 +138,24 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
         <div className="absolute bottom-4 right-4 flex flex-col items-center gap-2 z-20">
           <button
             type="button"
-            onClick={stop}
-            className="w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center text-stone-900 transition-all duration-300 hover:bg-white hover:shadow-lg transform opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 hover:scale-110 active:scale-95"
-            aria-label="Add to wishlist"
+            onClick={handleWishlist}
+            className={`w-12 h-12 rounded-full backdrop-blur-sm flex items-center justify-center transition-all duration-300 hover:shadow-lg transform opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 hover:scale-110 active:scale-95 ${
+              wishlisted
+                ? "bg-rose-500 text-white hover:bg-rose-600"
+                : "bg-white/95 text-stone-900 hover:bg-white"
+            }`}
+            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            aria-pressed={wishlisted}
           >
-            <Heart className="w-5 h-5 transition-colors hover:text-rose-500" />
+            <Heart
+              className={`w-5 h-5 transition-colors ${
+                wishlisted ? "fill-current" : "hover:text-rose-500"
+              }`}
+            />
           </button>
           <button
             type="button"
-            onClick={stop}
+            onClick={handleQuickView}
             className="w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center text-stone-900 transition-all duration-300 hover:bg-white hover:shadow-lg transform opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 delay-75 hover:scale-110 active:scale-95"
             aria-label="Quick view"
           >
@@ -106,7 +163,7 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
           </button>
           <button
             type="button"
-            onClick={stop}
+            onClick={handleAddToCart}
             className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center transition-all duration-300 hover:bg-stone-800 hover:shadow-lg transform opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 delay-150 hover:scale-110 active:scale-95"
             aria-label="Add to cart"
           >

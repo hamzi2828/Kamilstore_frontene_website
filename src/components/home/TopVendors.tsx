@@ -1,32 +1,45 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import "@/styling/TopVendors.css";
 import {
-  Store, ChevronRight, Star, ShieldCheck, Package,
-  MessageSquare, Award, TrendingUp, ArrowRight,
+  Store, ChevronRight, ShieldCheck, MapPin,
+  UserCircle, CalendarDays, ArrowRight, TrendingUp,
 } from "lucide-react";
+import { getVendors, type Vendor } from "@/app/vendors/services/vendorsApi";
 
-const vendors = [
-  { _id: "1", name: "TechZone Electronics", slug: "techzone", logo: "/vendors/techzone.jpg", description: "Your trusted source for premium electronics and gadgets. Quality products at competitive prices.", rating: 4.8, reviewCount: 1250, productCount: 342, isVerified: true, badge: "Top Rated" },
-  { _id: "2", name: "FashionPlus", slug: "fashionplus", logo: "/vendors/fashionplus.jpg", description: "Trendy fashion for everyone. Stay stylish with our latest collections from top brands.", rating: 4.6, reviewCount: 890, productCount: 567, isVerified: true, badge: "Best Seller" },
-  { _id: "3", name: "HomeStyle Decor", slug: "homestyle", logo: "/vendors/homestyle.jpg", description: "Transform your living space with our beautiful home decor and furniture collection.", rating: 4.7, reviewCount: 456, productCount: 234, isVerified: true, badge: "Featured" },
-  { _id: "4", name: "SportsFit Pro", slug: "sportsfit", logo: "/vendors/sportsfit.jpg", description: "Premium sports equipment and fitness gear for athletes and fitness enthusiasts.", rating: 4.5, reviewCount: 678, productCount: 189, isVerified: false },
-];
-
-function formatCount(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, "")}k`;
-  return n.toString();
-}
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 const rankClass = (r: number) => r === 1 ? "gold" : r === 2 ? "silver" : "bronze";
-const badgeClass: Record<string, string> = {
-  "Top Rated": "top-rated",
-  "Best Seller": "best-seller",
-  Featured: "featured",
-};
+
+function joinedYear(iso: string): string {
+  const d = new Date(iso);
+  return isNaN(d.getTime()) ? "" : `Joined ${d.getFullYear()}`;
+}
 
 export default function TopVendors() {
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await getVendors({ limit: 4, page: 1 });
+        if (!mounted) return;
+        setVendors(res.data);
+        setTotal(res.pagination?.total ?? res.data.length);
+      } catch {
+        if (mounted) setVendors([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
   return (
     <section className="ks-vendors site-container">
       <div className="ks-vendors-card">
@@ -65,89 +78,125 @@ export default function TopVendors() {
 
         {/* Vendor Grid */}
         <div className="ks-vendors-grid">
-          {vendors.map((v, i) => (
-            <Link key={v._id} href={`/vendor/${v.slug}`} className="ks-vendor-card">
-              {/* Rank */}
-              {i < 3 && (
-                <div className={`ks-vendor-rank ${rankClass(i + 1)}`}>
-                  {i + 1}
-                </div>
-              )}
-
-              {/* Header: avatar + info */}
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                <div className="ks-vendor-avatar">
-                  {v.name.charAt(0)}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                    <span className="ks-vendor-name" style={{
-                      fontSize: 14, fontWeight: 700, color: "#111827",
-                      overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                    }}>
-                      {v.name}
-                    </span>
+          {loading ? (
+            [...Array(4)].map((_, i) => (
+              <div key={i} className="ks-vendor-card" style={{ pointerEvents: "none" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+                  <div className="ks-vendor-avatar" style={{ background: "#F3F4F6", borderColor: "#E5E7EB" }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ height: 12, width: "70%", background: "#F3F4F6", borderRadius: 6, marginBottom: 8 }} />
+                    <div style={{ height: 10, width: "45%", background: "#F3F4F6", borderRadius: 6 }} />
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {/* Stars */}
-                    <div className="ks-vendor-stars">
-                      {[...Array(5)].map((_, j) => (
-                        <Star key={j} style={{
-                          width: 12, height: 12,
-                          color: j < Math.floor(v.rating) ? "#F59E0B" : "#E5E7EB",
-                          fill: j < Math.floor(v.rating) ? "#F59E0B" : "#E5E7EB",
-                        }} />
-                      ))}
+                </div>
+                <div style={{ height: 10, background: "#F3F4F6", borderRadius: 6, marginBottom: 6 }} />
+                <div style={{ height: 10, width: "80%", background: "#F3F4F6", borderRadius: 6, marginBottom: 14 }} />
+                <div style={{ height: 22, background: "#F9FAFB", borderRadius: 8 }} />
+              </div>
+            ))
+          ) : vendors.length === 0 ? (
+            <div style={{
+              gridColumn: "1 / -1", padding: "32px 16px", textAlign: "center",
+              color: "#9CA3AF", fontSize: 13, fontWeight: 500,
+            }}>
+              No vendors available yet.
+            </div>
+          ) : (
+            vendors.map((v, i) => {
+              const logoSrc = v.logo
+                ? (v.logo.startsWith("http") ? v.logo : `${API}${v.logo}`)
+                : null;
+              const subtitle = v.shopTitle && v.shopTitle !== v.shopName ? v.shopTitle : null;
+              const joined = joinedYear(v.createdAt);
+
+              return (
+                <Link key={v._id} href={`/vendor/${v._id}`} className="ks-vendor-card">
+                  {i < 3 && (
+                    <div className={`ks-vendor-rank ${rankClass(i + 1)}`}>
+                      {i + 1}
                     </div>
-                    <span style={{ fontSize: 12.5, fontWeight: 700, color: "#111827" }}>
-                      {v.rating.toFixed(1)}
+                  )}
+
+                  {/* Header: avatar + info */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+                    <div className="ks-vendor-avatar">
+                      {logoSrc ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={logoSrc} alt={v.shopName} />
+                      ) : (
+                        v.shopName.charAt(0).toUpperCase()
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ marginBottom: 4 }}>
+                        <span className="ks-vendor-name" style={{
+                          display: "block",
+                          fontSize: 14, fontWeight: 700, color: "#111827",
+                          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        }}>
+                          {v.shopName}
+                        </span>
+                      </div>
+                      {subtitle && (
+                        <span style={{
+                          display: "block",
+                          fontSize: 11.5, color: "#9CA3AF", fontWeight: 500,
+                          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                        }}>
+                          {subtitle}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Verified badge — all public vendors are verified */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+                    <span className="ks-vendor-verified">
+                      <ShieldCheck style={{ width: 10, height: 10 }} />
+                      Verified
                     </span>
                   </div>
-                </div>
-              </div>
 
-              {/* Verified + Badge */}
-              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
-                {v.isVerified && (
-                  <span className="ks-vendor-verified">
-                    <ShieldCheck style={{ width: 10, height: 10 }} />
-                    Verified
-                  </span>
-                )}
-                {v.badge && (
-                  <span className={`ks-vendor-badge ${badgeClass[v.badge] || ""}`}>
-                    <Award style={{ width: 10, height: 10 }} />
-                    {v.badge}
-                  </span>
-                )}
-              </div>
+                  {/* Description */}
+                  {v.description && (
+                    <p style={{
+                      fontSize: 12.5, color: "#6B7280", lineHeight: 1.6,
+                      margin: "0 0 14px",
+                      display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}>
+                      {v.description}
+                    </p>
+                  )}
 
-              {/* Description */}
-              <p style={{
-                fontSize: 12.5, color: "#6B7280", lineHeight: 1.6,
-                margin: "0 0 14px",
-                display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}>
-                {v.description}
-              </p>
-
-              {/* Stats */}
-              <div style={{
-                display: "flex", alignItems: "center", gap: 8,
-                paddingTop: 14, borderTop: "1px solid #F1F5F9",
-              }}>
-                <div className="ks-vendor-stat">
-                  <Package style={{ width: 12, height: 12 }} />
-                  {formatCount(v.productCount)} products
-                </div>
-                <div className="ks-vendor-stat">
-                  <MessageSquare style={{ width: 12, height: 12 }} />
-                  {formatCount(v.reviewCount)} reviews
-                </div>
-              </div>
-            </Link>
-          ))}
+                  {/* Stats */}
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
+                    paddingTop: 14, borderTop: "1px solid #F1F5F9",
+                  }}>
+                    {v.address && (
+                      <div className="ks-vendor-stat" style={{ maxWidth: "100%", overflow: "hidden" }}>
+                        <MapPin style={{ width: 12, height: 12, flexShrink: 0 }} />
+                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {v.address}
+                        </span>
+                      </div>
+                    )}
+                    {v.owner?.name ? (
+                      <div className="ks-vendor-stat">
+                        <UserCircle style={{ width: 12, height: 12 }} />
+                        {v.owner.name}
+                      </div>
+                    ) : joined ? (
+                      <div className="ks-vendor-stat">
+                        <CalendarDays style={{ width: 12, height: 12 }} />
+                        {joined}
+                      </div>
+                    ) : null}
+                  </div>
+                </Link>
+              );
+            })
+          )}
         </div>
 
         {/* Bottom promo strip */}
@@ -159,7 +208,9 @@ export default function TopVendors() {
           <span style={{ color: "#E5E7EB" }}>|</span>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <TrendingUp style={{ width: 14, height: 14, color: "#10B981" }} />
-            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#374151" }}>1,200+ active sellers</span>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#374151" }}>
+              {total > 0 ? `${total}+ active sellers` : "Active sellers"}
+            </span>
           </div>
           <span style={{ color: "#E5E7EB" }}>|</span>
           <Link href="/vendor/register" style={{
