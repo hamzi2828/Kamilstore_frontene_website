@@ -16,7 +16,7 @@ const priceRanges = [
   { label: "Over $1000", min: 1000, max: Infinity },
 ];
 
-const PAGE_LIMIT = 12;
+const PAGE_LIMIT = 16;
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -436,9 +436,9 @@ export default function ProductsPage() {
               </div>
             ) : (
               <div
-                className={`grid gap-4 md:gap-6 ${
+                className={`grid gap-3 md:gap-4 ${
                   viewMode === "grid"
-                    ? "grid-cols-2 md:grid-cols-3"
+                    ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
                     : "grid-cols-1"
                 }`}
               >

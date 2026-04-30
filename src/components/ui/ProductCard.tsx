@@ -79,9 +79,13 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
     });
   };
 
+  const productHref = product.vendor?.slug
+    ? `/${product.vendor.slug}/product/${product.slug}`
+    : `/product/${product.slug}`;
+
   const handleQuickView = (e: React.MouseEvent) => {
     stop(e);
-    router.push(`/product/${product.slug}`);
+    router.push(productHref);
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -103,7 +107,7 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
 
   return (
     <Link
-      href={`/product/${product.slug}`}
+      href={productHref}
       className="group block h-full min-h-0 bg-white rounded-xl transition-all duration-700 hover:shadow-2xl border border-stone-200 flex flex-col hover:-translate-y-1 overflow-hidden"
     >
       {/* Image Container */}

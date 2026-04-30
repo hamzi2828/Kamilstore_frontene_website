@@ -29,7 +29,10 @@ export default function FlashDealCard({ product }: FlashDealCardProps) {
     : 0;
 
   return (
-    <Link href={`/product/${product.slug}`} className="block group">
+    <Link
+      href={product.vendor?.slug ? `/${product.vendor.slug}/product/${product.slug}` : `/product/${product.slug}`}
+      className="block group"
+    >
       <div className="bg-white rounded-2xl overflow-hidden border border-[#f0f0f0] group-hover:border-orange-200 group-hover:shadow-[0_8px_30px_rgba(234,107,14,0.08)] transition-all duration-300">
         {/* Image */}
         <div className="relative aspect-square bg-gradient-to-b from-[#fafafa] to-[#f3f3f3] overflow-hidden">

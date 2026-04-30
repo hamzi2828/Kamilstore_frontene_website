@@ -159,7 +159,7 @@ export default function WishlistPage() {
                 return (
                   <div key={item.productId} className="ks-wl-card group">
                     <div className="ks-wl-card-img-area">
-                      <Link href={`/product/${item.slug}`}>
+                      <Link href={item.vendor?._id ? `/${item.vendor._id}/product/${item.slug}` : `/product/${item.slug}`}>
                         <ProductImage
                           src={item.image || PLACEHOLDER}
                           alt={item.name}
@@ -196,7 +196,7 @@ export default function WishlistPage() {
                         </Link>
                       )}
 
-                      <Link href={`/product/${item.slug}`}>
+                      <Link href={item.vendor?._id ? `/${item.vendor._id}/product/${item.slug}` : `/product/${item.slug}`}>
                         <h3 className="ks-wl-card-name">{item.name}</h3>
                       </Link>
 

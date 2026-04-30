@@ -15,7 +15,8 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import "@/styling/ProductPage.css";
 import { useProduct } from "../hooks/useProduct";
 import { productApi } from "../service/productApi";
-import type { ProductVariantPricing } from "../types";
+import { vendorApi } from "@/app/vendor/service/vendorApi";
+import type { ProductVariantPricing, ProductVendor } from "../types";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/lib/wishlist-context";
 import { useRouter } from "next/navigation";
@@ -39,7 +40,40 @@ export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
+  const vendorIdFromUrl = (params.vendorid as string | undefined) || undefined;
   const { data, isLoading, error } = useProduct(slug);
+  const [urlVendor, setUrlVendor] = useState<ProductVendor | null>(null);
+
+  useEffect(() => {
+    if (!vendorIdFromUrl) {
+      setUrlVendor(null);
+      return;
+    }
+    let active = true;
+    vendorApi
+      .getVendor(vendorIdFromUrl)
+      .then((v) => {
+        if (!active) return;
+        const normalized: ProductVendor = {
+          _id: v._id,
+          userId: "",
+          name: v.shopName || v.shopTitle || "",
+          title: v.shopTitle,
+          logo: v.logo,
+          address: v.address,
+          description: v.description,
+          owner: v.owner,
+          productCount: 0,
+        };
+        setUrlVendor(normalized);
+      })
+      .catch(() => {
+        if (active) setUrlVendor(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [vendorIdFromUrl]);
   const { addItem } = useCart();
   const { toggleItem: toggleWishlist, isWishlisted } = useWishlist();
   const [addedFeedback, setAddedFeedback] = useState<string | null>(null);
@@ -67,7 +101,7 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState<"description" | "specifications" | "reviews">("description");
 
   const product = data?.product;
-  const vendor = data?.vendor;
+  const vendor = urlVendor || data?.vendor;
   const related = data?.related || [];
 
   const images = useMemo(() => {
@@ -519,7 +553,7 @@ export default function ProductDetailPage() {
                 <h2 className="text-lg font-extrabold text-[#111]">More from this vendor</h2>
               </div>
               <div className="ks-pd-related-grid">
-                {related.map((p) => (
+                {related.slice(0, 4).map((p) => (
                   <div key={p._id} className="ks-pd-related-card">
                     <ProductCard product={p} />
                   </div>

@@ -1,52 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Package, Search, Eye, EyeOff, RotateCcw, ShoppingBag,
-  ChevronDown, Clock, MapPin, Truck, ArrowRight,
+  Clock, MapPin, Truck, Loader2,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useAuth } from "@/lib/auth-context";
 import "@/styling/OrdersPage.css";
 
-const orders = [
-  {
-    _id: "ORD001", date: "2024-01-15", status: "Delivered", total: 2199.98,
-    items: [
-      { name: "Apple MacBook Pro 14-inch M3 Pro", image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop", quantity: 1, price: 1849.99 },
-      { name: "Sony WH-1000XM5 Wireless Headphones", image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop", quantity: 1, price: 349.99 },
-    ],
-    shippingAddress: "123 Main St, New York, NY 10001",
-    trackingNumber: "1Z999AA10123456784",
-  },
-  {
-    _id: "ORD002", date: "2024-01-10", status: "Shipped", total: 149.99,
-    items: [
-      { name: "USB-C Hub Adapter 7-in-1", image: "https://images.unsplash.com/photo-1625842268584-8f3296236761?w=400&h=400&fit=crop", quantity: 1, price: 49.99 },
-      { name: "Wireless Charging Pad", image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&h=400&fit=crop", quantity: 2, price: 50.00 },
-    ],
-    shippingAddress: "123 Main St, New York, NY 10001",
-    trackingNumber: "1Z999AA10123456785",
-  },
-  {
-    _id: "ORD003", date: "2024-01-05", status: "Processing", total: 599.99,
-    items: [
-      { name: "iPad Pro 12.9-inch Case", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop", quantity: 1, price: 79.99 },
-      { name: "Apple Pencil 2nd Generation", image: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=400&fit=crop", quantity: 1, price: 129.00 },
-      { name: "Magic Keyboard for iPad Pro", image: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&h=400&fit=crop", quantity: 1, price: 349.00 },
-    ],
-    shippingAddress: "123 Main St, New York, NY 10001",
-  },
-  {
-    _id: "ORD004", date: "2023-12-20", status: "Cancelled", total: 299.99,
-    items: [
-      { name: "Beats Studio Pro Headphones", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop", quantity: 1, price: 299.99 },
-    ],
-    shippingAddress: "123 Main St, New York, NY 10001",
-  },
-];
+interface UiOrderItem {
+  name: string;
+  image: string;
+  quantity: number;
+  price: number;
+}
+
+interface UiOrder {
+  _id: string;
+  date: string;
+  status: string;
+  total: number;
+  items: UiOrderItem[];
+  shippingAddress: string;
+  vendorName?: string;
+  trackingNumber?: string;
+}
+
+interface ApiOrder {
+  orderId: string;
+  placedAt: string;
+  vendorName?: string;
+  amount?: number;
+  orderStatus?: string;
+  items?: Array<{ name?: string; quantity?: number; unitPrice?: number; productId?: string; slug?: string; image?: string | null }>;
+  shippingAddress?: { line1?: string; city?: string; state?: string; zipCode?: string; country?: string };
+}
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const PLACEHOLDER =
+  "https://png.pngtree.com/png-vector/20241018/ourmid/pngtree-running-shoes-or-sneakers-on-a-transparent-background-png-image_14112954.png";
+
+const formatAddress = (a?: ApiOrder["shippingAddress"]) =>
+  !a
+    ? "—"
+    : [a.line1, a.city, a.state, a.zipCode, a.country].filter(Boolean).join(", ");
 
 const statusFilters = ["all", "Processing", "Shipped", "Delivered", "Cancelled"];
 
@@ -58,15 +59,60 @@ const statusStyles: Record<string, { bg: string; color: string; border: string }
 };
 
 export default function OrdersPage() {
+  const { user } = useAuth();
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [orders, setOrders] = useState<UiOrder[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const filtered = orders.filter((o) => {
-    const matchStatus = selectedStatus === "all" || o.status === selectedStatus;
-    const matchSearch = o._id.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchStatus && matchSearch;
-  });
+  useEffect(() => {
+    if (!user?._id) return;
+    let cancelled = false;
+    setLoading(true);
+    fetch(`${API_URL}/api/public/orders?customerUserId=${encodeURIComponent(user._id)}`, { cache: "no-store" })
+      .then((r) => r.json())
+      .then((json) => {
+        if (cancelled) return;
+        if (!json.success) throw new Error(json.message || "Failed to load orders");
+        const mapped: UiOrder[] = (json.data as ApiOrder[]).map((o) => ({
+          _id: o.orderId,
+          date: o.placedAt,
+          status: o.orderStatus || "Processing",
+          total: Number(o.amount || 0),
+          items: (o.items || []).map((it) => ({
+            name: it.name || "Item",
+            image: it.image
+              ? (it.image.startsWith("http") ? it.image : `${API_URL}${it.image}`)
+              : PLACEHOLDER,
+            quantity: it.quantity || 0,
+            price: Number(it.unitPrice || 0),
+          })),
+          shippingAddress: formatAddress(o.shippingAddress),
+          vendorName: o.vendorName,
+        }));
+        setOrders(mapped);
+      })
+      .catch(() => {
+        if (!cancelled) setOrders([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user?._id]);
+
+  const filtered = useMemo(
+    () =>
+      orders.filter((o) => {
+        const matchStatus = selectedStatus === "all" || o.status === selectedStatus;
+        const matchSearch = o._id.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchStatus && matchSearch;
+      }),
+    [orders, selectedStatus, searchQuery]
+  );
 
   return (
     <>
@@ -123,6 +169,14 @@ export default function OrdersPage() {
 
         {/* ── Orders List ── */}
         <section className="site-container">
+          {loading && (
+            <div className="flex flex-col items-center justify-center py-16 text-[#9ca3af] text-sm">
+              <Loader2 className="w-6 h-6 animate-spin mb-2 text-orange-500" />
+              Loading your orders...
+            </div>
+          )}
+          {!loading && (
+          <>
           <div className="ks-ord-list">
             {filtered.map((order) => {
               const st = statusStyles[order.status] || statusStyles.Processing;
@@ -144,6 +198,12 @@ export default function OrdersPage() {
                         {new Date(order.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                         <span className="ks-ord-dot" />
                         {order.items.length} item{order.items.length > 1 ? "s" : ""}
+                        {order.vendorName && (
+                          <>
+                            <span className="ks-ord-dot" />
+                            {order.vendorName}
+                          </>
+                        )}
                       </p>
                     </div>
                     <div className="ks-ord-card-right">
@@ -245,6 +305,8 @@ export default function OrdersPage() {
                 <ShoppingBag className="w-[18px] h-[18px]" /> Start Shopping
               </Link>
             </div>
+          )}
+          </>
           )}
         </section>
       </div>

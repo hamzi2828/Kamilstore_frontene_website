@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   CreditCard, MapPin, Truck, ShieldCheck, CheckCircle,
-  Lock, ArrowRight, ArrowLeft, Wallet, ShoppingBag,
+  Lock, ArrowRight, ArrowLeft, Wallet, ShoppingBag, Banknote,
 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
@@ -20,7 +20,7 @@ const PLACEHOLDER =
 const paymentMethods = [
   { id: "card", name: "Credit / Debit Card", icon: CreditCard, desc: "Visa, Mastercard, AMEX" },
   { id: "paypal", name: "PayPal", icon: Wallet, desc: "Pay with your PayPal account" },
-  { id: "cod", name: "Cash on Delivery", icon: Wallet, desc: "Pay when you receive your order" },
+  { id: "cod", name: "Cash on Delivery", icon: Banknote, desc: "Pay in cash when your order arrives" },
 ];
 
 const steps = [
@@ -57,7 +57,17 @@ export default function CheckoutPage() {
   const [cardInfo, setCardInfo] = useState({ number: "", name: "", expiry: "", cvv: "" });
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [orderPlaced, setOrderPlaced] = useState<{ id: string; total: number } | null>(null);
+  const [orderPlaced, setOrderPlaced] = useState<{
+    id: string;
+    total: number;
+    vendorOrders: Array<{
+      vendorId: string;
+      vendorName: string;
+      orderId: string;
+      itemCount: number;
+      total: number;
+    }>;
+  } | null>(null);
 
   // Pull fresh server cart for logged-in users on mount
   useEffect(() => {
@@ -113,11 +123,76 @@ export default function CheckoutPage() {
     setError(null);
     setPlacing(true);
     try {
-      // Best-effort: simulate order placement. Backend order endpoint can be wired here later.
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      const id = `KS-${Date.now().toString(36).toUpperCase()}`;
+      // Group cart items by vendor — one sub-order per supplier
+      const groups = new Map<string, { vendorId: string; vendorName: string; items: typeof cartItems }>();
+      for (const item of cartItems) {
+        const vendorId = item.vendor?._id || "unknown";
+        const vendorName = item.vendor?.name || "Unknown Vendor";
+        const existing = groups.get(vendorId);
+        if (existing) existing.items.push(item);
+        else groups.set(vendorId, { vendorId, vendorName, items: [item] });
+      }
+
+      const baseId = Date.now().toString(36).toUpperCase();
+      const masterId = `KS-${baseId}`;
+
+      const subOrders = Array.from(groups.values()).map((g, idx) => ({
+        orderId: `${masterId}-V${idx + 1}`,
+        vendor: { id: g.vendorId, name: g.vendorName },
+        items: g.items.map((it) => ({
+          productId: it.productId,
+          name: it.name,
+          slug: it.slug,
+          image: it.image,
+          quantity: it.quantity,
+          unitPrice: it.unitPrice,
+          variantSku: it.variantSku,
+        })),
+        amount: g.items.reduce((s, it) => s + it.unitPrice * it.quantity, 0),
+      }));
+
+      const payload = {
+        masterOrderId: masterId,
+        customer: {
+          name: `${shippingInfo.firstName} ${shippingInfo.lastName}`.trim(),
+          email: shippingInfo.email,
+          phone: shippingInfo.phone,
+          userId: user?._id,
+        },
+        shippingAddress: {
+          line1: shippingInfo.address,
+          city: shippingInfo.city,
+          state: shippingInfo.state,
+          zipCode: shippingInfo.zipCode,
+          country: shippingInfo.country,
+        },
+        paymentMethod,
+        shippingMethod: shippingMethodId,
+        totals: { subtotal, shipping, tax, total },
+        subOrders,
+      };
+
+      const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const res = await fetch(`${API}/api/public/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || "Failed to place order");
+      }
+
+      const vendorOrders = (json.data?.subOrders || subOrders).map((so: { orderId: string; vendorId?: string; vendorName?: string; vendor?: { id: string; name: string }; itemCount?: number; amount: number; items?: Array<{ quantity: number }>; }) => ({
+        vendorId: so.vendorId || so.vendor?.id || "",
+        vendorName: so.vendorName || so.vendor?.name || "",
+        orderId: so.orderId,
+        itemCount: so.itemCount ?? (so.items || []).reduce((s, it) => s + (it.quantity || 0), 0),
+        total: so.amount,
+      }));
+
       clearCart();
-      setOrderPlaced({ id, total });
+      setOrderPlaced({ id: json.data?.masterOrderId || masterId, total, vendorOrders });
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Failed to place order");
     } finally {
@@ -154,10 +229,35 @@ export default function CheckoutPage() {
               </div>
               <h1 className="text-2xl font-extrabold text-[#111] mb-2">Order placed!</h1>
               <p className="text-[#666] mb-1">Thanks for shopping with us.</p>
-              <p className="text-[#666] mb-6">
+              <p className="text-[#666] mb-4">
                 Order ID: <span className="font-semibold text-[#111]">{orderPlaced.id}</span>
                 {" · "}Total: <span className="font-semibold text-[#111]">{formatPrice(orderPlaced.total)}</span>
               </p>
+
+              {orderPlaced.vendorOrders.length > 0 && (
+                <div className="text-left bg-[#fafafa] border border-[#f1f5f9] rounded-xl p-4 mb-6 max-w-md mx-auto">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-[#9ca3af] mb-3">
+                    Order dispatched to {orderPlaced.vendorOrders.length}{" "}
+                    {orderPlaced.vendorOrders.length === 1 ? "supplier" : "suppliers"}
+                  </p>
+                  <ul className="flex flex-col gap-2.5">
+                    {orderPlaced.vendorOrders.map((vo) => (
+                      <li key={vo.orderId} className="flex items-start justify-between gap-3 text-sm">
+                        <div className="min-w-0">
+                          <p className="font-semibold text-[#111] truncate">{vo.vendorName}</p>
+                          <p className="text-xs text-[#9ca3af]">
+                            #{vo.orderId} · {vo.itemCount} {vo.itemCount === 1 ? "item" : "items"}
+                          </p>
+                        </div>
+                        <span className="font-semibold text-[#111] shrink-0">
+                          {formatPrice(vo.total)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               <div className="flex gap-3 justify-center flex-wrap">
                 <Link href="/products" className="ks-co-back-btn">
                   Continue Shopping
@@ -350,6 +450,25 @@ export default function CheckoutPage() {
                     })}
                   </div>
 
+                  {paymentMethod === "cod" && (
+                    <div className="ks-co-section">
+                      <h3 className="ks-co-section-title">
+                        <Banknote className="w-[18px] h-[18px] text-emerald-500" />
+                        Cash on Delivery
+                      </h3>
+                      <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
+                        <p className="text-sm text-emerald-900 font-medium mb-1">
+                          Pay {formatPrice(total)} in cash when your order arrives.
+                        </p>
+                        <ul className="text-xs text-emerald-800/80 list-disc pl-5 space-y-1">
+                          <li>Please keep the exact amount ready for the courier.</li>
+                          <li>Each supplier&apos;s package may be delivered separately — payment is per package.</li>
+                          <li>You will receive an SMS / email confirmation once the order is placed.</li>
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
                   {paymentMethod === "card" && (
                     <div className="ks-co-section">
                       <h3 className="ks-co-section-title">
@@ -453,6 +572,11 @@ export default function CheckoutPage() {
                         </div>
                         <div className="ks-co-review-item-info">
                           <p className="ks-co-review-item-name">{item.name}</p>
+                          {item.vendor?.name && (
+                            <p className="ks-co-review-item-vendor">
+                              Sold by <strong>{item.vendor.name}</strong>
+                            </p>
+                          )}
                           <p className="ks-co-review-item-variant">
                             {item.variantLabel ? `${item.variantLabel} · ` : ""}Qty: {item.quantity}
                           </p>
@@ -500,6 +624,11 @@ export default function CheckoutPage() {
                       </div>
                       <div className="ks-co-summary-item-info">
                         <p className="ks-co-summary-item-name">{item.name}</p>
+                        {item.vendor?.name && (
+                          <p className="ks-co-summary-item-vendor">
+                            Sold by <strong>{item.vendor.name}</strong>
+                          </p>
+                        )}
                         {item.variantLabel && (
                           <p className="ks-co-summary-item-variant">{item.variantLabel}</p>
                         )}

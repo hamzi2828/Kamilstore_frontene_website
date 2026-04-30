@@ -144,7 +144,7 @@ export default function CartPage() {
                       <div key={item._id} className="ks-cart-item">
                         <div className="ks-cart-item-product">
                           <Link
-                            href={`/product/${item.slug}`}
+                            href={item.vendor?._id ? `/${item.vendor._id}/product/${item.slug}` : `/product/${item.slug}`}
                             className="ks-cart-item-img"
                           >
                             <ProductImage
@@ -155,7 +155,7 @@ export default function CartPage() {
                           </Link>
                           <div className="ks-cart-item-info">
                             <Link
-                              href={`/product/${item.slug}`}
+                              href={item.vendor?._id ? `/${item.vendor._id}/product/${item.slug}` : `/product/${item.slug}`}
                               className="ks-cart-item-name"
                             >
                               {item.name}

@@ -139,7 +139,7 @@ export default function WishlistPage() {
             >
               {/* Image */}
               <div className="relative aspect-square bg-gray-100">
-                <Link href={`/product/${item.slug}`}>
+                <Link href={item.vendor?.slug ? `/${item.vendor.slug}/product/${item.slug}` : `/product/${item.slug}`}>
                   <ProductImage
                     src={item.image}
                     alt={item.name}
@@ -178,7 +178,7 @@ export default function WishlistPage() {
                 >
                   {item.vendor.name}
                 </Link>
-                <Link href={`/product/${item.slug}`}>
+                <Link href={item.vendor?.slug ? `/${item.vendor.slug}/product/${item.slug}` : `/product/${item.slug}`}>
                   <h3 className="font-medium text-gray-800 mt-1 line-clamp-2 hover:text-orange-500 transition-colors">
                     {item.name}
                   </h3>
