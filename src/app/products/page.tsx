@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import ProductCard from "@/components/ui/ProductCard";
 import { SlidersHorizontal, Grid, List, ChevronDown, X, Search, Loader2 } from "lucide-react";
@@ -18,7 +18,7 @@ const priceRanges = [
 
 const PAGE_LIMIT = 16;
 
-export default function ProductsPage() {
+function ProductsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -587,5 +587,22 @@ export default function ProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="bg-gray-50 min-h-screen">
+          <div className="site-container py-16 flex flex-col items-center justify-center text-gray-500">
+            <Loader2 className="w-8 h-8 animate-spin mb-3" />
+            <p>Loading products...</p>
+          </div>
+        </div>
+      }
+    >
+      <ProductsContent />
+    </Suspense>
   );
 }
