@@ -1,6 +1,6 @@
-/* ═══════════════════════════════════════════
-   AddressesPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   AddressesPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .ks-addr-icon-box {
   width: 48px; height: 48px; border-radius: 14px;
@@ -18,12 +18,12 @@
 }
 .ks-addr-add-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
 
-/* ── Grid ── */
+/* â”€â”€ Grid â”€â”€ */
 .ks-addr-grid {
   display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px;
 }
 
-/* ── Address Card ── */
+/* â”€â”€ Address Card â”€â”€ */
 .ks-addr-card {
   background: #fff; border-radius: 20px; border: 1.5px solid #f1f5f9;
   padding: 22px; display: flex; flex-direction: column;
@@ -74,7 +74,7 @@
 .ks-addr-action-delete { color: #9ca3af; margin-left: auto; }
 .ks-addr-action-delete:hover { color: #ef4444; }
 
-/* ── Add card ── */
+/* â”€â”€ Add card â”€â”€ */
 .ks-addr-add-card {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 12px; background: #fff; border-radius: 20px;
@@ -93,7 +93,7 @@
 .ks-addr-add-card-text { font-size: 14px; font-weight: 700; color: #9ca3af; transition: color 0.15s; }
 .ks-addr-add-card:hover .ks-addr-add-card-text { color: #ea6b0e; }
 
-/* ── Empty ── */
+/* â”€â”€ Empty â”€â”€ */
 .ks-addr-empty {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9;
   padding: 60px 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
@@ -113,7 +113,7 @@
 }
 .ks-addr-empty-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
 
-/* ── Modal ── */
+/* â”€â”€ Modal â”€â”€ */
 .ks-addr-modal-overlay {
   position: fixed; inset: 0; z-index: 50;
   background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
@@ -190,9 +190,9 @@
 }
 .ks-addr-save-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(234,107,14,0.25); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 768px) {
   .ks-addr-grid { grid-template-columns: 1fr; }

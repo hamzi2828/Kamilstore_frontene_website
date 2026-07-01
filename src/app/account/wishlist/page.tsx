@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Heart, ShoppingCart, Trash2, ChevronRight, Share2 } from "lucide-react";
+import { Heart, ShoppingCart, Trash2, ChevronRight, Share2 } from "@/components/icons";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
 import { useLanguage } from "@/lib/i18n";

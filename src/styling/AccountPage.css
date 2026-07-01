@@ -1,13 +1,13 @@
-/* ═══════════════════════════════════════════
-   AccountPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   AccountPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Layout ── */
+/* â”€â”€ Layout â”€â”€ */
 .ks-acc-layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: start; }
 .ks-acc-sidebar { min-width: 0; }
 .ks-acc-main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
 
-/* ── Sidebar card ── */
+/* â”€â”€ Sidebar card â”€â”€ */
 .ks-acc-sidebar-card {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9;
   overflow: hidden; position: sticky; top: 180px;
@@ -70,7 +70,7 @@
 .ks-acc-logout:hover { background: #fef2f2; }
 .ks-acc-logout:hover .ks-acc-menu-label { color: #ef4444; }
 
-/* ── Welcome banner ── */
+/* â”€â”€ Welcome banner â”€â”€ */
 .ks-acc-welcome {
   position: relative; border-radius: 20px; overflow: hidden; padding: 28px;
 }
@@ -101,7 +101,7 @@
 }
 .ks-acc-welcome-btn:hover { background: rgba(255,255,255,0.18); }
 
-/* ── Quick stats ── */
+/* â”€â”€ Quick stats â”€â”€ */
 .ks-acc-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 
 .ks-acc-stat-card {
@@ -119,7 +119,7 @@
 .ks-acc-stat-value { font-size: 24px; font-weight: 800; color: #111827; line-height: 1; }
 .ks-acc-stat-label { font-size: 12.5px; font-weight: 500; color: #9ca3af; }
 
-/* ── Orders card ── */
+/* â”€â”€ Orders card â”€â”€ */
 .ks-acc-orders-card { background: #fff; border-radius: 20px; border: 1px solid #f1f5f9; overflow: hidden; }
 
 .ks-acc-orders-header {
@@ -168,7 +168,7 @@
 }
 .ks-acc-order-detail-btn:hover { color: #c2410c; gap: 5px; }
 
-/* ── Profile card ── */
+/* â”€â”€ Profile card â”€â”€ */
 .ks-acc-profile-card { background: #fff; border-radius: 20px; border: 1px solid #f1f5f9; padding: 24px; }
 
 .ks-acc-profile-header {
@@ -190,9 +190,9 @@
 .ks-acc-profile-label { display: block; font-size: 11.5px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
 .ks-acc-profile-value { display: block; font-size: 15px; font-weight: 700; color: #111827; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 1023px) {
   .ks-acc-layout { grid-template-columns: 1fr; }

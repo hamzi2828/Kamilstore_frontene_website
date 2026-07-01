@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, Mail, Phone, ArrowRight, UserCircle } from "lucide-react";
+import { MapPin, Mail, Phone, ArrowRight, UserCircle } from "@/components/icons";
 import type { Vendor } from "../services/vendorsApi";
 import { useLanguage } from "@/lib/i18n";
 

@@ -7,7 +7,7 @@ import {
   Smartphone, Shirt, Home, Dumbbell, Sparkles,
   Gamepad2, Watch, Car, Search,
   ArrowRight, LayoutGrid, TrendingUp, Flame,
-} from "lucide-react";
+} from "@/components/icons";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useLanguage } from "@/lib/i18n";
 import "@/styling/CategoriesPage.css";

@@ -1,6 +1,6 @@
-/* ═══════════════════════════════════════════
-   OrdersPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   OrdersPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .ks-ord-icon-box {
   width: 48px; height: 48px; border-radius: 14px;
@@ -9,7 +9,7 @@
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 
-/* ── Filters ── */
+/* â”€â”€ Filters â”€â”€ */
 .ks-ord-filter-bar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 
 .ks-ord-search-wrap { position: relative; width: 100%; max-width: 280px; }
@@ -33,10 +33,10 @@
 .ks-ord-pill-active { background: #ea6b0e; border-color: #ea6b0e; color: #fff; }
 .ks-ord-pill-active:hover { background: #d45d00; border-color: #d45d00; color: #fff; }
 
-/* ── Orders List ── */
+/* â”€â”€ Orders List â”€â”€ */
 .ks-ord-list { display: flex; flex-direction: column; gap: 16px; }
 
-/* ── Order Card ── */
+/* â”€â”€ Order Card â”€â”€ */
 .ks-ord-card {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9; overflow: hidden;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -98,7 +98,7 @@
   border-radius: 12px; font-size: 12px; font-weight: 700; color: #9ca3af;
 }
 
-/* ── Expanded ── */
+/* â”€â”€ Expanded â”€â”€ */
 .ks-ord-expanded {
   border-top: 1px solid #f1f5f9; padding: 24px;
   background: #fafafa;
@@ -157,7 +157,7 @@
 }
 .ks-ord-action-btn-primary:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(234,107,14,0.25); }
 
-/* ── Empty ── */
+/* â”€â”€ Empty â”€â”€ */
 .ks-ord-empty {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9;
   padding: 60px 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
@@ -177,9 +177,9 @@
 }
 .ks-ord-empty-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 768px) {
   .ks-ord-filter-bar { flex-direction: column; align-items: stretch; }

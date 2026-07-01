@@ -2,7 +2,7 @@
 // Reuses shared glossary from core.ts (common.*, nav.*, footer.*) where possible.
 const en: Record<string, string> = {
   // ── Vendors list ──────────────────────────────────────────────────
-  "vendor.shopFromSellers": "Shop from {count} trusted sellers on KamilStore",
+  "vendor.shopFromSellers": "Shop from {count} trusted sellers on worldB2B",
   "vendor.searchPlaceholder": "Search vendors...",
   "vendor.verified": "Verified",
   "vendor.sellers": "Sellers",
@@ -11,7 +11,7 @@ const en: Record<string, string> = {
   "vendor.sortNewest": "Newest",
   "vendor.sortOldest": "Oldest",
   "vendor.ctaSubtitle":
-    "Join thousands of successful sellers on KamilStore. Reach millions of customers today.",
+    "Join thousands of successful sellers on worldB2B. Reach millions of customers today.",
   "vendor.startSelling": "Start Selling",
   "vendor.visitStore": "Visit store",
   "vendor.noVendorsFound": "No vendors found",
@@ -44,7 +44,7 @@ const en: Record<string, string> = {
 const it: Record<string, string> = {
   // ── Vendors list ──────────────────────────────────────────────────
   "vendor.shopFromSellers":
-    "Acquista da {count} venditori affidabili su KamilStore",
+    "Acquista da {count} venditori affidabili su worldB2B",
   "vendor.searchPlaceholder": "Cerca venditori...",
   "vendor.verified": "Verificato",
   "vendor.sellers": "Venditori",
@@ -53,7 +53,7 @@ const it: Record<string, string> = {
   "vendor.sortNewest": "Più recenti",
   "vendor.sortOldest": "Meno recenti",
   "vendor.ctaSubtitle":
-    "Unisciti a migliaia di venditori di successo su KamilStore. Raggiungi milioni di clienti oggi stesso.",
+    "Unisciti a migliaia di venditori di successo su worldB2B. Raggiungi milioni di clienti oggi stesso.",
   "vendor.startSelling": "Inizia a vendere",
   "vendor.visitStore": "Visita il negozio",
   "vendor.noVendorsFound": "Nessun venditore trovato",

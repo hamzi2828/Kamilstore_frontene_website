@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   CreditCard, MapPin, Truck, ShieldCheck, CheckCircle,
   Lock, ArrowRight, ArrowLeft, Wallet, ShoppingBag, Banknote,
-} from "lucide-react";
+} from "@/components/icons";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
 import Breadcrumb from "@/components/ui/Breadcrumb";

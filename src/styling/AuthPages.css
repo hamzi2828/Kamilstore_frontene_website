@@ -1,14 +1,14 @@
-/* ═══════════════════════════════════════════
-   Auth Pages (Login & Register) — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   Auth Pages (Login & Register) â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Page layout ── */
+/* â”€â”€ Page layout â”€â”€ */
 .ks-auth-page {
   display: flex;
   min-height: 100vh;
 }
 
-/* ── Left: Brand panel ── */
+/* â”€â”€ Left: Brand panel â”€â”€ */
 .ks-auth-brand {
   position: relative;
   width: 45%;
@@ -73,7 +73,7 @@
   font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.7);
 }
 
-/* ── Right: Form side ── */
+/* â”€â”€ Right: Form side â”€â”€ */
 .ks-auth-form-side {
   flex: 1;
   display: flex; align-items: center; justify-content: center;
@@ -198,9 +198,9 @@
 .ks-auth-switch-link { font-weight: 700; color: #ea6b0e; text-decoration: none; }
 .ks-auth-switch-link:hover { color: #c2410c; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 1023px) {
   .ks-auth-brand { display: none; }

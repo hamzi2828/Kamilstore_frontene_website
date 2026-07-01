@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   WishlistPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   WishlistPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Header icon box ── */
+/* â”€â”€ Header icon box â”€â”€ */
 .ks-wl-icon-box {
   width: 48px;
   height: 48px;
@@ -15,7 +15,7 @@
   flex-shrink: 0;
 }
 
-/* ── Action buttons ── */
+/* â”€â”€ Action buttons â”€â”€ */
 .ks-wl-share-btn {
   display: flex;
   align-items: center;
@@ -59,14 +59,14 @@
   box-shadow: 0 6px 20px rgba(234, 107, 14, 0.25);
 }
 
-/* ── Grid ── */
+/* â”€â”€ Grid â”€â”€ */
 .ks-wl-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 }
 
-/* ── Card ── */
+/* â”€â”€ Card â”€â”€ */
 .ks-wl-card {
   display: flex;
   flex-direction: column;
@@ -254,7 +254,7 @@
   pointer-events: none;
 }
 
-/* ── Continue shopping ── */
+/* â”€â”€ Continue shopping â”€â”€ */
 .ks-wl-continue {
   display: flex;
   justify-content: center;
@@ -279,7 +279,7 @@
   gap: 10px;
 }
 
-/* ── Empty state ── */
+/* â”€â”€ Empty state â”€â”€ */
 .ks-wl-empty-card {
   background: #fff;
   border-radius: 20px;
@@ -338,9 +338,9 @@
   box-shadow: 0 6px 20px rgba(234, 107, 14, 0.25);
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 1023px) {
   .ks-wl-grid {

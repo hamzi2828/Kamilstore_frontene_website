@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   CategoriesPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CategoriesPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Accent bar ── */
+/* â”€â”€ Accent bar â”€â”€ */
 .ks-cat-accent-bar {
   height: 3px;
   background: linear-gradient(90deg, #f97316, #f59e0b, #eab308);
@@ -17,7 +17,7 @@
 }
 @keyframes ks-cat-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-/* ── Header icon box ── */
+/* â”€â”€ Header icon box â”€â”€ */
 .ks-cat-icon-box {
   width: 48px;
   height: 48px;
@@ -30,7 +30,7 @@
   flex-shrink: 0;
 }
 
-/* ── Header row ── */
+/* â”€â”€ Header row â”€â”€ */
 .ks-cat-header-row {
   display: flex;
   align-items: center;
@@ -40,7 +40,7 @@
   margin-bottom: 20px;
 }
 
-/* ── Search ── */
+/* â”€â”€ Search â”€â”€ */
 .ks-cat-search-wrap {
   position: relative;
   width: 100%;
@@ -81,7 +81,7 @@
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.08);
 }
 
-/* ── Stats strip ── */
+/* â”€â”€ Stats strip â”€â”€ */
 .ks-cat-stats-strip {
   display: flex;
   align-items: center;
@@ -119,14 +119,14 @@
   flex-shrink: 0;
 }
 
-/* ── Grid ── */
+/* â”€â”€ Grid â”€â”€ */
 .ks-cat-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
-/* ── Card ── */
+/* â”€â”€ Card â”€â”€ */
 .ks-cat-card {
   display: flex;
   flex-direction: column;
@@ -177,9 +177,9 @@
   color: #ea6b0e;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 1023px) {
   .ks-cat-grid {

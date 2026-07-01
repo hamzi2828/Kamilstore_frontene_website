@@ -1,6 +1,6 @@
 "use client";
 
-import { Truck, RotateCcw, ShieldCheck, BadgeCheck } from "lucide-react";
+import { Truck, RotateCcw, ShieldCheck, BadgeCheck } from "@/components/icons";
 import { useLanguage } from "@/lib/i18n";
 
 const badges = [

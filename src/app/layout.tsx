@@ -14,7 +14,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "KamilStore - Multi-Vendor E-Commerce Marketplace",
+  title: "worldB2B - Multi-Vendor E-Commerce Marketplace",
   description: "Shop from thousands of verified vendors. Find the best deals on electronics, fashion, home goods, and more.",
   keywords: "e-commerce, multi-vendor, marketplace, online shopping, deals",
 };

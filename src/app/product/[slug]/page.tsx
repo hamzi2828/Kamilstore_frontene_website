@@ -7,7 +7,7 @@ import {
   Star, Heart, ShoppingCart, Truck, Shield,
   RotateCcw, Share2, Minus, Plus, CheckCircle,
   Flame, ChevronRight,
-} from "lucide-react";
+} from "@/components/icons";
 import { formatPrice } from "@/lib/utils";
 import ProductCard from "@/components/ui/ProductCard";
 import ProductImage from "@/components/ui/ProductImage";

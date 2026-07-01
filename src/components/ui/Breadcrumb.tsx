@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Home } from "lucide-react";
+import { Home } from "@/components/icons";
 import { useLanguage } from "@/lib/i18n";
 
 interface BreadcrumbItem {

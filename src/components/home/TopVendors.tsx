@@ -6,7 +6,7 @@ import "@/styling/TopVendors.css";
 import {
   Store, ChevronRight, ShieldCheck, MapPin,
   UserCircle, CalendarDays, ArrowRight, TrendingUp,
-} from "lucide-react";
+} from "@/components/icons";
 import { getVendors, type Vendor } from "@/app/vendors/services/vendorsApi";
 import { useLanguage } from "@/lib/i18n";
 

@@ -9,7 +9,7 @@ import {
   ArrowRight, Star, Store, Zap, TrendingUp, Bell,
   Smartphone, Shirt, Home, Dumbbell, Gamepad2, Watch, Car, Tags,
   type LucideIcon,
-} from "lucide-react";
+} from "@/components/icons";
 import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/lib/wishlist-context";
@@ -205,8 +205,8 @@ export default function Header() {
             <div className="flex items-center gap-2 lg:gap-4 h-12 lg:h-20">
               {/* Logo */}
               <Link href={routes.home} className="flex-shrink-0 flex items-baseline gap-0.5" onClick={closeMobileMenu}>
-                <span className="text-xl lg:text-2xl font-extrabold text-orange-600 tracking-tight leading-none">Kamil</span>
-                <span className="text-xl lg:text-2xl font-extrabold text-gray-900 tracking-tight leading-none">Store</span>
+                <span className="text-xl lg:text-2xl font-extrabold text-orange-600 tracking-tight leading-none">world</span>
+                <span className="text-xl lg:text-2xl font-extrabold text-gray-900 tracking-tight leading-none">B2B</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-600 ml-0.5" />
               </Link>
 
@@ -523,7 +523,7 @@ export default function Header() {
             {/* Panel header */}
             <div className="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-4 bg-[#1A1A2E]">
               <span className="text-white font-extrabold text-base sm:text-lg">
-                <span className="text-orange-500">Kamil</span>Store
+                <span className="text-orange-500">world</span>B2B
               </span>
               <button
                 onClick={closeMobileMenu}

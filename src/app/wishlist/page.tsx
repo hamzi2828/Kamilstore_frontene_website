@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Heart, ShoppingCart, Trash2, Share2, ArrowRight,
   ShoppingBag, Package,
-} from "lucide-react";
+} from "@/components/icons";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
 import Breadcrumb from "@/components/ui/Breadcrumb";

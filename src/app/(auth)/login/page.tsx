@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, Mail, Lock, ArrowRight, ShieldCheck, Store, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, ArrowRight, ShieldCheck, Store, Loader2 } from "@/components/icons";
 import { useAuth } from "@/lib/auth-context";
 import { useLanguage } from "@/lib/i18n";
 import "@/styling/AuthPages.css";
@@ -50,8 +50,8 @@ export default function LoginPage() {
 
         <div className="ks-auth-brand-content">
           <Link href="/" className="ks-auth-logo">
-            <span className="ks-auth-logo-k">Kamil</span>
-            <span className="ks-auth-logo-s">Store</span>
+            <span className="ks-auth-logo-k">world</span>
+            <span className="ks-auth-logo-s">B2B</span>
             <span className="ks-auth-logo-dot" />
           </Link>
 
@@ -78,8 +78,8 @@ export default function LoginPage() {
         <div className="ks-auth-form-wrap">
           {/* Mobile logo */}
           <Link href="/" className="ks-auth-mobile-logo">
-            <span className="ks-auth-logo-k">Kamil</span>
-            <span className="ks-auth-logo-s">Store</span>
+            <span className="ks-auth-logo-k">world</span>
+            <span className="ks-auth-logo-s">B2B</span>
             <span className="ks-auth-logo-dot" />
           </Link>
 

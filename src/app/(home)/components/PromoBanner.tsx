@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Cpu, Shirt, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowRight, Cpu, Shirt, Sparkles, type LucideIcon } from "@/components/icons";
 import "@/styling/PromoBanner.css";
 import { useBanners } from "../hooks/useBanners";
 import type { Banner } from "../types";

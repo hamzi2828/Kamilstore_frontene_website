@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Search, ChevronDown, Store,
   ArrowRight, Users, Package,
-} from "lucide-react";
+} from "@/components/icons";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { VendorCard, VendorsEmpty, VendorsLoading } from "./components";
 import { getVendors, type Vendor, type VendorsPagination } from "./services/vendorsApi";

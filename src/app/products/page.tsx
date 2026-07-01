@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import ProductCard from "@/components/ui/ProductCard";
-import { SlidersHorizontal, Grid, List, ChevronDown, X, Search, Loader2 } from "lucide-react";
+import { SlidersHorizontal, Grid, List, ChevronDown, X, Search, Loader2 } from "@/components/icons";
 import { getProducts, ProductListItem, ProductsPagination } from "./services/productsApi";
 import { categoriesApi, NavCategory } from "@/components/layout/service/categoriesApi";
 import { useLanguage } from "@/lib/i18n";

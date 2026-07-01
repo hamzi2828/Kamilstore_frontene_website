@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   CartPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CartPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Icon box ── */
+/* â”€â”€ Icon box â”€â”€ */
 .ks-cart-icon-box {
   width: 48px; height: 48px; border-radius: 14px;
   background: linear-gradient(135deg, #fff7ed, #ffedd5);
@@ -10,7 +10,7 @@
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 
-/* ── Layout ── */
+/* â”€â”€ Layout â”€â”€ */
 .ks-cart-layout {
   display: grid;
   grid-template-columns: 1fr 380px;
@@ -21,7 +21,7 @@
 .ks-cart-items-col { min-width: 0; }
 .ks-cart-summary-col { min-width: 0; }
 
-/* ── Table head ── */
+/* â”€â”€ Table head â”€â”€ */
 .ks-cart-table-head {
   display: none;
   grid-template-columns: 1fr 120px 140px 140px;
@@ -39,7 +39,7 @@
 .ks-cart-th { text-align: center; }
 .ks-cart-th-right { text-align: right; }
 
-/* ── Cart items ── */
+/* â”€â”€ Cart items â”€â”€ */
 .ks-cart-items { display: flex; flex-direction: column; }
 
 .ks-cart-item {
@@ -118,7 +118,7 @@
 }
 .ks-cart-remove-btn:hover { border-color: #fecaca; background: #fef2f2; color: #ef4444; }
 
-/* ── Actions bar ── */
+/* â”€â”€ Actions bar â”€â”€ */
 .ks-cart-actions {
   display: flex; align-items: center; justify-content: space-between;
   margin-top: 16px;
@@ -138,7 +138,7 @@
 }
 .ks-cart-clear-btn:hover { color: #ef4444; }
 
-/* ── Order Summary ── */
+/* â”€â”€ Order Summary â”€â”€ */
 .ks-cart-summary-card {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9;
   padding: 24px; position: sticky; top: 180px;
@@ -227,7 +227,7 @@
 
 .ks-cart-trust-icon { width: 13px; height: 13px; color: #10b981; }
 
-/* ── Empty state ── */
+/* â”€â”€ Empty state â”€â”€ */
 .ks-cart-empty-card {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9;
   padding: 60px 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
@@ -250,9 +250,9 @@
   box-shadow: 0 6px 20px rgba(234,107,14,0.25);
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (min-width: 768px) {
   .ks-cart-table-head { display: grid; }

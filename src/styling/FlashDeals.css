@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   FlashDeals — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FlashDeals â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Container ── */
+/* â”€â”€ Container â”€â”€ */
 .ks-flash-wrap {
   background: #ffffff;
   border-radius: 20px;
@@ -11,7 +11,7 @@
   position: relative;
 }
 
-/* ── Top accent bar ── */
+/* â”€â”€ Top accent bar â”€â”€ */
 .ks-flash-accent-bar {
   height: 3px;
   background: linear-gradient(90deg, #ef4444 0%, #f97316 40%, #eab308 100%);
@@ -37,7 +37,7 @@
   100% { background-position: 200% 0; }
 }
 
-/* ── Header ── */
+/* â”€â”€ Header â”€â”€ */
 .ks-flash-header {
   padding: 20px 24px 18px;
   border-bottom: 1px solid #f5f5f5;
@@ -50,7 +50,7 @@
   gap: 16px;
 }
 
-/* ── Title area ── */
+/* â”€â”€ Title area â”€â”€ */
 .ks-flash-title-area {
   display: flex;
   align-items: center;
@@ -155,7 +155,7 @@
   font-weight: 500;
 }
 
-/* ── Timer ── */
+/* â”€â”€ Timer â”€â”€ */
 .ks-flash-timer-area {
   display: flex;
   flex-direction: column;
@@ -259,7 +259,7 @@
   background: #d1d5db;
 }
 
-/* ── View all link ── */
+/* â”€â”€ View all link â”€â”€ */
 .ks-flash-viewall {
   display: flex;
   align-items: center;
@@ -296,7 +296,7 @@
   transform: translateX(2px);
 }
 
-/* ── Product Grid ── */
+/* â”€â”€ Product Grid â”€â”€ */
 .ks-flash-grid-area {
   padding: 20px 24px;
 }
@@ -307,7 +307,7 @@
   gap: 16px;
 }
 
-/* ── Product Card Wrapper ── */
+/* â”€â”€ Product Card Wrapper â”€â”€ */
 .ks-flash-product {
   position: relative;
   background: #ffffff;
@@ -323,7 +323,7 @@
   transform: translateY(-3px);
 }
 
-/* ── Sold progress section ── */
+/* â”€â”€ Sold progress section â”€â”€ */
 .ks-flash-sold-section {
   padding: 0 14px 14px;
   margin-top: -2px;
@@ -408,7 +408,7 @@
   50% { opacity: 0.6; }
 }
 
-/* ── Bottom banner ── */
+/* â”€â”€ Bottom banner â”€â”€ */
 .ks-flash-bottom {
   padding: 0 24px 20px;
 }
@@ -465,9 +465,9 @@
   height: 14px;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 /* Large tablet / small laptop: 3 columns */
 @media (max-width: 1279px) {

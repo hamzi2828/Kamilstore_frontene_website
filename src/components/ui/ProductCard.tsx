@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Heart, ShoppingCart, Eye, Zap, Star } from "lucide-react";
+import { Heart, ShoppingCart, Eye, Zap, Star } from "@/components/icons";
 import { useWishlist } from "@/lib/wishlist-context";
 import { useCart } from "@/lib/cart-context";
 import { useLanguage } from "@/lib/i18n";

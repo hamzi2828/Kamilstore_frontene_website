@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   MapPin, Plus, Edit2, Trash2, CheckCircle, Home,
   Building2, Phone, User, X,
-} from "lucide-react";
+} from "@/components/icons";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useLanguage } from "@/lib/i18n";
 import "@/styling/AddressesPage.css";

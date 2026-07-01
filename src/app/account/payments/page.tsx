@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   CreditCard, Plus, Edit2, Trash2, CheckCircle, X,
   ShieldCheck, Lock,
-} from "lucide-react";
+} from "@/components/icons";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useLanguage } from "@/lib/i18n";
 import "@/styling/PaymentsPage.css";

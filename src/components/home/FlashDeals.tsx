@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Zap, ChevronRight, Flame, Clock, TrendingUp, ArrowRight } from "lucide-react";
+import { Zap, ChevronRight, Flame, Clock, TrendingUp, ArrowRight } from "@/components/icons";
 import FlashDealCard from "@/components/ui/FlashDealCard";
 import { useLanguage } from "@/lib/i18n";
 import "@/styling/FlashDeals.css";

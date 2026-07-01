@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Sparkles, ArrowRight, Loader2 } from "lucide-react";
+import { ChevronRight, Sparkles, ArrowRight, Loader2 } from "@/components/icons";
 import ProductCard from "@/components/ui/ProductCard";
 import { getProducts, ProductListItem } from "@/app/products/services/productsApi";
 import { useLanguage } from "@/lib/i18n";

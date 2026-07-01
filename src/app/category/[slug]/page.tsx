@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import ProductCard from "@/components/ui/ProductCard";
-import { SlidersHorizontal, Grid, List, ChevronDown, X, ChevronRight } from "lucide-react";
+import { SlidersHorizontal, Grid, List, ChevronDown, X, ChevronRight } from "@/components/icons";
 import { useLanguage } from "@/lib/i18n";
 
 // Mock data

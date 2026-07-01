@@ -6,7 +6,7 @@ import {
   Facebook, Twitter, Instagram, Youtube,
   Mail, Phone, MapPin, Store, Shield,
   Package, ChevronRight, Headphones, CreditCard,
-} from "lucide-react";
+} from "@/components/icons";
 import { useLanguage } from "@/lib/i18n";
 
 const footerLinks = {
@@ -89,8 +89,8 @@ export default function Footer() {
           {/* Brand column */}
           <div className="ks-footer-brand">
             <a href="/" className="ks-footer-logo">
-              <span className="ks-footer-logo-k">Kamil</span>
-              <span className="ks-footer-logo-s">Store</span>
+              <span className="ks-footer-logo-k">world</span>
+              <span className="ks-footer-logo-s">B2B</span>
               <span className="ks-footer-logo-dot" />
             </a>
             <p className="ks-footer-tagline">
@@ -175,7 +175,7 @@ export default function Footer() {
         <div className="ks-footer-bottom">
           <div className="ks-footer-bottom-inner">
             <p className="ks-footer-copy">
-              © {new Date().getFullYear()} <a href="/">KamilStore</a>. {t("footer.copyright")}
+              © {new Date().getFullYear()} <a href="/">worldB2B</a>. {t("footer.copyright")}
             </p>
             <div className="ks-footer-legal">
               <Link href="/privacy">{t("footer.privacyShort")}</Link>

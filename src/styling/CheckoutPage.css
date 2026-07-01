@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   CheckoutPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CheckoutPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Steps ── */
+/* â”€â”€ Steps â”€â”€ */
 .ks-co-steps { display: flex; align-items: center; justify-content: center; gap: 0; }
 
 .ks-co-step-group { display: flex; align-items: center; }
@@ -27,12 +27,12 @@
 .ks-co-step-active .ks-co-step-label { color: #ea6b0e; }
 .ks-co-step-done .ks-co-step-label { color: #111827; }
 
-/* ── Layout ── */
+/* â”€â”€ Layout â”€â”€ */
 .ks-co-layout { display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start; }
 .ks-co-form-col { min-width: 0; }
 .ks-co-summary-col { min-width: 0; }
 
-/* ── Card ── */
+/* â”€â”€ Card â”€â”€ */
 .ks-co-card {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9; padding: 28px;
 }
@@ -42,7 +42,7 @@
   font-size: 19px; font-weight: 800; color: #111827; margin: 0 0 24px; letter-spacing: -0.2px;
 }
 
-/* ── Form ── */
+/* â”€â”€ Form â”€â”€ */
 .ks-co-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .ks-co-field-half { grid-column: span 1; }
 .ks-co-field-full { grid-column: span 2; }
@@ -61,7 +61,7 @@
 .ks-co-input::placeholder { color: #bbb; }
 .ks-co-input:focus { border-color: #ea6b0e; background: #fff; box-shadow: 0 0 0 3px rgba(234,107,14,0.08); }
 
-/* ── Sections ── */
+/* â”€â”€ Sections â”€â”€ */
 .ks-co-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid #f5f5f5; }
 
 .ks-co-section-title {
@@ -69,7 +69,7 @@
   font-size: 15px; font-weight: 700; color: #111827; margin: 0 0 16px;
 }
 
-/* ── Radio cards ── */
+/* â”€â”€ Radio cards â”€â”€ */
 .ks-co-radio-group { display: flex; flex-direction: column; gap: 10px; }
 
 .ks-co-radio-card {
@@ -86,7 +86,7 @@
 .ks-co-radio-price { margin-left: auto; font-size: 14px; font-weight: 700; color: #374151; flex-shrink: 0; }
 .ks-co-radio-price-free { color: #059669; }
 
-/* ── Buttons ── */
+/* â”€â”€ Buttons â”€â”€ */
 .ks-co-btn-row { display: flex; gap: 12px; margin-top: 28px; }
 
 .ks-co-back-btn {
@@ -113,7 +113,7 @@
 }
 .ks-co-place-btn:hover { background: #ea6b0e; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
 
-/* ── Review blocks ── */
+/* â”€â”€ Review blocks â”€â”€ */
 .ks-co-review-block {
   padding: 18px; background: #f9fafb; border: 1px solid #f1f5f9;
   border-radius: 14px; margin-bottom: 16px;
@@ -139,7 +139,7 @@
 .ks-co-review-item-vendor strong { color: #ea6b0e; font-weight: 700; }
 .ks-co-review-item-price { font-size: 15px; font-weight: 700; color: #111827; flex-shrink: 0; }
 
-/* ── Summary card ── */
+/* â”€â”€ Summary card â”€â”€ */
 .ks-co-summary-card {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9;
   padding: 24px; position: sticky; top: 180px;
@@ -185,9 +185,9 @@
 }
 .ks-co-trust-icon { width: 18px; height: 18px; color: #16a34a; flex-shrink: 0; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 1023px) {
   .ks-co-layout { grid-template-columns: 1fr; }

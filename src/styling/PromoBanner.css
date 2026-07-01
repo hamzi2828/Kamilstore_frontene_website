@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   PromoBanner — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PromoBanner â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Card ── */
+/* â”€â”€ Card â”€â”€ */
 .ks-promo-card {
   position: relative;
   height: 200px;
@@ -23,7 +23,7 @@
   }
 }
 
-/* ── Background image ── */
+/* â”€â”€ Background image â”€â”€ */
 .ks-promo-img {
   position: absolute;
   inset: 0;
@@ -38,7 +38,7 @@
   transform: scale(1.06);
 }
 
-/* ── Gradient overlays per variant ── */
+/* â”€â”€ Gradient overlays per variant â”€â”€ */
 .ks-promo-overlay {
   position: absolute;
   inset: 0;
@@ -63,7 +63,7 @@
   );
 }
 
-/* ── Decorative elements ── */
+/* â”€â”€ Decorative elements â”€â”€ */
 .ks-promo-decor {
   position: absolute;
   inset: 0;
@@ -108,7 +108,7 @@
   background-size: 20px 20px;
 }
 
-/* ── Content ── */
+/* â”€â”€ Content â”€â”€ */
 .ks-promo-content {
   position: relative;
   z-index: 3;
@@ -234,17 +234,17 @@
   transform: translateX(2px);
 }
 
-/* ── Blue variant CTA accent ── */
+/* â”€â”€ Blue variant CTA accent â”€â”€ */
 .ks-promo-grad-blue .ks-promo-cta {
   color: #1e3a8a;
 }
 
-/* ── Rose variant CTA accent ── */
+/* â”€â”€ Rose variant CTA accent â”€â”€ */
 .ks-promo-grad-rose .ks-promo-cta {
   color: #9f1239;
 }
 
-/* ── Mobile adjustments ── */
+/* â”€â”€ Mobile adjustments â”€â”€ */
 @media (max-width: 480px) {
   .ks-promo-content {
     padding: 20px 22px;

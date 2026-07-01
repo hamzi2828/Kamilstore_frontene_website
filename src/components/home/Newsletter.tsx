@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import "@/styling/Newsletter.css";
-import { Send, Check, Mail, Zap, Tag, Star, Shield } from "lucide-react";
+import { Send, Check, Mail, Zap, Tag, Star, Shield } from "@/components/icons";
 import { useLanguage } from "@/lib/i18n";
 
 export default function Newsletter() {

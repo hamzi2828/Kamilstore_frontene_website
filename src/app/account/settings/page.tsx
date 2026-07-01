@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   Settings, User, Lock, Bell, Globe, Eye, EyeOff,
   Save, ShieldCheck, Smartphone, Mail, Loader2, CheckCircle2, AlertCircle,
-} from "lucide-react";
+} from "@/components/icons";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useAuth } from "@/lib/auth-context";
 import { useLanguage } from "@/lib/i18n";

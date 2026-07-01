@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   FlashSalePage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FlashSalePage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Accent bar ── */
+/* â”€â”€ Accent bar â”€â”€ */
 .ks-fs-accent-bar {
   height: 3px;
   background: linear-gradient(90deg, #ef4444, #f97316, #eab308);
@@ -17,7 +17,7 @@
 }
 @keyframes ks-fs-shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
-/* ── Icon box ── */
+/* â”€â”€ Icon box â”€â”€ */
 .ks-fs-icon-box {
   position: relative; width: 48px; height: 48px; border-radius: 14px;
   background: linear-gradient(135deg, #fef2f2, #fff1f2);
@@ -34,7 +34,7 @@
   50% { opacity: 1; transform: scale(1.35); }
 }
 
-/* ── Live badge ── */
+/* â”€â”€ Live badge â”€â”€ */
 .ks-fs-live-badge {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 4px 12px; background: #fef2f2; border: 1px solid #fecaca;
@@ -47,13 +47,13 @@
 }
 @keyframes ks-fs-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-/* ── Header row ── */
+/* â”€â”€ Header row â”€â”€ */
 .ks-fs-header-row {
   display: flex; align-items: center; justify-content: space-between;
   gap: 20px; flex-wrap: wrap; margin-bottom: 20px;
 }
 
-/* ── Timer ── */
+/* â”€â”€ Timer â”€â”€ */
 .ks-fs-timer-area { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .ks-fs-timer-label {
   display: flex; align-items: center; gap: 5px;
@@ -81,14 +81,14 @@
 .ks-fs-timer-sep { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px 0; }
 .ks-fs-timer-sep span { display: block; width: 5px; height: 5px; border-radius: 50%; background: #d1d5db; }
 
-/* ── Stats ── */
+/* â”€â”€ Stats â”€â”€ */
 .ks-fs-stats-strip { display: flex; align-items: center; gap: 24px; padding: 16px 24px; background: #f9fafb; border: 1.5px solid #f1f5f9; border-radius: 16px; }
 .ks-fs-stat { display: flex; align-items: center; gap: 10px; }
 .ks-fs-stat-value { font-size: 17px; font-weight: 800; color: #111827; line-height: 1; }
 .ks-fs-stat-label { font-size: 13.5px; font-weight: 500; color: #9ca3af; line-height: 1; }
 .ks-fs-stat-sep { width: 1px; height: 24px; background: #e5e7eb; flex-shrink: 0; }
 
-/* ── Filter bar ── */
+/* â”€â”€ Filter bar â”€â”€ */
 .ks-fs-filter-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
 .ks-fs-category-pills { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex: 1; }
 .ks-fs-category-pills::-webkit-scrollbar { display: none; }
@@ -111,10 +111,10 @@
 .ks-fs-sort-select:focus { border-color: #f97316; }
 .ks-fs-sort-arrow { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #9ca3af; pointer-events: none; }
 
-/* ── Grid ── */
+/* â”€â”€ Grid â”€â”€ */
 .ks-fs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
 
-/* ── Product card ── */
+/* â”€â”€ Product card â”€â”€ */
 .ks-fs-product {
   background: #fff; border-radius: 16px; overflow: hidden;
   border: 1.5px solid #f1f5f9;
@@ -125,7 +125,7 @@
   transform: translateY(-3px);
 }
 
-/* ── Sold section ── */
+/* â”€â”€ Sold section â”€â”€ */
 .ks-fs-sold-section { padding: 0 14px 14px; margin-top: -2px; }
 .ks-fs-sold-track { height: 6px; background: #f3f4f6; border-radius: 6px; overflow: hidden; }
 .ks-fs-sold-bar {
@@ -147,7 +147,7 @@
 }
 @keyframes ks-fs-hot-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-/* ── Bottom info ── */
+/* â”€â”€ Bottom info â”€â”€ */
 .ks-fs-bottom-info {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   margin-top: 28px; padding: 14px 20px;
@@ -156,9 +156,9 @@
 }
 .ks-fs-bottom-info strong { font-weight: 700; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 1023px) {
   .ks-fs-grid { grid-template-columns: repeat(3, 1fr); }

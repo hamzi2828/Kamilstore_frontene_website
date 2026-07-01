@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import {
   Zap, Flame, Clock, TrendingUp,
   ChevronDown, SlidersHorizontal, X,
-} from "lucide-react";
+} from "@/components/icons";
 import ProductCard from "@/components/ui/ProductCard";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useLanguage } from "@/lib/i18n";

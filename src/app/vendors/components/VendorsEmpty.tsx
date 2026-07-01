@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Search } from "@/components/icons";
 import { useLanguage } from "@/lib/i18n";
 
 export default function VendorsEmpty() {

@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   TrendingUp, Flame, ChevronDown, Eye,
   ShoppingCart, Award,
-} from "lucide-react";
+} from "@/components/icons";
 import ProductCard from "@/components/ui/ProductCard";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useLanguage } from "@/lib/i18n";

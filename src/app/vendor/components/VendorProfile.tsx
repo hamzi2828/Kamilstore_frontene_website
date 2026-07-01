@@ -3,7 +3,7 @@
 import {
   ShieldCheck, MapPin, Calendar,
   MessageCircle, Mail, Phone, UserCircle,
-} from "lucide-react";
+} from "@/components/icons";
 import type { VendorDetail } from "../types";
 import { vendorApi } from "../service/vendorApi";
 import { useLanguage } from "@/lib/i18n";

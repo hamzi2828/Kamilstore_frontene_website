@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Star, ShoppingBag, Truck, ShieldCheck } from "lucide-react";
+import { Star, ShoppingBag, Truck, ShieldCheck } from "@/components/icons";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
 import { useLanguage } from "@/lib/i18n";

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Star, Trash2 } from "lucide-react";
+import { Star, Trash2 } from "@/components/icons";
 import VendorAvatar from "@/components/ui/VendorAvatar";
 import { useAuth } from "@/lib/auth-context";
 import { useLanguage } from "@/lib/i18n";

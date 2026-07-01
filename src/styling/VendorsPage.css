@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   VendorsPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   VendorsPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Icon box ── */
+/* â”€â”€ Icon box â”€â”€ */
 .ks-vs-icon-box {
   width: 48px;
   height: 48px;
@@ -15,21 +15,21 @@
   flex-shrink: 0;
 }
 
-/* ── Search ── */
+/* â”€â”€ Search â”€â”€ */
 .ks-vs-search-wrap { position: relative; width: 100%; max-width: 340px; }
 .ks-vs-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #bbb; pointer-events: none; }
 .ks-vs-search-input { width: 100%; padding: 12px 16px 12px 44px; background: #f9fafb; border: 1.5px solid #f1f5f9; border-radius: 14px; font-size: 14px; font-weight: 500; color: #333; outline: none; transition: border-color 0.2s, background 0.2s, box-shadow 0.2s; }
 .ks-vs-search-input::placeholder { color: #bbb; }
 .ks-vs-search-input:focus { border-color: #f97316; background: #fff; box-shadow: 0 0 0 3px rgba(249,115,22,0.08); }
 
-/* ── Stats strip ── */
+/* â”€â”€ Stats strip â”€â”€ */
 .ks-vs-stats-strip { display: flex; align-items: center; gap: 24px; padding: 16px 24px; background: #f9fafb; border: 1.5px solid #f1f5f9; border-radius: 16px; }
 .ks-vs-stat { display: flex; align-items: center; gap: 10px; }
 .ks-vs-stat-value { font-size: 17px; font-weight: 800; color: #111827; line-height: 1; }
 .ks-vs-stat-label { font-size: 13.5px; font-weight: 500; color: #9ca3af; line-height: 1; }
 .ks-vs-stat-sep { width: 1px; height: 24px; background: #e5e7eb; flex-shrink: 0; }
 
-/* ── Filter bar ── */
+/* â”€â”€ Filter bar â”€â”€ */
 .ks-vs-filter-bar {
   display: flex;
   align-items: center;
@@ -71,14 +71,14 @@
 .ks-vs-sort-select:focus { border-color: #f97316; }
 .ks-vs-sort-arrow { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #9ca3af; pointer-events: none; }
 
-/* ── Vendor Grid ── */
+/* â”€â”€ Vendor Grid â”€â”€ */
 .ks-vs-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 18px;
 }
 
-/* ── Vendor Card ── */
+/* â”€â”€ Vendor Card â”€â”€ */
 .ks-vs-card {
   position: relative;
   display: flex;
@@ -244,7 +244,7 @@
 .ks-vs-card-cta-icon { width: 15px; height: 15px; transition: transform 0.2s; }
 .ks-vs-card:hover .ks-vs-card-cta-icon { transform: translateX(3px); }
 
-/* ── Pagination ── */
+/* â”€â”€ Pagination â”€â”€ */
 .ks-vs-pagination {
   display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 28px;
 }
@@ -256,7 +256,7 @@
 .ks-vs-page-active { background: #ea6b0e; border-color: #ea6b0e; color: #fff; }
 .ks-vs-page-active:hover { background: #d45d00; border-color: #d45d00; color: #fff; }
 
-/* ── Become a Seller CTA ── */
+/* â”€â”€ Become a Seller CTA â”€â”€ */
 .ks-vs-cta-card {
   display: flex;
   align-items: center;
@@ -297,9 +297,9 @@
   box-shadow: 0 6px 20px rgba(234,107,14,0.25);
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 1023px) {
   .ks-vs-grid { grid-template-columns: repeat(2, 1fr); }

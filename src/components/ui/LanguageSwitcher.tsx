@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Check, Globe } from "lucide-react";
+import { Check, Globe } from "@/components/icons";
 import { SUPPORTED_LOCALES, useLanguage } from "@/lib/i18n";
 
 type Accent = "blue" | "orange";

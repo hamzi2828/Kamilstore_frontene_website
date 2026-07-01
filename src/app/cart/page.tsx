@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Trash2, Minus, Plus, ShoppingBag, ArrowRight, Tag,
   ShoppingCart, ShieldCheck, Truck, Package, RotateCcw,
-} from "lucide-react";
+} from "@/components/icons";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
 import Breadcrumb from "@/components/ui/Breadcrumb";

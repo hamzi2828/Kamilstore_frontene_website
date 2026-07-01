@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   Package, Heart, MapPin, CreditCard, Settings,
   LogOut, ChevronRight, Star,
-} from "lucide-react";
+} from "@/components/icons";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useAuth } from "@/lib/auth-context";
 import { useWishlist } from "@/lib/wishlist-context";

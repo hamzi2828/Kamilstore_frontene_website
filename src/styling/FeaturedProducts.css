@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   FeaturedProducts — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   FeaturedProducts â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Container ── */
+/* â”€â”€ Container â”€â”€ */
 .ks-fp-wrap {
   background: #ffffff;
   border-radius: 20px;
@@ -10,7 +10,7 @@
   border: 1px solid #f1f5f9;
 }
 
-/* ── Header ── */
+/* â”€â”€ Header â”€â”€ */
 .ks-fp-header {
   display: flex;
   align-items: center;
@@ -59,7 +59,7 @@
   font-weight: 500;
 }
 
-/* ── View All button ── */
+/* â”€â”€ View All button â”€â”€ */
 .ks-fp-viewall {
   display: flex;
   align-items: center;
@@ -96,7 +96,7 @@
   transform: translateX(2px);
 }
 
-/* ── Tabs ── */
+/* â”€â”€ Tabs â”€â”€ */
 .ks-fp-tabs-wrap {
   padding: 18px 24px 0;
   overflow-x: auto;
@@ -171,7 +171,7 @@
   color: #ea6b0e;
 }
 
-/* ── Grid ── */
+/* â”€â”€ Grid â”€â”€ */
 .ks-fp-grid-area {
   padding: 20px 24px;
 }
@@ -182,7 +182,7 @@
   gap: 12px;
 }
 
-/* ── Product Card ── */
+/* â”€â”€ Product Card â”€â”€ */
 .ks-fp-product {
   background: #ffffff;
   border-radius: 16px;
@@ -197,7 +197,7 @@
   transform: translateY(-3px);
 }
 
-/* ── Empty state ── */
+/* â”€â”€ Empty state â”€â”€ */
 .ks-fp-empty {
   display: flex;
   flex-direction: column;
@@ -220,7 +220,7 @@
   margin: 0;
 }
 
-/* ── Bottom strip ── */
+/* â”€â”€ Bottom strip â”€â”€ */
 .ks-fp-bottom {
   display: flex;
   align-items: center;
@@ -263,9 +263,9 @@
   height: 14px;
 }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 1279px) {
   .ks-fp-grid {

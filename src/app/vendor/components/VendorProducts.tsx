@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, Grid, List, ChevronRight } from "lucide-react";
+import { ChevronDown, Grid, List, ChevronRight } from "@/components/icons";
 import ProductCard from "@/components/ui/ProductCard";
 import {
   useVendorCategories,

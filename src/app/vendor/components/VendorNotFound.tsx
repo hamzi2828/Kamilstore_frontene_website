@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Store } from "lucide-react";
+import { Store } from "@/components/icons";
 import { useLanguage } from "@/lib/i18n";
 
 export default function VendorNotFound() {

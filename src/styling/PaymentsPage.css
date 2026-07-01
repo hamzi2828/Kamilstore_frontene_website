@@ -1,6 +1,6 @@
-/* ═══════════════════════════════════════════
-   PaymentsPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PaymentsPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .ks-pay-icon-box {
   width: 48px; height: 48px; border-radius: 14px;
@@ -18,10 +18,10 @@
 }
 .ks-pay-add-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
 
-/* ── Grid ── */
+/* â”€â”€ Grid â”€â”€ */
 .ks-pay-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 
-/* ── Payment Card ── */
+/* â”€â”€ Payment Card â”€â”€ */
 .ks-pay-card {
   background: #fff; border-radius: 20px; border: 1.5px solid #f1f5f9;
   overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
@@ -84,7 +84,7 @@
 .ks-pay-action-delete { color: #9ca3af; margin-left: auto; }
 .ks-pay-action-delete:hover { color: #ef4444; }
 
-/* ── Add placeholder ── */
+/* â”€â”€ Add placeholder â”€â”€ */
 .ks-pay-add-card {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 12px; background: #fff; border-radius: 20px;
@@ -103,14 +103,14 @@
 .ks-pay-add-card-text { font-size: 14px; font-weight: 700; color: #9ca3af; transition: color 0.15s; }
 .ks-pay-add-card:hover .ks-pay-add-card-text { color: #ea6b0e; }
 
-/* ── Security note ── */
+/* â”€â”€ Security note â”€â”€ */
 .ks-pay-security {
   display: flex; align-items: center; gap: 8px; margin-top: 20px;
   padding: 14px 20px; background: #f0fdf4; border: 1px solid #bbf7d0;
   border-radius: 14px; font-size: 12.5px; font-weight: 500; color: #166534;
 }
 
-/* ── Empty ── */
+/* â”€â”€ Empty â”€â”€ */
 .ks-pay-empty {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9;
   padding: 60px 24px; display: flex; flex-direction: column; align-items: center; text-align: center;
@@ -130,7 +130,7 @@
 }
 .ks-pay-empty-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,107,14,0.25); }
 
-/* ── Modal ── */
+/* â”€â”€ Modal â”€â”€ */
 .ks-pay-modal-overlay {
   position: fixed; inset: 0; z-index: 50;
   background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
@@ -206,9 +206,9 @@
 }
 .ks-pay-save-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(234,107,14,0.25); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 768px) {
   .ks-pay-grid { grid-template-columns: 1fr; }

@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Package, Heart, MapPin, CreditCard,
   ChevronRight, Edit2, Clock,
-} from "lucide-react";
+} from "@/components/icons";
 import { useAuth } from "@/lib/auth-context";
 import { useWishlist } from "@/lib/wishlist-context";
 import { useLanguage } from "@/lib/i18n";

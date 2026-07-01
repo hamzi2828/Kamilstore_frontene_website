@@ -1,8 +1,8 @@
-/* ═══════════════════════════════════════════
-   ProductPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   ProductPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Main image ── */
+/* â”€â”€ Main image â”€â”€ */
 .ks-pd-main-img {
   position: relative; aspect-ratio: 1; background: #f9fafb;
   border-radius: 18px; overflow: hidden; margin-bottom: 14px;
@@ -37,7 +37,7 @@
 .ks-pd-thumb:hover { border-color: #d1d5db; }
 .ks-pd-thumb-active { border-color: #ea6b0e; box-shadow: 0 0 0 2px rgba(234,107,14,0.15); }
 
-/* ── Vendor link ── */
+/* â”€â”€ Vendor link â”€â”€ */
 .ks-pd-vendor-link {
   display: inline-flex; align-items: center; gap: 8px;
   text-decoration: none; margin-bottom: 12px;
@@ -52,7 +52,7 @@
   font-size: 11px; font-weight: 800; color: #ea6b0e;
 }
 
-/* ── Title ── */
+/* â”€â”€ Title â”€â”€ */
 .ks-pd-title {
   font-size: 24px; font-weight: 800; color: #111827;
   line-height: 1.25; margin: 0 0 14px; letter-spacing: -0.3px;
@@ -62,7 +62,7 @@
   .ks-pd-title { font-size: 28px; }
 }
 
-/* ── Rating ── */
+/* â”€â”€ Rating â”€â”€ */
 .ks-pd-rating-row {
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
   margin-bottom: 20px;
@@ -77,7 +77,7 @@
 }
 .ks-pd-stock-dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; }
 
-/* ── Price ── */
+/* â”€â”€ Price â”€â”€ */
 .ks-pd-price-row {
   display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
   margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1.5px solid #f1f5f9;
@@ -86,7 +86,7 @@
 .ks-pd-price-old { font-size: 18px; color: #bbb; text-decoration: line-through; font-weight: 500; }
 .ks-pd-save-badge { font-size: 12px; font-weight: 800; color: #dc2626; background: #fef2f2; padding: 4px 10px; border-radius: 8px; }
 
-/* ── Variants ── */
+/* â”€â”€ Variants â”€â”€ */
 .ks-pd-variant-group { margin-bottom: 20px; }
 .ks-pd-variant-label { display: block; font-size: 14px; font-weight: 700; color: #374151; margin-bottom: 10px; }
 .ks-pd-variant-selected { color: #ea6b0e; }
@@ -101,7 +101,7 @@
 .ks-pd-variant-btn:hover { border-color: #d1d5db; }
 .ks-pd-variant-btn-active { border-color: #ea6b0e; border-width: 2px; background: #fff7ed; color: #ea6b0e; }
 
-/* ── Quantity ── */
+/* â”€â”€ Quantity â”€â”€ */
 .ks-pd-qty {
   display: inline-flex; align-items: center;
   border: 1.5px solid #f1f5f9; border-radius: 12px; overflow: hidden; background: #f9fafb;
@@ -114,7 +114,7 @@
 .ks-pd-qty-btn:hover { background: #f3f4f6; color: #111; }
 .ks-pd-qty-value { width: 48px; text-align: center; font-size: 16px; font-weight: 800; color: #111; }
 
-/* ── Actions ── */
+/* â”€â”€ Actions â”€â”€ */
 .ks-pd-actions { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
 
 .ks-pd-add-cart-btn {
@@ -141,7 +141,7 @@
 }
 .ks-pd-icon-btn:hover { border-color: #d1d5db; background: #f9fafb; color: #374151; }
 
-/* ── Features ── */
+/* â”€â”€ Features â”€â”€ */
 .ks-pd-features { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
 
 .ks-pd-feature {
@@ -153,7 +153,7 @@
 .ks-pd-feature-title { font-size: 13px; font-weight: 700; color: #374151; }
 .ks-pd-feature-desc { font-size: 12px; color: #9ca3af; margin-top: 1px; }
 
-/* ── Vendor card ── */
+/* â”€â”€ Vendor card â”€â”€ */
 .ks-pd-vendor-card {
   display: flex; align-items: center; gap: 14px;
   padding: 16px; background: #f9fafb; border: 1.5px solid #f1f5f9;
@@ -186,7 +186,7 @@
 }
 .ks-pd-vendor-card-dot { width: 3px; height: 3px; border-radius: 50%; background: #d1d5db; }
 
-/* ── Tabs ── */
+/* â”€â”€ Tabs â”€â”€ */
 .ks-pd-tab {
   padding: 16px 20px; font-size: 14px; font-weight: 700; cursor: pointer;
   color: #9ca3af; background: none; border: none; position: relative;
@@ -243,7 +243,7 @@
 }
 .ks-pd-write-review-btn:hover { background: #fff7ed; }
 
-/* ── Related grid ── */
+/* â”€â”€ Related grid â”€â”€ */
 .ks-pd-related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 
 .ks-pd-related-card {
@@ -253,9 +253,9 @@
 }
 .ks-pd-related-card:hover { border-color: #fdba74; box-shadow: 0 8px 28px rgba(234,107,14,0.08); transform: translateY(-3px); }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 1023px) {
   .ks-pd-related-grid { grid-template-columns: repeat(2, 1fr); }

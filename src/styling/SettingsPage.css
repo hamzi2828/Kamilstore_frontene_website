@@ -1,6 +1,6 @@
-/* ═══════════════════════════════════════════
-   SettingsPage — KamilStore
-   ═══════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   SettingsPage â€” worldB2B
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 .ks-set-icon-box {
   width: 48px; height: 48px; border-radius: 14px;
@@ -9,7 +9,7 @@
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 
-/* ── Section card ── */
+/* â”€â”€ Section card â”€â”€ */
 .ks-set-card {
   background: #fff; border-radius: 20px; border: 1px solid #f1f5f9; overflow: hidden;
 }
@@ -27,7 +27,7 @@
 .ks-set-card-title { font-size: 17px; font-weight: 800; color: #111827; margin: 0; }
 .ks-set-card-sub { font-size: 13px; color: #9ca3af; margin: 3px 0 0; font-weight: 500; }
 
-/* ── Form ── */
+/* â”€â”€ Form â”€â”€ */
 .ks-set-form-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
   padding: 24px;
@@ -79,7 +79,7 @@
 }
 .ks-set-save-btn:hover { background: #d45d00; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(234,107,14,0.25); }
 
-/* ── Toggles ── */
+/* â”€â”€ Toggles â”€â”€ */
 .ks-set-toggle-list {
   display: flex; flex-direction: column;
 }
@@ -112,7 +112,7 @@
 }
 .ks-set-toggle-on .ks-set-toggle-knob { transform: translateX(20px); }
 
-/* ── Danger zone ── */
+/* â”€â”€ Danger zone â”€â”€ */
 .ks-set-danger-card {
   display: flex; align-items: center; justify-content: space-between;
   gap: 20px; flex-wrap: wrap;
@@ -130,9 +130,9 @@
 }
 .ks-set-danger-btn:hover { background: #fef2f2; border-color: #ef4444; }
 
-/* ═══════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    Responsive
-   ═══════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @media (max-width: 768px) {
   .ks-set-form-grid { grid-template-columns: 1fr; padding: 18px; }
