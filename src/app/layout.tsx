@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
 import { WishlistProvider } from "@/lib/wishlist-context";
+import { LanguageProvider } from "@/lib/i18n";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,17 +27,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <Header />
-              {/* Spacer: mobile 72 (24 topbar + 48 main); desktop 160 (36 + 80 + 44) */}
-              <div id="header-spacer" className="h-[72px] lg:h-[160px]" />
-              <main className="min-h-screen">{children}</main>
-              <Footer />
-            </WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <Header />
+                {/* Spacer: mobile 72 (24 topbar + 48 main); desktop 160 (36 + 80 + 44) */}
+                <div id="header-spacer" className="h-[72px] lg:h-[160px]" />
+                <main className="min-h-screen">{children}</main>
+                <Footer />
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

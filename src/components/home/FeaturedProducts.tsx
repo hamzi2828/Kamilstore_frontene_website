@@ -5,11 +5,13 @@ import Link from "next/link";
 import { ChevronRight, Sparkles, ArrowRight, Loader2 } from "lucide-react";
 import ProductCard from "@/components/ui/ProductCard";
 import { getProducts, ProductListItem } from "@/app/products/services/productsApi";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/FeaturedProducts.css";
 
 const MAX_FEATURED = 25;
 
 export default function FeaturedProducts() {
+  const { t } = useLanguage();
   const [products, setProducts] = useState<ProductListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export default function FeaturedProducts() {
       })
       .catch((err: Error) => {
         if (cancelled) return;
-        setError(err.message || "Failed to load products");
+        setError(err.message || t("home.featured.loadError"));
         setProducts([]);
       })
       .finally(() => {
@@ -48,11 +50,11 @@ export default function FeaturedProducts() {
               <Sparkles className="ks-fp-icon-svg" />
             </div>
             <div>
-              <h2 className="ks-fp-title">Featured Products</h2>
+              <h2 className="ks-fp-title">{t("home.featured.title")}</h2>
             </div>
           </div>
           <Link href="/products" className="ks-fp-viewall">
-            View All
+            {t("common.viewAll")}
             <ArrowRight className="ks-fp-viewall-icon" />
           </Link>
         </div>
@@ -62,7 +64,7 @@ export default function FeaturedProducts() {
           {loading ? (
             <div className="ks-fp-empty">
               <Loader2 className="ks-fp-empty-icon animate-spin" />
-              <p>Loading products...</p>
+              <p>{t("home.featured.loading")}</p>
             </div>
           ) : error ? (
             <div className="ks-fp-empty">
@@ -72,7 +74,7 @@ export default function FeaturedProducts() {
           ) : products.length === 0 ? (
             <div className="ks-fp-empty">
               <Sparkles className="ks-fp-empty-icon" />
-              <p>No featured products available</p>
+              <p>{t("home.featured.empty")}</p>
             </div>
           ) : (
             <div className="ks-fp-grid">
@@ -89,10 +91,10 @@ export default function FeaturedProducts() {
         {!loading && !error && products.length > 0 && (
           <div className="ks-fp-bottom">
             <span className="ks-fp-bottom-text">
-              Showing <strong>{products.length}</strong> featured products
+              {t("home.featured.showingPrefix")} <strong>{products.length}</strong> {t("home.featured.showingSuffix")}
             </span>
             <Link href="/products" className="ks-fp-bottom-link">
-              Browse all products
+              {t("home.featured.browseAll")}
               <ChevronRight className="ks-fp-bottom-link-icon" />
             </Link>
           </div>

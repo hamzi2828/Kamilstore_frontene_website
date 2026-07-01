@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import ProductCard from "@/components/ui/ProductCard";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/FlashSalePage.css";
 
 const allProducts = [
@@ -20,15 +21,22 @@ const allProducts = [
   { _id: "8", name: "Minimalist Leather Wallet RFID Blocking", slug: "leather-wallet-rfid", images: ["https://images.unsplash.com/photo-1627123424574-724758594e93?w=400&h=400&fit=crop"], sellingPrice: 45.99, discountPrice: 24.99, rating: 4.2, reviewCount: 94, vendor: { name: "FashionPlus", slug: "fashionplus" } },
 ];
 
-const categoryFilters = ["All", "Electronics", "Fashion", "Sports", "Accessories"];
+const categoryFilters = [
+  { value: "All", labelKey: "catalog.all" },
+  { value: "Electronics", labelKey: "catalog.dept.electronics.name" },
+  { value: "Fashion", labelKey: "catalog.dept.fashion.name" },
+  { value: "Sports", labelKey: "catalog.filter.sports" },
+  { value: "Accessories", labelKey: "catalog.sub.accessories" },
+];
 
 export default function TrendingPage() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("popular");
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Trending" }]} />
+      <Breadcrumb items={[{ label: t("nav.trending") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         {/* ── Header Card ── */}
@@ -45,10 +53,10 @@ export default function TrendingPage() {
                   </div>
                   <div>
                     <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                      Trending Now
+                      {t("catalog.trending.title")}
                     </h1>
                     <p className="text-sm text-[#999] font-medium mt-1.5">
-                      Most popular products this week
+                      {t("catalog.trending.subtitle")}
                     </p>
                   </div>
                 </div>
@@ -59,19 +67,19 @@ export default function TrendingPage() {
                 <div className="ks-fs-stat">
                   <Flame className="w-[18px] h-[18px] text-orange-500" />
                   <span className="ks-fs-stat-value">{allProducts.length}</span>
-                  <span className="ks-fs-stat-label">Trending Items</span>
+                  <span className="ks-fs-stat-label">{t("catalog.stats.trendingItems")}</span>
                 </div>
                 <div className="ks-fs-stat-sep" />
                 <div className="ks-fs-stat">
                   <Eye className="w-[18px] h-[18px] text-blue-500" />
                   <span className="ks-fs-stat-value">18k+</span>
-                  <span className="ks-fs-stat-label">Views This Week</span>
+                  <span className="ks-fs-stat-label">{t("catalog.stats.viewsThisWeek")}</span>
                 </div>
                 <div className="ks-fs-stat-sep" />
                 <div className="ks-fs-stat">
                   <ShoppingCart className="w-[18px] h-[18px] text-emerald-500" />
                   <span className="ks-fs-stat-value">3.6k+</span>
-                  <span className="ks-fs-stat-label">Purchased</span>
+                  <span className="ks-fs-stat-label">{t("catalog.stats.purchased")}</span>
                 </div>
               </div>
             </div>
@@ -86,12 +94,12 @@ export default function TrendingPage() {
               <div className="ks-fs-category-pills">
                 {categoryFilters.map((cat) => (
                   <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`ks-fs-pill ${selectedCategory === cat ? "ks-fs-pill-active" : ""}`}
-                    style={selectedCategory === cat ? { background: "#10b981", borderColor: "#10b981" } : {}}
+                    key={cat.value}
+                    onClick={() => setSelectedCategory(cat.value)}
+                    className={`ks-fs-pill ${selectedCategory === cat.value ? "ks-fs-pill-active" : ""}`}
+                    style={selectedCategory === cat.value ? { background: "#10b981", borderColor: "#10b981" } : {}}
                   >
-                    {cat}
+                    {t(cat.labelKey)}
                   </button>
                 ))}
               </div>
@@ -102,18 +110,18 @@ export default function TrendingPage() {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="ks-fs-sort-select"
                 >
-                  <option value="popular">Most Popular</option>
-                  <option value="views">Most Viewed</option>
-                  <option value="rating">Top Rated</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
+                  <option value="popular">{t("catalog.sort.mostPopular")}</option>
+                  <option value="views">{t("catalog.sort.mostViewed")}</option>
+                  <option value="rating">{t("catalog.sort.topRated")}</option>
+                  <option value="price-low">{t("catalog.sort.priceLow")}</option>
+                  <option value="price-high">{t("catalog.sort.priceHigh")}</option>
                 </select>
                 <ChevronDown className="ks-fs-sort-arrow" />
               </div>
             </div>
 
             <p className="text-[13px] text-[#999] font-medium mb-5">
-              Showing <strong className="text-[#555]">{allProducts.length}</strong> trending products
+              {t("catalog.showingPrefix")} <strong className="text-[#555]">{allProducts.length}</strong> {t("catalog.trendingProductsWord")}
             </p>
 
             {/* Grid */}
@@ -128,7 +136,7 @@ export default function TrendingPage() {
             {/* Bottom info */}
             <div className="ks-fs-bottom-info">
               <TrendingUp className="w-4 h-4 text-emerald-500" />
-              <span>Trending products updated <strong>every hour</strong> based on real-time data</span>
+              <span>{t("catalog.trending.bottomPre")} <strong>{t("catalog.trending.everyHour")}</strong> {t("catalog.trending.bottomPost")}</span>
             </div>
           </div>
         </section>

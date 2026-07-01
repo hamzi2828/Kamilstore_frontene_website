@@ -13,25 +13,26 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import "@/styling/CheckoutPage.css";
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
+import { useLanguage } from "@/lib/i18n";
 
 const PLACEHOLDER =
   "https://png.pngtree.com/png-vector/20241018/ourmid/pngtree-running-shoes-or-sneakers-on-a-transparent-background-png-image_14112954.png";
 
 const paymentMethods = [
-  { id: "card", name: "Credit / Debit Card", icon: CreditCard, desc: "Visa, Mastercard, AMEX" },
-  { id: "paypal", name: "PayPal", icon: Wallet, desc: "Pay with your PayPal account" },
-  { id: "cod", name: "Cash on Delivery", icon: Banknote, desc: "Pay in cash when your order arrives" },
+  { id: "card", nameKey: "cart.checkout.payment.cardName", icon: CreditCard, descKey: "cart.checkout.payment.cardDesc" },
+  { id: "paypal", nameKey: "cart.checkout.payment.paypalName", icon: Wallet, descKey: "cart.checkout.payment.paypalDesc" },
+  { id: "cod", nameKey: "cart.checkout.payment.codName", icon: Banknote, descKey: "cart.checkout.payment.codDesc" },
 ];
 
 const steps = [
-  { id: 1, label: "Shipping", icon: MapPin },
-  { id: 2, label: "Payment", icon: CreditCard },
-  { id: 3, label: "Review", icon: CheckCircle },
+  { id: 1, labelKey: "cart.checkout.steps.shipping", icon: MapPin },
+  { id: 2, labelKey: "cart.checkout.steps.payment", icon: CreditCard },
+  { id: 3, labelKey: "cart.checkout.steps.review", icon: CheckCircle },
 ];
 
 const SHIPPING_OPTIONS = [
-  { id: "standard", title: "Free Standard Shipping", desc: "5-7 business days", price: 0 },
-  { id: "express", title: "Express Shipping", desc: "2-3 business days", price: 14.99 },
+  { id: "standard", titleKey: "cart.checkout.shippingStandardTitle", descKey: "cart.checkout.shippingStandardDesc", price: 0 },
+  { id: "express", titleKey: "cart.checkout.shippingExpressTitle", descKey: "cart.checkout.shippingExpressDesc", price: 14.99 },
 ];
 
 export default function CheckoutPage() {
@@ -46,6 +47,7 @@ export default function CheckoutPage() {
     refresh,
     clearCart,
   } = useCart();
+  const { t } = useLanguage();
 
   const [step, setStep] = useState(1);
   const [shippingMethodId, setShippingMethodId] = useState("standard");
@@ -180,7 +182,7 @@ export default function CheckoutPage() {
       });
       const json = await res.json();
       if (!res.ok || !json.success) {
-        throw new Error(json.message || "Failed to place order");
+        throw new Error(json.message || t("cart.checkout.orderFailed"));
       }
 
       const vendorOrders = (json.data?.subOrders || subOrders).map((so: { orderId: string; vendorId?: string; vendorName?: string; vendor?: { id: string; name: string }; itemCount?: number; amount: number; items?: Array<{ quantity: number }>; }) => ({
@@ -194,7 +196,7 @@ export default function CheckoutPage() {
       clearCart();
       setOrderPlaced({ id: json.data?.masterOrderId || masterId, total, vendorOrders });
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Failed to place order");
+      setError(e instanceof Error ? e.message : t("cart.checkout.orderFailed"));
     } finally {
       setPlacing(false);
     }
@@ -204,11 +206,11 @@ export default function CheckoutPage() {
   if (!isReady) {
     return (
       <>
-        <Breadcrumb items={[{ label: "Cart", href: "/cart" }, { label: "Checkout" }]} />
+        <Breadcrumb items={[{ label: t("common.cart"), href: "/cart" }, { label: t("cart.checkout.title") }]} />
         <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
           <section className="site-container">
             <div style={{ textAlign: "center", padding: "48px 0", color: "#9CA3AF", fontSize: 14 }}>
-              Loading checkout...
+              {t("cart.checkout.loading")}
             </div>
           </section>
         </div>
@@ -220,25 +222,29 @@ export default function CheckoutPage() {
   if (orderPlaced) {
     return (
       <>
-        <Breadcrumb items={[{ label: "Checkout" }]} />
+        <Breadcrumb items={[{ label: t("cart.checkout.title") }]} />
         <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
           <section className="site-container">
             <div className="bg-white rounded-2xl p-10 text-center max-w-2xl mx-auto">
               <div className="w-20 h-20 mx-auto rounded-full bg-emerald-50 flex items-center justify-center mb-5">
                 <CheckCircle className="w-10 h-10 text-emerald-500" />
               </div>
-              <h1 className="text-2xl font-extrabold text-[#111] mb-2">Order placed!</h1>
-              <p className="text-[#666] mb-1">Thanks for shopping with us.</p>
+              <h1 className="text-2xl font-extrabold text-[#111] mb-2">{t("cart.checkout.success.title")}</h1>
+              <p className="text-[#666] mb-1">{t("cart.checkout.success.thanks")}</p>
               <p className="text-[#666] mb-4">
-                Order ID: <span className="font-semibold text-[#111]">{orderPlaced.id}</span>
-                {" · "}Total: <span className="font-semibold text-[#111]">{formatPrice(orderPlaced.total)}</span>
+                {t("cart.checkout.success.orderId")} <span className="font-semibold text-[#111]">{orderPlaced.id}</span>
+                {" · "}{t("common.total")}: <span className="font-semibold text-[#111]">{formatPrice(orderPlaced.total)}</span>
               </p>
 
               {orderPlaced.vendorOrders.length > 0 && (
                 <div className="text-left bg-[#fafafa] border border-[#f1f5f9] rounded-xl p-4 mb-6 max-w-md mx-auto">
                   <p className="text-xs font-semibold uppercase tracking-wider text-[#9ca3af] mb-3">
-                    Order dispatched to {orderPlaced.vendorOrders.length}{" "}
-                    {orderPlaced.vendorOrders.length === 1 ? "supplier" : "suppliers"}
+                    {t(
+                      orderPlaced.vendorOrders.length === 1
+                        ? "cart.checkout.success.dispatchedOne"
+                        : "cart.checkout.success.dispatchedOther",
+                      { count: orderPlaced.vendorOrders.length },
+                    )}
                   </p>
                   <ul className="flex flex-col gap-2.5">
                     {orderPlaced.vendorOrders.map((vo) => (
@@ -246,7 +252,12 @@ export default function CheckoutPage() {
                         <div className="min-w-0">
                           <p className="font-semibold text-[#111] truncate">{vo.vendorName}</p>
                           <p className="text-xs text-[#9ca3af]">
-                            #{vo.orderId} · {vo.itemCount} {vo.itemCount === 1 ? "item" : "items"}
+                            #{vo.orderId} · {t(
+                              vo.itemCount === 1
+                                ? "cart.itemCountOne"
+                                : "cart.itemCountOther",
+                              { count: vo.itemCount },
+                            )}
                           </p>
                         </div>
                         <span className="font-semibold text-[#111] shrink-0">
@@ -260,10 +271,10 @@ export default function CheckoutPage() {
 
               <div className="flex gap-3 justify-center flex-wrap">
                 <Link href="/products" className="ks-co-back-btn">
-                  Continue Shopping
+                  {t("cart.continueShopping")}
                 </Link>
                 <Link href="/account" className="ks-co-next-btn">
-                  View Orders
+                  {t("cart.checkout.viewOrders")}
                   <ArrowRight className="w-[18px] h-[18px]" />
                 </Link>
               </div>
@@ -278,19 +289,19 @@ export default function CheckoutPage() {
   if (cartItems.length === 0) {
     return (
       <>
-        <Breadcrumb items={[{ label: "Cart", href: "/cart" }, { label: "Checkout" }]} />
+        <Breadcrumb items={[{ label: t("common.cart"), href: "/cart" }, { label: t("cart.checkout.title") }]} />
         <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
           <section className="site-container">
             <div className="bg-white rounded-2xl p-10 text-center max-w-xl mx-auto">
               <div className="w-16 h-16 mx-auto rounded-full bg-gray-50 flex items-center justify-center mb-4">
                 <ShoppingBag className="w-8 h-8 text-[#bbb]" />
               </div>
-              <h1 className="text-xl font-bold text-[#111] mb-1">Your cart is empty</h1>
+              <h1 className="text-xl font-bold text-[#111] mb-1">{t("cart.empty.title")}</h1>
               <p className="text-[#777] text-sm mb-5">
-                Add items to your cart before proceeding to checkout.
+                {t("cart.checkout.emptySubtitle")}
               </p>
               <button onClick={() => router.push("/products")} className="ks-co-next-btn inline-flex">
-                Browse Products
+                {t("cart.browseProducts")}
                 <ArrowRight className="w-[18px] h-[18px]" />
               </button>
             </div>
@@ -302,7 +313,7 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Cart", href: "/cart" }, { label: "Checkout" }]} />
+      <Breadcrumb items={[{ label: t("common.cart"), href: "/cart" }, { label: t("cart.checkout.title") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         {/* ── Steps indicator ── */}
@@ -322,7 +333,7 @@ export default function CheckoutPage() {
                       <div className={`ks-co-step-circle ${isDone ? "ks-co-step-circle-done" : isActive ? "ks-co-step-circle-active" : ""}`}>
                         {isDone ? <CheckCircle className="w-5 h-5" /> : <Icon className="w-[18px] h-[18px]" />}
                       </div>
-                      <span className="ks-co-step-label">{s.label}</span>
+                      <span className="ks-co-step-label">{t(s.labelKey)}</span>
                     </div>
                   </div>
                 );
@@ -341,22 +352,22 @@ export default function CheckoutPage() {
                 <div className="ks-co-card">
                   <h2 className="ks-co-card-title">
                     <MapPin className="w-5 h-5 text-orange-500" />
-                    Shipping Information
+                    {t("cart.checkout.shippingInfo")}
                   </h2>
 
                   <div className="ks-co-form-grid">
                     {[
-                      { name: "firstName", label: "First Name", type: "text", half: true },
-                      { name: "lastName", label: "Last Name", type: "text", half: true },
-                      { name: "email", label: "Email Address", type: "email", half: true },
-                      { name: "phone", label: "Phone Number", type: "tel", half: true },
-                      { name: "address", label: "Street Address", type: "text", half: false },
-                      { name: "city", label: "City", type: "text", half: true },
-                      { name: "state", label: "State", type: "text", half: true },
-                      { name: "zipCode", label: "ZIP Code", type: "text", half: true },
+                      { name: "firstName", labelKey: "cart.checkout.firstName", type: "text", half: true },
+                      { name: "lastName", labelKey: "cart.checkout.lastName", type: "text", half: true },
+                      { name: "email", labelKey: "cart.checkout.emailAddress", type: "email", half: true },
+                      { name: "phone", labelKey: "cart.checkout.phoneNumber", type: "tel", half: true },
+                      { name: "address", labelKey: "cart.checkout.streetAddress", type: "text", half: false },
+                      { name: "city", labelKey: "cart.checkout.city", type: "text", half: true },
+                      { name: "state", labelKey: "cart.checkout.state", type: "text", half: true },
+                      { name: "zipCode", labelKey: "cart.checkout.zipCode", type: "text", half: true },
                     ].map((f) => (
                       <div key={f.name} className={f.half ? "ks-co-field-half" : "ks-co-field-full"}>
-                        <label className="ks-co-label">{f.label}</label>
+                        <label className="ks-co-label">{t(f.labelKey)}</label>
                         <input
                           type={f.type}
                           name={f.name}
@@ -367,7 +378,7 @@ export default function CheckoutPage() {
                       </div>
                     ))}
                     <div className="ks-co-field-half">
-                      <label className="ks-co-label">Country</label>
+                      <label className="ks-co-label">{t("cart.checkout.country")}</label>
                       <select name="country" value={shippingInfo.country} onChange={handleShipping} className="ks-co-input">
                         <option>United States</option>
                         <option>Canada</option>
@@ -381,7 +392,7 @@ export default function CheckoutPage() {
                   <div className="ks-co-section">
                     <h3 className="ks-co-section-title">
                       <Truck className="w-[18px] h-[18px] text-orange-500" />
-                      Shipping Method
+                      {t("cart.checkout.shippingMethod")}
                     </h3>
                     <div className="ks-co-radio-group">
                       {SHIPPING_OPTIONS.map((opt) => (
@@ -398,11 +409,11 @@ export default function CheckoutPage() {
                             className="ks-co-radio"
                           />
                           <div>
-                            <p className="ks-co-radio-title">{opt.title}</p>
-                            <p className="ks-co-radio-desc">{opt.desc}</p>
+                            <p className="ks-co-radio-title">{t(opt.titleKey)}</p>
+                            <p className="ks-co-radio-desc">{t(opt.descKey)}</p>
                           </div>
                           <span className={`ks-co-radio-price ${opt.price === 0 ? "ks-co-radio-price-free" : ""}`}>
-                            {opt.price === 0 ? "FREE" : formatPrice(opt.price)}
+                            {opt.price === 0 ? t("common.free") : formatPrice(opt.price)}
                           </span>
                         </label>
                       ))}
@@ -415,7 +426,7 @@ export default function CheckoutPage() {
                     className="ks-co-next-btn"
                     style={{ opacity: isShippingValid ? 1 : 0.5, cursor: isShippingValid ? "pointer" : "not-allowed" }}
                   >
-                    Continue to Payment
+                    {t("cart.checkout.continueToPayment")}
                     <ArrowRight className="w-[18px] h-[18px]" />
                   </button>
                 </div>
@@ -426,7 +437,7 @@ export default function CheckoutPage() {
                 <div className="ks-co-card">
                   <h2 className="ks-co-card-title">
                     <CreditCard className="w-5 h-5 text-orange-500" />
-                    Payment Method
+                    {t("cart.checkout.paymentMethod")}
                   </h2>
 
                   <div className="ks-co-radio-group">
@@ -442,8 +453,8 @@ export default function CheckoutPage() {
                           />
                           <Icon className="w-5 h-5 text-[#555]" />
                           <div>
-                            <p className="ks-co-radio-title">{m.name}</p>
-                            <p className="ks-co-radio-desc">{m.desc}</p>
+                            <p className="ks-co-radio-title">{t(m.nameKey)}</p>
+                            <p className="ks-co-radio-desc">{t(m.descKey)}</p>
                           </div>
                         </label>
                       );
@@ -454,16 +465,16 @@ export default function CheckoutPage() {
                     <div className="ks-co-section">
                       <h3 className="ks-co-section-title">
                         <Banknote className="w-[18px] h-[18px] text-emerald-500" />
-                        Cash on Delivery
+                        {t("cart.checkout.payment.codName")}
                       </h3>
                       <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
                         <p className="text-sm text-emerald-900 font-medium mb-1">
-                          Pay {formatPrice(total)} in cash when your order arrives.
+                          {t("cart.checkout.cod.payLine", { total: formatPrice(total) })}
                         </p>
                         <ul className="text-xs text-emerald-800/80 list-disc pl-5 space-y-1">
-                          <li>Please keep the exact amount ready for the courier.</li>
-                          <li>Each supplier&apos;s package may be delivered separately — payment is per package.</li>
-                          <li>You will receive an SMS / email confirmation once the order is placed.</li>
+                          <li>{t("cart.checkout.cod.note1")}</li>
+                          <li>{t("cart.checkout.cod.note2")}</li>
+                          <li>{t("cart.checkout.cod.note3")}</li>
                         </ul>
                       </div>
                     </div>
@@ -473,19 +484,19 @@ export default function CheckoutPage() {
                     <div className="ks-co-section">
                       <h3 className="ks-co-section-title">
                         <Lock className="w-[18px] h-[18px] text-emerald-500" />
-                        Card Details
+                        {t("cart.checkout.cardDetails")}
                       </h3>
                       <div className="ks-co-form-grid">
                         <div className="ks-co-field-full">
-                          <label className="ks-co-label">Card Number</label>
+                          <label className="ks-co-label">{t("cart.checkout.cardNumber")}</label>
                           <input type="text" name="number" value={cardInfo.number} onChange={handleCard} placeholder="1234 5678 9012 3456" className="ks-co-input" />
                         </div>
                         <div className="ks-co-field-full">
-                          <label className="ks-co-label">Cardholder Name</label>
-                          <input type="text" name="name" value={cardInfo.name} onChange={handleCard} placeholder="John Doe" className="ks-co-input" />
+                          <label className="ks-co-label">{t("cart.checkout.cardholderName")}</label>
+                          <input type="text" name="name" value={cardInfo.name} onChange={handleCard} placeholder={t("cart.checkout.cardholderPlaceholder")} className="ks-co-input" />
                         </div>
                         <div className="ks-co-field-half">
-                          <label className="ks-co-label">Expiry Date</label>
+                          <label className="ks-co-label">{t("cart.checkout.expiryDate")}</label>
                           <input type="text" name="expiry" value={cardInfo.expiry} onChange={handleCard} placeholder="MM/YY" className="ks-co-input" />
                         </div>
                         <div className="ks-co-field-half">
@@ -498,7 +509,7 @@ export default function CheckoutPage() {
 
                   <div className="ks-co-btn-row">
                     <button onClick={() => setStep(1)} className="ks-co-back-btn">
-                      <ArrowLeft className="w-4 h-4" /> Back
+                      <ArrowLeft className="w-4 h-4" /> {t("common.back")}
                     </button>
                     <button
                       onClick={() => setStep(3)}
@@ -506,7 +517,7 @@ export default function CheckoutPage() {
                       className="ks-co-next-btn"
                       style={{ opacity: isPaymentValid ? 1 : 0.5, cursor: isPaymentValid ? "pointer" : "not-allowed" }}
                     >
-                      Review Order <ArrowRight className="w-[18px] h-[18px]" />
+                      {t("cart.checkout.reviewOrder")} <ArrowRight className="w-[18px] h-[18px]" />
                     </button>
                   </div>
                 </div>
@@ -517,14 +528,14 @@ export default function CheckoutPage() {
                 <div className="ks-co-card">
                   <h2 className="ks-co-card-title">
                     <CheckCircle className="w-5 h-5 text-orange-500" />
-                    Review Your Order
+                    {t("cart.checkout.reviewYourOrder")}
                   </h2>
 
                   {/* Shipping review */}
                   <div className="ks-co-review-block">
                     <div className="ks-co-review-header">
-                      <h3 className="ks-co-review-label">Shipping Address</h3>
-                      <button onClick={() => setStep(1)} className="ks-co-edit-btn">Edit</button>
+                      <h3 className="ks-co-review-label">{t("cart.checkout.shippingAddress")}</h3>
+                      <button onClick={() => setStep(1)} className="ks-co-edit-btn">{t("common.edit")}</button>
                     </div>
                     <p className="ks-co-review-text">
                       {shippingInfo.firstName} {shippingInfo.lastName}<br />
@@ -538,33 +549,33 @@ export default function CheckoutPage() {
                   {/* Shipping method review */}
                   <div className="ks-co-review-block">
                     <div className="ks-co-review-header">
-                      <h3 className="ks-co-review-label">Shipping Method</h3>
-                      <button onClick={() => setStep(1)} className="ks-co-edit-btn">Edit</button>
+                      <h3 className="ks-co-review-label">{t("cart.checkout.shippingMethod")}</h3>
+                      <button onClick={() => setStep(1)} className="ks-co-edit-btn">{t("common.edit")}</button>
                     </div>
                     <p className="ks-co-review-text">
-                      {shippingMethod.title} &middot; {shippingMethod.desc}{" "}
-                      &mdash; {shippingMethod.price === 0 ? "FREE" : formatPrice(shippingMethod.price)}
+                      {t(shippingMethod.titleKey)} &middot; {t(shippingMethod.descKey)}{" "}
+                      &mdash; {shippingMethod.price === 0 ? t("common.free") : formatPrice(shippingMethod.price)}
                     </p>
                   </div>
 
                   {/* Payment review */}
                   <div className="ks-co-review-block">
                     <div className="ks-co-review-header">
-                      <h3 className="ks-co-review-label">Payment Method</h3>
-                      <button onClick={() => setStep(2)} className="ks-co-edit-btn">Edit</button>
+                      <h3 className="ks-co-review-label">{t("cart.checkout.paymentMethod")}</h3>
+                      <button onClick={() => setStep(2)} className="ks-co-edit-btn">{t("common.edit")}</button>
                     </div>
                     <p className="ks-co-review-text">
                       {paymentMethod === "card"
-                        ? `Card ending in ${cardInfo.number.replace(/\s/g, "").slice(-4) || "****"}`
+                        ? t("cart.checkout.cardEndingIn", { last4: cardInfo.number.replace(/\s/g, "").slice(-4) || "****" })
                         : paymentMethod === "paypal"
                         ? "PayPal"
-                        : "Cash on Delivery"}
+                        : t("cart.checkout.payment.codName")}
                     </p>
                   </div>
 
                   {/* Items review */}
                   <div className="ks-co-review-items">
-                    <h3 className="ks-co-review-label" style={{ marginBottom: 14 }}>Order Items</h3>
+                    <h3 className="ks-co-review-label" style={{ marginBottom: 14 }}>{t("cart.checkout.orderItems")}</h3>
                     {cartItems.map((item) => (
                       <div key={item._id} className="ks-co-review-item">
                         <div className="ks-co-review-item-img">
@@ -574,11 +585,11 @@ export default function CheckoutPage() {
                           <p className="ks-co-review-item-name">{item.name}</p>
                           {item.vendor?.name && (
                             <p className="ks-co-review-item-vendor">
-                              Sold by <strong>{item.vendor.name}</strong>
+                              {t("cart.soldBy")} <strong>{item.vendor.name}</strong>
                             </p>
                           )}
                           <p className="ks-co-review-item-variant">
-                            {item.variantLabel ? `${item.variantLabel} · ` : ""}Qty: {item.quantity}
+                            {item.variantLabel ? `${item.variantLabel} · ` : ""}{t("cart.checkout.qty", { count: item.quantity })}
                           </p>
                         </div>
                         <span className="ks-co-review-item-price">
@@ -594,7 +605,7 @@ export default function CheckoutPage() {
 
                   <div className="ks-co-btn-row">
                     <button onClick={() => setStep(2)} className="ks-co-back-btn">
-                      <ArrowLeft className="w-4 h-4" /> Back
+                      <ArrowLeft className="w-4 h-4" /> {t("common.back")}
                     </button>
                     <button
                       onClick={placeOrder}
@@ -603,7 +614,7 @@ export default function CheckoutPage() {
                       style={{ opacity: placing ? 0.6 : 1, cursor: placing ? "wait" : "pointer" }}
                     >
                       <Lock className="w-4 h-4" />
-                      {placing ? "Placing..." : <>Place Order &mdash; {formatPrice(total)}</>}
+                      {placing ? t("cart.checkout.placing") : t("cart.checkout.placeOrder", { total: formatPrice(total) })}
                     </button>
                   </div>
                 </div>
@@ -613,7 +624,7 @@ export default function CheckoutPage() {
             {/* Right: Summary */}
             <div className="ks-co-summary-col">
               <div className="ks-co-summary-card">
-                <h2 className="ks-co-summary-title">Order Summary</h2>
+                <h2 className="ks-co-summary-title">{t("cart.orderSummary")}</h2>
 
                 <div className="ks-co-summary-items">
                   {cartItems.map((item) => (
@@ -626,7 +637,7 @@ export default function CheckoutPage() {
                         <p className="ks-co-summary-item-name">{item.name}</p>
                         {item.vendor?.name && (
                           <p className="ks-co-summary-item-vendor">
-                            Sold by <strong>{item.vendor.name}</strong>
+                            {t("cart.soldBy")} <strong>{item.vendor.name}</strong>
                           </p>
                         )}
                         {item.variantLabel && (
@@ -642,28 +653,28 @@ export default function CheckoutPage() {
 
                 <div className="ks-co-summary-rows">
                   <div className="ks-co-summary-row">
-                    <span>Subtotal ({totalItems} items)</span>
+                    <span>{t("cart.subtotalItems", { count: totalItems })}</span>
                     <span className="ks-co-summary-row-val">{formatPrice(subtotal)}</span>
                   </div>
                   <div className="ks-co-summary-row">
-                    <span>Shipping</span>
+                    <span>{t("common.shipping")}</span>
                     <span className={shipping === 0 ? "ks-co-summary-free" : "ks-co-summary-row-val"}>
-                      {shipping === 0 ? "FREE" : formatPrice(shipping)}
+                      {shipping === 0 ? t("common.free") : formatPrice(shipping)}
                     </span>
                   </div>
                   <div className="ks-co-summary-row">
-                    <span>Tax (8%)</span>
+                    <span>{t("cart.checkout.tax")}</span>
                     <span className="ks-co-summary-row-val">{formatPrice(tax)}</span>
                   </div>
                   <div className="ks-co-summary-total">
-                    <span>Total</span>
+                    <span>{t("common.total")}</span>
                     <span className="ks-co-summary-total-val">{formatPrice(total)}</span>
                   </div>
                 </div>
 
                 <div className="ks-co-trust">
                   <ShieldCheck className="ks-co-trust-icon" />
-                  <span>Your payment information is secure and encrypted</span>
+                  <span>{t("cart.checkout.secureNotice")}</span>
                 </div>
               </div>
             </div>

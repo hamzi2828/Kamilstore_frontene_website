@@ -1,11 +1,15 @@
+"use client";
+
 import {
   ShieldCheck, MapPin, Calendar,
   MessageCircle, Mail, Phone, UserCircle,
 } from "lucide-react";
 import type { VendorDetail } from "../types";
 import { vendorApi } from "../service/vendorApi";
+import { useLanguage } from "@/lib/i18n";
 
 export default function VendorProfile({ vendor }: { vendor: VendorDetail }) {
+  const { t } = useLanguage();
   const joinDate = new Date(vendor.createdAt).toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
@@ -37,7 +41,7 @@ export default function VendorProfile({ vendor }: { vendor: VendorDetail }) {
               <h1 className="ks-vp-name">{vendor.shopName}</h1>
               <span className="ks-vp-verified-badge">
                 <ShieldCheck className="ks-vp-verified-icon" />
-                Verified
+                {t("vendor.verified")}
               </span>
             </div>
             {vendor.shopTitle && vendor.shopTitle !== vendor.shopName && (
@@ -54,7 +58,7 @@ export default function VendorProfile({ vendor }: { vendor: VendorDetail }) {
             {vendor.owner?.email && (
               <a href={`mailto:${vendor.owner.email}`} className="ks-vp-contact-btn" style={{ textDecoration: "none" }}>
                 <MessageCircle className="ks-vp-contact-icon" />
-                Contact Seller
+                {t("vendor.contactSeller")}
               </a>
             )}
           </div>
@@ -67,7 +71,7 @@ export default function VendorProfile({ vendor }: { vendor: VendorDetail }) {
               <MapPin className="ks-vp-stat-icon" style={{ color: "#EF4444" }} />
               <div>
                 <span className="ks-vp-stat-value">{vendor.address}</span>
-                <span className="ks-vp-stat-label">Location</span>
+                <span className="ks-vp-stat-label">{t("vendor.location")}</span>
               </div>
             </div>
           )}
@@ -75,7 +79,7 @@ export default function VendorProfile({ vendor }: { vendor: VendorDetail }) {
             <Calendar className="ks-vp-stat-icon" style={{ color: "#F97316" }} />
             <div>
               <span className="ks-vp-stat-value">{joinDate}</span>
-              <span className="ks-vp-stat-label">Member since</span>
+              <span className="ks-vp-stat-label">{t("vendor.memberSince")}</span>
             </div>
           </div>
           {vendor.owner && (
@@ -84,14 +88,14 @@ export default function VendorProfile({ vendor }: { vendor: VendorDetail }) {
                 <UserCircle className="ks-vp-stat-icon" style={{ color: "#3B82F6" }} />
                 <div>
                   <span className="ks-vp-stat-value">{vendor.owner.name}</span>
-                  <span className="ks-vp-stat-label">Owner</span>
+                  <span className="ks-vp-stat-label">{t("vendor.owner")}</span>
                 </div>
               </div>
               <div className="ks-vp-stat-card">
                 <Mail className="ks-vp-stat-icon" style={{ color: "#8B5CF6" }} />
                 <div>
                   <span className="ks-vp-stat-value">{vendor.owner.email}</span>
-                  <span className="ks-vp-stat-label">Email</span>
+                  <span className="ks-vp-stat-label">{t("vendor.email")}</span>
                 </div>
               </div>
               {vendor.owner.phone && (
@@ -99,7 +103,7 @@ export default function VendorProfile({ vendor }: { vendor: VendorDetail }) {
                   <Phone className="ks-vp-stat-icon" style={{ color: "#10B981" }} />
                   <div>
                     <span className="ks-vp-stat-value">{vendor.owner.phone}</span>
-                    <span className="ks-vp-stat-label">Phone</span>
+                    <span className="ks-vp-stat-label">{t("vendor.phone")}</span>
                   </div>
                 </div>
               )}

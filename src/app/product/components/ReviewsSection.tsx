@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Star, Trash2 } from "lucide-react";
 import VendorAvatar from "@/components/ui/VendorAvatar";
 import { useAuth } from "@/lib/auth-context";
+import { useLanguage } from "@/lib/i18n";
 import { useReviews } from "../hooks/useReviews";
 
 import type { ReviewsSummary } from "../service/reviewsApi";
@@ -31,6 +32,7 @@ const StarRow = ({ value, size = 14 }: { value: number; size?: number }) => (
 
 export default function ReviewsSection({ slug, productId, onSummaryChange }: ReviewsSectionProps) {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { summary, mine, isLoading, isSaving, error, submit, remove } = useReviews(
     slug,
     productId
@@ -75,7 +77,7 @@ export default function ReviewsSection({ slug, productId, onSummaryChange }: Rev
             <StarRow value={summary.average} size={20} />
           </div>
           <span className="ks-pd-rating-big-count">
-            {summary.total} {summary.total === 1 ? "review" : "reviews"}
+            {summary.total} {t(summary.total === 1 ? "common.review" : "common.reviewsPlural")}
           </span>
         </div>
 
@@ -103,7 +105,7 @@ export default function ReviewsSection({ slug, productId, onSummaryChange }: Rev
       {user ? (
         <form onSubmit={handleSubmit} style={{ marginTop: 24, padding: 16, border: "1px solid #F1F5F9", borderRadius: 12 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#111", marginBottom: 8 }}>
-            {mine ? "Update your review" : "Write a review"}
+            {mine ? t("product.updateYourReview") : t("product.writeReview")}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
             {[1, 2, 3, 4, 5].map((n) => {
@@ -115,7 +117,7 @@ export default function ReviewsSection({ slug, productId, onSummaryChange }: Rev
                   onMouseEnter={() => setHoverRating(n)}
                   onMouseLeave={() => setHoverRating(0)}
                   onClick={() => setRating(n)}
-                  aria-label={`${n} star${n > 1 ? "s" : ""}`}
+                  aria-label={t(n > 1 ? "product.starPlural" : "product.starSingular", { count: n })}
                   style={{ background: "transparent", border: "none", cursor: "pointer", padding: 2 }}
                 >
                   <Star
@@ -127,7 +129,7 @@ export default function ReviewsSection({ slug, productId, onSummaryChange }: Rev
             })}
             {rating > 0 && (
               <span style={{ fontSize: 12, color: "#6B7280", marginLeft: 6 }}>
-                {rating} star{rating > 1 ? "s" : ""}
+                {t(rating > 1 ? "product.starPlural" : "product.starSingular", { count: rating })}
               </span>
             )}
           </div>
@@ -135,7 +137,7 @@ export default function ReviewsSection({ slug, productId, onSummaryChange }: Rev
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Share your experience with this product..."
+            placeholder={t("product.reviewPlaceholder")}
             rows={3}
             maxLength={2000}
             style={{
@@ -169,7 +171,7 @@ export default function ReviewsSection({ slug, productId, onSummaryChange }: Rev
                 cursor: rating < 1 || isSaving ? "not-allowed" : "pointer",
               }}
             >
-              {isSaving ? "Saving..." : mine ? "Update review" : "Submit review"}
+              {isSaving ? t("product.saving") : mine ? t("product.updateReview") : t("product.submitReview")}
             </button>
             {mine && (
               <button
@@ -190,7 +192,7 @@ export default function ReviewsSection({ slug, productId, onSummaryChange }: Rev
                 }}
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                Delete
+                {t("common.delete")}
               </button>
             )}
           </div>
@@ -208,33 +210,33 @@ export default function ReviewsSection({ slug, productId, onSummaryChange }: Rev
           }}
         >
           <Link href="/login" style={{ fontWeight: 700, color: "#EA6B0E", textDecoration: "underline" }}>
-            Sign in
-          </Link>{" "}
-          to leave a review.
+            {t("common.signIn")}
+          </Link>
+          {t("product.toLeaveReview")}
         </div>
       )}
 
       {/* Reviews list */}
       <div className="ks-pd-reviews-list" style={{ marginTop: 24 }}>
         {isLoading ? (
-          <div style={{ fontSize: 13, color: "#9CA3AF", padding: 12 }}>Loading reviews...</div>
+          <div style={{ fontSize: 13, color: "#9CA3AF", padding: 12 }}>{t("product.loadingReviews")}</div>
         ) : summary.reviews.length === 0 ? (
           <div style={{ fontSize: 13, color: "#6B7280", padding: 12 }}>
-            No reviews yet. Be the first to review this product.
+            {t("product.noReviews")}
           </div>
         ) : (
           summary.reviews.map((review) => (
             <div key={review._id} className="ks-pd-review">
               <VendorAvatar
                 src=""
-                name={review.user?.name || "User"}
+                name={review.user?.name || t("product.userFallback")}
                 size="sm"
                 className="!rounded-full flex-shrink-0"
               />
               <div className="flex-1">
                 <div className="ks-pd-review-header">
                   <span className="ks-pd-review-name">
-                    {review.user?.name || "Anonymous"}
+                    {review.user?.name || t("product.anonymous")}
                   </span>
                 </div>
                 <div className="flex items-center gap-2.5 mt-1">

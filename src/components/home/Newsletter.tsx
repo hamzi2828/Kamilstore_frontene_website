@@ -3,8 +3,10 @@
 import { useState, useRef } from "react";
 import "@/styling/Newsletter.css";
 import { Send, Check, Mail, Zap, Tag, Star, Shield } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 export default function Newsletter() {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -32,14 +34,14 @@ export default function Newsletter() {
           <div className="ks-nl-left">
             <div className="ks-nl-eyebrow">
               <Mail style={{ width: 11, height: 11 }} />
-              Newsletter
+              {t("home.newsletter.eyebrow")}
             </div>
             <h2 className="ks-nl-heading">
-              Get the best deals<br />
-              <span>before anyone else</span>
+              {t("home.newsletter.headingLine1")}<br />
+              <span>{t("home.newsletter.headingLine2")}</span>
             </h2>
             <p className="ks-nl-sub">
-              Join 40,000+ smart shoppers. We send only what's worth your attention — never spam.
+              {t("home.newsletter.subtitle")}
             </p>
 
 
@@ -53,7 +55,7 @@ export default function Newsletter() {
                 ))}
               </div>
               <span className="ks-nl-count-text">
-                <strong>40,000+</strong> subscribers already joined
+                <strong>40,000+</strong> {t("home.newsletter.subscribersJoined")}
               </span>
             </div>
           </div>
@@ -67,14 +69,14 @@ export default function Newsletter() {
                 <div className="ks-nl-success-icon">
                   <Check style={{ width: 24, height: 24, color: "#34D399" }} />
                 </div>
-                <p className="ks-nl-success-title">You're in!</p>
+                <p className="ks-nl-success-title">{t("home.newsletter.successTitle")}</p>
                 <p className="ks-nl-success-sub">
-                  Welcome to the inner circle. Check your inbox for a welcome gift.
+                  {t("home.newsletter.successSub")}
                 </p>
               </div>
             ) : (
               <>
-                <div className="ks-nl-label">Your email address</div>
+                <div className="ks-nl-label">{t("home.newsletter.emailLabel")}</div>
                 <div className="ks-nl-input-wrap">
                   <div className={`ks-nl-field ${focused ? "focused" : ""}`}
                     onClick={() => inputRef.current?.focus()}>
@@ -91,13 +93,13 @@ export default function Newsletter() {
                     />
                   </div>
                   <button className="ks-nl-btn" onClick={handleSubmit}>
-                    Subscribe for free
+                    {t("home.newsletter.subscribeBtn")}
                     <Send style={{ width: 14, height: 14 }} />
                   </button>
                 </div>
                 <div className="ks-nl-trust">
                   <Shield style={{ width: 12, height: 12, color: "#34D399", flexShrink: 0 }} />
-                  No spam, ever. Unsubscribe in one click.
+                  {t("home.newsletter.trust")}
                 </div>
               </>
             )}

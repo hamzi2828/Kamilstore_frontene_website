@@ -6,19 +6,21 @@ import ProductCard from "@/components/ui/ProductCard";
 import { SlidersHorizontal, Grid, List, ChevronDown, X, Search, Loader2 } from "lucide-react";
 import { getProducts, ProductListItem, ProductsPagination } from "./services/productsApi";
 import { categoriesApi, NavCategory } from "@/components/layout/service/categoriesApi";
+import { useLanguage } from "@/lib/i18n";
 
 const priceRanges = [
-  { label: "All Prices", min: 0, max: Infinity },
-  { label: "Under $50", min: 0, max: 50 },
-  { label: "$50 - $100", min: 50, max: 100 },
-  { label: "$100 - $500", min: 100, max: 500 },
-  { label: "$500 - $1000", min: 500, max: 1000 },
-  { label: "Over $1000", min: 1000, max: Infinity },
+  { label: "All Prices", labelKey: "catalog.price.all", min: 0, max: Infinity },
+  { label: "Under $50", labelKey: "catalog.price.under50", min: 0, max: 50 },
+  { label: "$50 - $100", labelKey: "catalog.price.50to100", min: 50, max: 100 },
+  { label: "$100 - $500", labelKey: "catalog.price.100to500", min: 100, max: 500 },
+  { label: "$500 - $1000", labelKey: "catalog.price.500to1000", min: 500, max: 1000 },
+  { label: "Over $1000", labelKey: "catalog.price.over1000", min: 1000, max: Infinity },
 ];
 
 const PAGE_LIMIT = 16;
 
 function ProductsContent() {
+  const { t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -120,7 +122,7 @@ function ProductsContent() {
       })
       .catch((err: Error) => {
         if (cancelled) return;
-        setError(err.message || "Failed to load products");
+        setError(err.message || t("catalog.failedToLoad"));
         setProducts([]);
       })
       .finally(() => {
@@ -133,10 +135,10 @@ function ProductsContent() {
   }, [searchTerm, selectedCategorySlug, selectedPriceRange, effectiveSort, page]);
 
   const selectedCategoryName = useMemo(() => {
-    if (selectedCategorySlug === "all") return "All Categories";
+    if (selectedCategorySlug === "all") return t("header.allCategories");
     const c = categories.find((c) => c.slug === selectedCategorySlug);
-    return c?.name || "All Categories";
-  }, [categories, selectedCategorySlug]);
+    return c?.name || t("header.allCategories");
+  }, [categories, selectedCategorySlug, t]);
 
   const pageNumbers = useMemo(() => {
     const total = pagination.pages;
@@ -171,9 +173,9 @@ function ProductsContent() {
       <div className="site-container py-8">
         {/* Breadcrumb */}
         <nav className="text-sm text-gray-500 mb-6">
-          <span>Home</span>
+          <span>{t("catalog.breadcrumb.home")}</span>
           <span className="mx-2">/</span>
-          <span className="text-gray-900">All Products</span>
+          <span className="text-gray-900">{t("catalog.allProducts")}</span>
         </nav>
 
         <div className="flex gap-8">
@@ -181,20 +183,20 @@ function ProductsContent() {
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-white rounded-xl p-6 shadow-sm sticky top-24">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-lg">Filters</h3>
+                <h3 className="font-semibold text-lg">{t("common.filters")}</h3>
                 {hasActiveFilter && (
                   <button
                     onClick={clearAll}
                     className="text-xs text-orange-600 hover:underline"
                   >
-                    Clear all
+                    {t("common.clearAll")}
                   </button>
                 )}
               </div>
 
               {/* Quick Filters */}
               <div className="mb-6">
-                <h4 className="font-medium text-gray-800 mb-3">Quick Filters</h4>
+                <h4 className="font-medium text-gray-800 mb-3">{t("catalog.filters.quick")}</h4>
                 <label className="flex items-center gap-2 cursor-pointer py-1 px-2 hover:bg-gray-100 rounded">
                   <input
                     type="checkbox"
@@ -202,13 +204,13 @@ function ProductsContent() {
                     onChange={(e) => setNewArrivalsOnly(e.target.checked)}
                     className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
                   />
-                  <span className="text-sm">New Arrivals</span>
+                  <span className="text-sm">{t("nav.newArrivals")}</span>
                 </label>
               </div>
 
               {/* Categories */}
               <div className="mb-6">
-                <h4 className="font-medium text-gray-800 mb-3">Categories</h4>
+                <h4 className="font-medium text-gray-800 mb-3">{t("common.categories")}</h4>
                 <ul className="space-y-2 max-h-64 overflow-y-auto pr-1">
                   <li>
                     <button
@@ -219,7 +221,7 @@ function ProductsContent() {
                           : "hover:bg-gray-100"
                       }`}
                     >
-                      All Categories
+                      {t("header.allCategories")}
                     </button>
                   </li>
                   {categories.map((category) => (
@@ -237,14 +239,14 @@ function ProductsContent() {
                     </li>
                   ))}
                   {categories.length === 0 && (
-                    <li className="text-sm text-gray-400 px-2">Loading...</li>
+                    <li className="text-sm text-gray-400 px-2">{t("common.loading")}</li>
                   )}
                 </ul>
               </div>
 
               {/* Price Range */}
               <div className="mb-6">
-                <h4 className="font-medium text-gray-800 mb-3">Price Range</h4>
+                <h4 className="font-medium text-gray-800 mb-3">{t("catalog.filters.priceRange")}</h4>
                 <ul className="space-y-2">
                   {priceRanges.map((range) => (
                     <li key={range.label}>
@@ -256,7 +258,7 @@ function ProductsContent() {
                             : "hover:bg-gray-100"
                         }`}
                       >
-                        {range.label}
+                        {t(range.labelKey)}
                       </button>
                     </li>
                   ))}
@@ -271,11 +273,11 @@ function ProductsContent() {
             <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <h1 className="text-2xl font-bold">All Products</h1>
+                  <h1 className="text-2xl font-bold">{t("catalog.allProducts")}</h1>
                   <p className="text-gray-500 text-sm">
                     {loading
-                      ? "Loading products..."
-                      : `Showing ${products.length} of ${pagination.total} products`}
+                      ? t("catalog.loadingProducts")
+                      : t("catalog.showingOfProducts", { count: products.length, total: pagination.total })}
                   </p>
                 </div>
 
@@ -287,7 +289,7 @@ function ProductsContent() {
                       type="text"
                       value={searchInput}
                       onChange={(e) => setSearchInput(e.target.value)}
-                      placeholder="Search products..."
+                      placeholder={t("header.searchPlaceholderShort")}
                       className="w-full md:w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
                     />
                   </div>
@@ -298,7 +300,7 @@ function ProductsContent() {
                     className="lg:hidden flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                   >
                     <SlidersHorizontal className="w-4 h-4" />
-                    Filters
+                    {t("common.filters")}
                   </button>
 
                   {/* Sort Dropdown */}
@@ -307,16 +309,16 @@ function ProductsContent() {
                       value={effectiveSort}
                       onChange={(e) => setSortBy(e.target.value)}
                       disabled={newArrivalsOnly}
-                      title={newArrivalsOnly ? "Sort locked to Newest while New Arrivals is on" : undefined}
+                      title={newArrivalsOnly ? t("catalog.sortLocked") : undefined}
                       className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:border-orange-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                     >
-                      <option value="featured">Featured</option>
-                      <option value="newest">Newest</option>
-                      <option value="oldest">Oldest</option>
-                      <option value="price-low">Price: Low to High</option>
-                      <option value="price-high">Price: High to Low</option>
-                      <option value="name-asc">Name: A-Z</option>
-                      <option value="name-desc">Name: Z-A</option>
+                      <option value="featured">{t("catalog.sort.featured")}</option>
+                      <option value="newest">{t("catalog.sort.newest")}</option>
+                      <option value="oldest">{t("catalog.sort.oldest")}</option>
+                      <option value="price-low">{t("catalog.sort.priceLow")}</option>
+                      <option value="price-high">{t("catalog.sort.priceHigh")}</option>
+                      <option value="name-asc">{t("catalog.sort.nameAsc")}</option>
+                      <option value="name-desc">{t("catalog.sort.nameDesc")}</option>
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                   </div>
@@ -330,7 +332,7 @@ function ProductsContent() {
                           ? "bg-orange-500 text-white"
                           : "hover:bg-gray-100"
                       }`}
-                      aria-label="Grid view"
+                      aria-label={t("catalog.gridView")}
                     >
                       <Grid className="w-5 h-5" />
                     </button>
@@ -341,7 +343,7 @@ function ProductsContent() {
                           ? "bg-orange-500 text-white"
                           : "hover:bg-gray-100"
                       }`}
-                      aria-label="List view"
+                      aria-label={t("catalog.listView")}
                     >
                       <List className="w-5 h-5" />
                     </button>
@@ -361,7 +363,7 @@ function ProductsContent() {
                         setSearchInput("");
                         setSearchTerm("");
                       }}
-                      aria-label="Clear search"
+                      aria-label={t("catalog.clearSearch")}
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -372,7 +374,7 @@ function ProductsContent() {
                     {selectedCategoryName}
                     <button
                       onClick={() => setSelectedCategorySlug("all")}
-                      aria-label="Clear category"
+                      aria-label={t("catalog.clearCategory")}
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -380,10 +382,10 @@ function ProductsContent() {
                 )}
                 {newArrivalsOnly && (
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-sm">
-                    New Arrivals
+                    {t("nav.newArrivals")}
                     <button
                       onClick={() => setNewArrivalsOnly(false)}
-                      aria-label="Clear new arrivals"
+                      aria-label={t("catalog.clearNewArrivals")}
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -391,10 +393,10 @@ function ProductsContent() {
                 )}
                 {selectedPriceRange.label !== "All Prices" && (
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-sm">
-                    {selectedPriceRange.label}
+                    {t(selectedPriceRange.labelKey)}
                     <button
                       onClick={() => setSelectedPriceRange(priceRanges[0])}
-                      aria-label="Clear price range"
+                      aria-label={t("catalog.clearPriceRange")}
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -407,7 +409,7 @@ function ProductsContent() {
             {loading ? (
               <div className="bg-white rounded-xl shadow-sm p-16 flex flex-col items-center justify-center text-gray-500">
                 <Loader2 className="w-8 h-8 animate-spin mb-3" />
-                <p>Loading products...</p>
+                <p>{t("catalog.loadingProducts")}</p>
               </div>
             ) : error ? (
               <div className="bg-white rounded-xl shadow-sm p-12 text-center">
@@ -416,21 +418,21 @@ function ProductsContent() {
                   onClick={() => setPage((p) => p)}
                   className="mt-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
                 >
-                  Retry
+                  {t("common.tryAgain")}
                 </button>
               </div>
             ) : products.length === 0 ? (
               <div className="bg-white rounded-xl shadow-sm p-12 text-center">
-                <p className="text-gray-700 font-medium mb-1">No products found</p>
+                <p className="text-gray-700 font-medium mb-1">{t("catalog.noProductsFound")}</p>
                 <p className="text-gray-500 text-sm mb-4">
-                  Try adjusting your filters or search terms.
+                  {t("catalog.tryAdjusting")}
                 </p>
                 {hasActiveFilter && (
                   <button
                     onClick={clearAll}
                     className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
                   >
-                    Clear filters
+                    {t("catalog.clearFilters")}
                   </button>
                 )}
               </div>
@@ -457,7 +459,7 @@ function ProductsContent() {
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Previous
+                    {t("common.previous")}
                   </button>
                   {pageNumbers.map((p, idx) =>
                     p === "..." ? (
@@ -485,7 +487,7 @@ function ProductsContent() {
                     }
                     className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Next
+                    {t("common.next")}
                   </button>
                 </nav>
               </div>
@@ -503,7 +505,7 @@ function ProductsContent() {
           />
           <div className="absolute right-0 top-0 h-full w-80 bg-white p-6 overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-lg">Filters</h3>
+              <h3 className="font-semibold text-lg">{t("common.filters")}</h3>
               <button onClick={() => setShowFilters(false)}>
                 <X className="w-6 h-6" />
               </button>
@@ -511,7 +513,7 @@ function ProductsContent() {
 
             {/* Quick Filters */}
             <div className="mb-6">
-              <h4 className="font-medium text-gray-800 mb-3">Quick Filters</h4>
+              <h4 className="font-medium text-gray-800 mb-3">{t("catalog.filters.quick")}</h4>
               <label className="flex items-center gap-2 cursor-pointer py-2 px-3 hover:bg-gray-100 rounded">
                 <input
                   type="checkbox"
@@ -519,13 +521,13 @@ function ProductsContent() {
                   onChange={(e) => setNewArrivalsOnly(e.target.checked)}
                   className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
                 />
-                <span>New Arrivals</span>
+                <span>{t("nav.newArrivals")}</span>
               </label>
             </div>
 
             {/* Categories */}
             <div className="mb-6">
-              <h4 className="font-medium text-gray-800 mb-3">Categories</h4>
+              <h4 className="font-medium text-gray-800 mb-3">{t("common.categories")}</h4>
               <ul className="space-y-2">
                 <li>
                   <button
@@ -536,7 +538,7 @@ function ProductsContent() {
                         : "hover:bg-gray-100"
                     }`}
                   >
-                    All Categories
+                    {t("header.allCategories")}
                   </button>
                 </li>
                 {categories.map((category) => (
@@ -558,7 +560,7 @@ function ProductsContent() {
 
             {/* Price Range */}
             <div className="mb-6">
-              <h4 className="font-medium text-gray-800 mb-3">Price Range</h4>
+              <h4 className="font-medium text-gray-800 mb-3">{t("catalog.filters.priceRange")}</h4>
               <ul className="space-y-2">
                 {priceRanges.map((range) => (
                   <li key={range.label}>
@@ -570,7 +572,7 @@ function ProductsContent() {
                           : "hover:bg-gray-100"
                       }`}
                     >
-                      {range.label}
+                      {t(range.labelKey)}
                     </button>
                   </li>
                 ))}
@@ -581,7 +583,7 @@ function ProductsContent() {
               onClick={() => setShowFilters(false)}
               className="w-full py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
             >
-              Apply Filters
+              {t("catalog.applyFilters")}
             </button>
           </div>
         </div>
@@ -590,17 +592,22 @@ function ProductsContent() {
   );
 }
 
+function ProductsFallback() {
+  const { t } = useLanguage();
+  return (
+    <div className="bg-gray-50 min-h-screen">
+      <div className="site-container py-16 flex flex-col items-center justify-center text-gray-500">
+        <Loader2 className="w-8 h-8 animate-spin mb-3" />
+        <p>{t("catalog.loadingProducts")}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function ProductsPage() {
   return (
     <Suspense
-      fallback={
-        <div className="bg-gray-50 min-h-screen">
-          <div className="site-container py-16 flex flex-col items-center justify-center text-gray-500">
-            <Loader2 className="w-8 h-8 animate-spin mb-3" />
-            <p>Loading products...</p>
-          </div>
-        </div>
-      }
+      fallback={<ProductsFallback />}
     >
       <ProductsContent />
     </Suspense>

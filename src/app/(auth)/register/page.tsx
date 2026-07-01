@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Mail, Lock, User, Phone, ArrowRight, ShieldCheck, Store, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useLanguage } from "@/lib/i18n";
 import { registerUser } from "@/app/(auth)/services/authApi";
 import "@/styling/AuthPages.css";
 
 export default function RegisterPage() {
+  const { t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "", email: "", phone: "", password: "", confirmPassword: "", agreeToTerms: false,
@@ -33,7 +35,7 @@ export default function RegisterPage() {
     setError("");
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("auth.register.passwordMismatch"));
       return;
     }
 
@@ -50,7 +52,7 @@ export default function RegisterPage() {
       await login(formData.email, formData.password);
       router.push("/account");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      setError(err instanceof Error ? err.message : t("auth.register.error"));
     } finally {
       setSubmitting(false);
     }
@@ -72,19 +74,19 @@ export default function RegisterPage() {
             <span className="ks-auth-logo-dot" />
           </Link>
 
-          <h2 className="ks-auth-brand-title">Join the largest<br />multi-vendor marketplace</h2>
+          <h2 className="ks-auth-brand-title">{t("auth.register.brandTitleLine1")}<br />{t("auth.register.brandTitleLine2")}</h2>
           <p className="ks-auth-brand-sub">
-            Create your free account and start discovering amazing products from trusted sellers.
+            {t("auth.register.brandSub")}
           </p>
 
           <div className="ks-auth-brand-features">
             <div className="ks-auth-brand-feature">
               <ShieldCheck className="w-5 h-5 text-emerald-400" />
-              <span>100% Buyer Protection</span>
+              <span>{t("auth.register.buyerProtection")}</span>
             </div>
             <div className="ks-auth-brand-feature">
               <Store className="w-5 h-5 text-blue-400" />
-              <span>50,000+ Products</span>
+              <span>{t("auth.register.productsCount")}</span>
             </div>
           </div>
         </div>
@@ -100,8 +102,8 @@ export default function RegisterPage() {
           </Link>
 
           <div className="ks-auth-form-header">
-            <h1 className="ks-auth-form-title">Create Account</h1>
-            <p className="ks-auth-form-sub">Fill in your details to get started</p>
+            <h1 className="ks-auth-form-title">{t("auth.register.title")}</h1>
+            <p className="ks-auth-form-sub">{t("auth.register.formSub")}</p>
           </div>
 
           {error && (
@@ -121,23 +123,23 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="ks-auth-form">
             <div className="ks-auth-field">
-              <label className="ks-auth-label">Full Name</label>
+              <label className="ks-auth-label">{t("auth.field.fullName")}</label>
               <div className="ks-auth-input-wrap">
                 <User className="ks-auth-input-icon" />
-                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="John Doe" className="ks-auth-input" required disabled={submitting} />
+                <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder={t("auth.register.namePlaceholder")} className="ks-auth-input" required disabled={submitting} />
               </div>
             </div>
 
             <div className="ks-auth-field">
-              <label className="ks-auth-label">Email Address</label>
+              <label className="ks-auth-label">{t("auth.field.email")}</label>
               <div className="ks-auth-input-wrap">
                 <Mail className="ks-auth-input-icon" />
-                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" className="ks-auth-input" required disabled={submitting} />
+                <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder={t("auth.field.emailPlaceholder")} className="ks-auth-input" required disabled={submitting} />
               </div>
             </div>
 
             <div className="ks-auth-field">
-              <label className="ks-auth-label">Phone Number</label>
+              <label className="ks-auth-label">{t("auth.field.phone")}</label>
               <div className="ks-auth-input-wrap">
                 <Phone className="ks-auth-input-icon" />
                 <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+1 (555) 123-4567" className="ks-auth-input" disabled={submitting} />
@@ -145,10 +147,10 @@ export default function RegisterPage() {
             </div>
 
             <div className="ks-auth-field">
-              <label className="ks-auth-label">Password</label>
+              <label className="ks-auth-label">{t("auth.field.password")}</label>
               <div className="ks-auth-input-wrap">
                 <Lock className="ks-auth-input-icon" />
-                <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder="Min 6 characters" className="ks-auth-input ks-auth-input-password" required minLength={6} disabled={submitting} />
+                <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} placeholder={t("auth.register.passwordPlaceholder")} className="ks-auth-input ks-auth-input-password" required minLength={6} disabled={submitting} />
                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="ks-auth-eye-btn">
                   {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
                 </button>
@@ -156,19 +158,19 @@ export default function RegisterPage() {
             </div>
 
             <div className="ks-auth-field">
-              <label className="ks-auth-label">Confirm Password</label>
+              <label className="ks-auth-label">{t("auth.field.confirmPassword")}</label>
               <div className="ks-auth-input-wrap">
                 <Lock className="ks-auth-input-icon" />
-                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Re-enter your password" className="ks-auth-input" required disabled={submitting} />
+                <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder={t("auth.register.confirmPasswordPlaceholder")} className="ks-auth-input" required disabled={submitting} />
               </div>
             </div>
 
             <label className="ks-auth-checkbox-wrap" style={{ marginBottom: 4 }}>
               <input type="checkbox" name="agreeToTerms" checked={formData.agreeToTerms} onChange={handleChange} className="ks-auth-checkbox" required />
               <span>
-                I agree to the{" "}
-                <Link href="/terms" className="ks-auth-link">Terms of Service</Link>{" "}and{" "}
-                <Link href="/privacy" className="ks-auth-link">Privacy Policy</Link>
+                {t("auth.register.agreePrefix")}{" "}
+                <Link href="/terms" className="ks-auth-link">{t("footer.termsOfService")}</Link>{" "}{t("auth.register.and")}{" "}
+                <Link href="/privacy" className="ks-auth-link">{t("footer.privacyPolicy")}</Link>
               </span>
             </label>
 
@@ -176,17 +178,17 @@ export default function RegisterPage() {
               {submitting ? (
                 <>
                   <Loader2 className="w-[18px] h-[18px] animate-spin" />
-                  Creating account...
+                  {t("auth.register.creatingAccount")}
                 </>
               ) : (
                 <>
-                  Create Account <ArrowRight className="w-[18px] h-[18px]" />
+                  {t("auth.register.title")} <ArrowRight className="w-[18px] h-[18px]" />
                 </>
               )}
             </button>
           </form>
 
-          <div className="ks-auth-divider"><span>Or sign up with</span></div>
+          <div className="ks-auth-divider"><span>{t("auth.register.orSignUpWith")}</span></div>
 
           <div className="ks-auth-social-row">
             <button className="ks-auth-social-btn">
@@ -207,8 +209,8 @@ export default function RegisterPage() {
           </div>
 
           <p className="ks-auth-switch">
-            Already have an account?{" "}
-            <Link href="/login" className="ks-auth-switch-link">Sign in</Link>
+            {t("auth.register.haveAccount")}{" "}
+            <Link href="/login" className="ks-auth-switch-link">{t("common.signIn")}</Link>
           </p>
         </div>
       </div>

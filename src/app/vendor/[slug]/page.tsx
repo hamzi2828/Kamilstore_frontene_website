@@ -4,9 +4,11 @@ import { useParams } from "next/navigation";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useVendor } from "../hooks/useVendor";
 import { VendorProfile, VendorProducts, VendorNotFound } from "../components";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/VendorPage.css";
 
 export default function VendorPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const slug = params.slug as string;
   const { vendor, isLoading, error } = useVendor(slug);
@@ -14,7 +16,7 @@ export default function VendorPage() {
   if (isLoading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-        <div style={{ fontSize: 14, color: "#9CA3AF" }}>Loading...</div>
+        <div style={{ fontSize: 14, color: "#9CA3AF" }}>{t("common.loading")}</div>
       </div>
     );
   }
@@ -27,7 +29,7 @@ export default function VendorPage() {
     <>
       <Breadcrumb
         items={[
-          { label: "Vendors", href: "/vendors" },
+          { label: t("common.vendors"), href: "/vendors" },
           { label: vendor.shopName },
         ]}
       />

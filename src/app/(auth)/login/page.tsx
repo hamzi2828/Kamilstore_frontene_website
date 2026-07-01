@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, ShieldCheck, Store, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/AuthPages.css";
 
 export default function LoginPage() {
+  const { t } = useLanguage();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +33,7 @@ export default function LoginPage() {
       await login(email, password);
       router.push("/account");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : t("auth.login.error"));
     } finally {
       setSubmitting(false);
     }
@@ -53,19 +55,19 @@ export default function LoginPage() {
             <span className="ks-auth-logo-dot" />
           </Link>
 
-          <h2 className="ks-auth-brand-title">Welcome back to<br />your marketplace</h2>
+          <h2 className="ks-auth-brand-title">{t("auth.login.brandTitleLine1")}<br />{t("auth.login.brandTitleLine2")}</h2>
           <p className="ks-auth-brand-sub">
-            Shop from 1,200+ verified sellers with buyer protection on every order.
+            {t("auth.login.brandSub")}
           </p>
 
           <div className="ks-auth-brand-features">
             <div className="ks-auth-brand-feature">
               <ShieldCheck className="w-5 h-5 text-emerald-400" />
-              <span>Buyer Protection</span>
+              <span>{t("footer.buyerProtection")}</span>
             </div>
             <div className="ks-auth-brand-feature">
               <Store className="w-5 h-5 text-blue-400" />
-              <span>1,200+ Verified Sellers</span>
+              <span>{t("auth.login.verifiedSellers")}</span>
             </div>
           </div>
         </div>
@@ -82,8 +84,8 @@ export default function LoginPage() {
           </Link>
 
           <div className="ks-auth-form-header">
-            <h1 className="ks-auth-form-title">Sign In</h1>
-            <p className="ks-auth-form-sub">Enter your credentials to access your account</p>
+            <h1 className="ks-auth-form-title">{t("common.signIn")}</h1>
+            <p className="ks-auth-form-sub">{t("auth.login.formSub")}</p>
           </div>
 
           {error && (
@@ -103,13 +105,13 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="ks-auth-form">
             <div className="ks-auth-field">
-              <label className="ks-auth-label">Email Address</label>
+              <label className="ks-auth-label">{t("auth.field.email")}</label>
               <div className="ks-auth-input-wrap">
                 <Mail className="ks-auth-input-icon" />
                 <input
                   type="email" value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
+                  placeholder={t("auth.field.emailPlaceholder")}
                   className="ks-auth-input" required
                   disabled={submitting}
                 />
@@ -117,13 +119,13 @@ export default function LoginPage() {
             </div>
 
             <div className="ks-auth-field">
-              <label className="ks-auth-label">Password</label>
+              <label className="ks-auth-label">{t("auth.field.password")}</label>
               <div className="ks-auth-input-wrap">
                 <Lock className="ks-auth-input-icon" />
                 <input
                   type={showPassword ? "text" : "password"} value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={t("auth.login.passwordPlaceholder")}
                   className="ks-auth-input ks-auth-input-password" required
                   disabled={submitting}
                 />
@@ -136,28 +138,28 @@ export default function LoginPage() {
             <div className="ks-auth-options">
               <label className="ks-auth-checkbox-wrap">
                 <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} className="ks-auth-checkbox" />
-                <span>Remember me</span>
+                <span>{t("auth.login.rememberMe")}</span>
               </label>
-              <Link href="/forgot-password" className="ks-auth-link">Forgot password?</Link>
+              <Link href="/forgot-password" className="ks-auth-link">{t("auth.login.forgotPassword")}</Link>
             </div>
 
             <button type="submit" className="ks-auth-submit" disabled={submitting}>
               {submitting ? (
                 <>
                   <Loader2 className="w-[18px] h-[18px] animate-spin" />
-                  Signing in...
+                  {t("auth.login.signingIn")}
                 </>
               ) : (
                 <>
-                  Sign In <ArrowRight className="w-[18px] h-[18px]" />
+                  {t("common.signIn")} <ArrowRight className="w-[18px] h-[18px]" />
                 </>
               )}
             </button>
           </form>
 
           <p className="ks-auth-switch">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="ks-auth-switch-link">Create account</Link>
+            {t("auth.login.noAccount")}{" "}
+            <Link href="/register" className="ks-auth-switch-link">{t("auth.login.createAccount")}</Link>
           </p>
         </div>
       </div>

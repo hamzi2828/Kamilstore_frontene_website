@@ -10,6 +10,7 @@ import {
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useAuth } from "@/lib/auth-context";
 import { useWishlist } from "@/lib/wishlist-context";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/AccountPage.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -17,6 +18,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
   const { totalItems: wishlistCount } = useWishlist();
+  const { t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
   const [orderCount, setOrderCount] = useState(0);
@@ -41,7 +43,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   if (loading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-        <div style={{ fontSize: 14, color: "#9CA3AF" }}>Loading...</div>
+        <div style={{ fontSize: 14, color: "#9CA3AF" }}>{t("common.loading")}</div>
       </div>
     );
   }
@@ -58,14 +60,14 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
   const memberSince = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })
-    : "Recently";
+    : t("account.recently");
 
   const menuItems = [
-    { label: "My Orders", icon: Package, href: "/account/orders", count: orderCount || undefined, color: "#F97316" },
-    { label: "Wishlist", icon: Heart, href: "/wishlist", count: wishlistCount || undefined, color: "#EF4444" },
-    { label: "Addresses", icon: MapPin, href: "/account/addresses", color: "#3B82F6" },
-    { label: "Payment Methods", icon: CreditCard, href: "/account/payments", color: "#10B981" },
-    { label: "Account Settings", icon: Settings, href: "/account/settings", color: "#8B5CF6" },
+    { labelKey: "account.nav.myOrders", icon: Package, href: "/account/orders", count: orderCount || undefined, color: "#F97316" },
+    { labelKey: "common.wishlist", icon: Heart, href: "/wishlist", count: wishlistCount || undefined, color: "#EF4444" },
+    { labelKey: "account.nav.addresses", icon: MapPin, href: "/account/addresses", color: "#3B82F6" },
+    { labelKey: "account.nav.paymentMethods", icon: CreditCard, href: "/account/payments", color: "#10B981" },
+    { labelKey: "account.nav.accountSettings", icon: Settings, href: "/account/settings", color: "#8B5CF6" },
   ];
 
   const isActive = (href: string) => {
@@ -75,7 +77,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
   return (
     <>
-      <Breadcrumb items={[{ label: "My Account" }]} />
+      <Breadcrumb items={[{ label: t("account.myAccount") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         <section className="site-container">
@@ -91,7 +93,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                   <p className="ks-acc-user-email">{user.email}</p>
                   <div className="ks-acc-member-badge">
                     <Star className="w-3 h-3" />
-                    Member since {memberSince}
+                    {t("account.memberSince", { date: memberSince })}
                   </div>
                 </div>
 
@@ -103,7 +105,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     <div className="ks-acc-menu-icon" style={{ background: "#F97316" + "12", color: "#F97316" }}>
                       <Star className="w-[18px] h-[18px]" />
                     </div>
-                    <span className="ks-acc-menu-label">Dashboard</span>
+                    <span className="ks-acc-menu-label">{t("account.nav.dashboard")}</span>
                     <div className="ks-acc-menu-right">
                       <ChevronRight className="ks-acc-menu-arrow" />
                     </div>
@@ -114,14 +116,14 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     const active = isActive(item.href);
                     return (
                       <Link
-                        key={item.label}
+                        key={item.labelKey}
                         href={item.href}
                         className={`ks-acc-menu-item group ${active ? "ks-acc-menu-item-active" : ""}`}
                       >
                         <div className="ks-acc-menu-icon" style={{ background: `${item.color}12`, color: item.color }}>
                           <Icon className="w-[18px] h-[18px]" />
                         </div>
-                        <span className="ks-acc-menu-label">{item.label}</span>
+                        <span className="ks-acc-menu-label">{t(item.labelKey)}</span>
                         <div className="ks-acc-menu-right">
                           {item.count && <span className="ks-acc-menu-count">{item.count}</span>}
                           <ChevronRight className="ks-acc-menu-arrow" />
@@ -133,7 +135,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                     <div className="ks-acc-menu-icon" style={{ background: "#FEF2F2", color: "#EF4444" }}>
                       <LogOut className="w-[18px] h-[18px]" />
                     </div>
-                    <span className="ks-acc-menu-label">Sign Out</span>
+                    <span className="ks-acc-menu-label">{t("common.signOut")}</span>
                   </button>
                 </nav>
               </div>

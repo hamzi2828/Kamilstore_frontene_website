@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import "@/styling/Footer.css";
 import {
@@ -5,35 +7,36 @@ import {
   Mail, Phone, MapPin, Store, Shield,
   Package, ChevronRight, Headphones, CreditCard,
 } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 const footerLinks = {
   company: {
-    title: "Company",
+    titleKey: "footer.company",
     links: [
-      { href: "/about", label: "About Us" },
-      { href: "/vendors", label: "Our Vendors" },
-      { href: "/vendor/register", label: "Become a Seller" },
-      { href: "/buyer-protection", label: "Buyer Protection" },
-      { href: "/careers", label: "Careers" },
+      { href: "/about", labelKey: "footer.aboutUs" },
+      { href: "/vendors", labelKey: "footer.ourVendors" },
+      { href: "/vendor/register", labelKey: "footer.becomeSeller" },
+      { href: "/buyer-protection", labelKey: "footer.buyerProtection" },
+      { href: "/careers", labelKey: "footer.careers" },
     ],
   },
   support: {
-    title: "Support",
+    titleKey: "footer.support",
     links: [
-      { href: "/help", label: "Help Center" },
-      { href: "/shipping", label: "Shipping Info" },
-      { href: "/returns", label: "Returns & Refunds" },
-      { href: "/track-order", label: "Track Order" },
-      { href: "/faq", label: "FAQs" },
+      { href: "/help", labelKey: "footer.helpCenter" },
+      { href: "/shipping", labelKey: "footer.shippingInfo" },
+      { href: "/returns", labelKey: "footer.returns" },
+      { href: "/track-order", labelKey: "header.trackOrder" },
+      { href: "/faq", labelKey: "footer.faqs" },
     ],
   },
   legal: {
-    title: "Legal",
+    titleKey: "footer.legal",
     links: [
-      { href: "/privacy", label: "Privacy Policy" },
-      { href: "/terms", label: "Terms of Service" },
-      { href: "/cookies", label: "Cookie Policy" },
-      { href: "/sitemap", label: "Sitemap" },
+      { href: "/privacy", labelKey: "footer.privacyPolicy" },
+      { href: "/terms", labelKey: "footer.termsOfService" },
+      { href: "/cookies", labelKey: "footer.cookiePolicy" },
+      { href: "/sitemap", labelKey: "footer.sitemap" },
     ],
   },
 };
@@ -46,13 +49,21 @@ const socials = [
 ];
 
 const trustBadges = [
-  { icon: Shield, label: "Buyer Protection" },
-  { icon: Package, label: "Free Returns" },
-  { icon: Headphones, label: "24/7 Support" },
-  { icon: CreditCard, label: "Secure Payments" },
+  { icon: Shield, labelKey: "footer.buyerProtection" },
+  { icon: Package, labelKey: "footer.freeReturns" },
+  { icon: Headphones, labelKey: "header.support247" },
+  { icon: CreditCard, labelKey: "footer.securePayments" },
+];
+
+const contactInfo = [
+  { Icon: MapPin, text: "123 Commerce Street, NY 10001" },
+  { Icon: Phone, text: "+1 (555) 123-4567" },
+  { Icon: Mail, text: "support@kamilstore.com" },
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <>
       <footer className="ks-footer">
@@ -63,10 +74,10 @@ export default function Footer() {
         {/* Trust strip */}
         <div className="ks-trust-strip">
           <div className="ks-trust-inner">
-            {trustBadges.map(({ icon: Icon, label }) => (
-              <div key={label} className="ks-trust-badge">
+            {trustBadges.map(({ icon: Icon, labelKey }) => (
+              <div key={labelKey} className="ks-trust-badge">
                 <Icon style={{ width: 14, height: 14, color: "#EA6B0E" }} />
-                {label}
+                {t(labelKey)}
               </div>
             ))}
           </div>
@@ -83,22 +94,22 @@ export default function Footer() {
               <span className="ks-footer-logo-dot" />
             </a>
             <p className="ks-footer-tagline">
-              Your trusted multi-vendor marketplace — 1,200+ verified sellers, zero compromise on quality.
+              {t("footer.tagline")}
             </p>
 
             {/* Stats */}
             <div className="ks-footer-stats">
               <div className="ks-footer-stat">
                 <div className="ks-footer-stat-num">1,<span>200</span>+</div>
-                <div className="ks-footer-stat-label">Verified Sellers</div>
+                <div className="ks-footer-stat-label">{t("footer.verifiedSellers")}</div>
               </div>
               <div className="ks-footer-stat">
                 <div className="ks-footer-stat-num"><span>500</span>K+</div>
-                <div className="ks-footer-stat-label">Happy Buyers</div>
+                <div className="ks-footer-stat-label">{t("footer.happyBuyers")}</div>
               </div>
               <div className="ks-footer-stat">
                 <div className="ks-footer-stat-num"><span>4.9</span>/5</div>
-                <div className="ks-footer-stat-label">Avg. Rating</div>
+                <div className="ks-footer-stat-label">{t("footer.avgRating")}</div>
               </div>
             </div>
 
@@ -120,37 +131,33 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          {Object.values(footerLinks).map(({ title, links }) => (
-            <div key={title}>
-              <div className="ks-footer-col-title">{title}</div>
+          {Object.values(footerLinks).map(({ titleKey, links }) => (
+            <div key={titleKey}>
+              <div className="ks-footer-col-title">{t(titleKey)}</div>
               <ul className="ks-footer-links">
-                {links.map(({ href, label }) => (
+                {links.map(({ href, labelKey }) => (
                   <li key={href}>
                     <Link href={href} className="ks-footer-link">
                       <ChevronRight style={{ width: 12, height: 12 }} />
-                      {label}
+                      {t(labelKey)}
                     </Link>
                   </li>
                 ))}
               </ul>
 
               {/* Sell CTA under Company column */}
-              {title === "Company" && (
+              {titleKey === "footer.company" && (
                 <a href="/vendor/register" className="ks-footer-sell">
                   <Store style={{ width: 14, height: 14 }} />
-                  Start selling today →
+                  {t("footer.startSelling")}
                 </a>
               )}
 
               {/* Contact under Support column */}
-              {title === "Support" && (
+              {titleKey === "footer.support" && (
                 <div style={{ marginTop: 20 }}>
-                  <div className="ks-footer-col-title" style={{ marginBottom: 12 }}>Contact</div>
-                  {[
-                    { Icon: MapPin, text: "123 Commerce Street, NY 10001" },
-                    { Icon: Phone, text: "+1 (555) 123-4567" },
-                    { Icon: Mail, text: "support@kamilstore.com" },
-                  ].map(({ Icon, text }) => (
+                  <div className="ks-footer-col-title" style={{ marginBottom: 12 }}>{t("footer.contact")}</div>
+                  {contactInfo.map(({ Icon, text }) => (
                     <div key={text} className="ks-contact-item">
                       <div className="ks-contact-icon">
                         <Icon style={{ width: 13, height: 13, color: "#EA6B0E" }} />
@@ -168,13 +175,13 @@ export default function Footer() {
         <div className="ks-footer-bottom">
           <div className="ks-footer-bottom-inner">
             <p className="ks-footer-copy">
-              © {new Date().getFullYear()} <a href="/">KamilStore</a>. All rights reserved.
+              © {new Date().getFullYear()} <a href="/">KamilStore</a>. {t("footer.copyright")}
             </p>
             <div className="ks-footer-legal">
-              <Link href="/privacy">Privacy</Link>
-              <Link href="/terms">Terms</Link>
-              <Link href="/cookies">Cookies</Link>
-              <Link href="/sitemap">Sitemap</Link>
+              <Link href="/privacy">{t("footer.privacyShort")}</Link>
+              <Link href="/terms">{t("footer.termsShort")}</Link>
+              <Link href="/cookies">{t("footer.cookiesShort")}</Link>
+              <Link href="/sitemap">{t("footer.sitemapShort")}</Link>
             </div>
           </div>
         </div>

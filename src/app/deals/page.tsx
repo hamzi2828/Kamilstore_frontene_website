@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import ProductCard from "@/components/ui/ProductCard";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/FlashSalePage.css";
 
 const allProducts = [
@@ -24,15 +25,22 @@ const allProducts = [
   { _id: "12", name: "Canvas Tote Bag Eco Friendly Large", slug: "canvas-tote-bag", images: ["https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=400&fit=crop"], sellingPrice: 29.99, discountPrice: 14.99, rating: 4.1, reviewCount: 78, vendor: { name: "FashionPlus", slug: "fashionplus" } },
 ];
 
-const categoryFilters = ["All", "Electronics", "Fashion", "Sports", "Home"];
+const categoryFilters = [
+  { value: "All", labelKey: "catalog.all" },
+  { value: "Electronics", labelKey: "catalog.dept.electronics.name" },
+  { value: "Fashion", labelKey: "catalog.dept.fashion.name" },
+  { value: "Sports", labelKey: "catalog.filter.sports" },
+  { value: "Home", labelKey: "catalog.filter.home" },
+];
 
 export default function DealsPage() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Today's Deals" }]} />
+      <Breadcrumb items={[{ label: t("nav.deals") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         {/* ── Header Card ── */}
@@ -49,10 +57,10 @@ export default function DealsPage() {
                   </div>
                   <div>
                     <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                      Today&apos;s Deals
+                      {t("nav.deals")}
                     </h1>
                     <p className="text-sm text-[#999] font-medium mt-1.5">
-                      {allProducts.length} handpicked deals updated daily
+                      {t("catalog.deals.subtitle", { count: allProducts.length })}
                     </p>
                   </div>
                 </div>
@@ -63,19 +71,19 @@ export default function DealsPage() {
                 <div className="ks-fs-stat">
                   <Tag className="w-[18px] h-[18px] text-orange-500" />
                   <span className="ks-fs-stat-value">{allProducts.length}</span>
-                  <span className="ks-fs-stat-label">Active Deals</span>
+                  <span className="ks-fs-stat-label">{t("catalog.stats.activeDeals")}</span>
                 </div>
                 <div className="ks-fs-stat-sep" />
                 <div className="ks-fs-stat">
                   <Percent className="w-[18px] h-[18px] text-emerald-500" />
                   <span className="ks-fs-stat-value">50%</span>
-                  <span className="ks-fs-stat-label">Max Discount</span>
+                  <span className="ks-fs-stat-label">{t("catalog.stats.maxDiscount")}</span>
                 </div>
                 <div className="ks-fs-stat-sep" />
                 <div className="ks-fs-stat">
                   <ShoppingBag className="w-[18px] h-[18px] text-amber-500" />
                   <span className="ks-fs-stat-value">5.2k+</span>
-                  <span className="ks-fs-stat-label">Items Sold</span>
+                  <span className="ks-fs-stat-label">{t("catalog.stats.itemsSold")}</span>
                 </div>
               </div>
             </div>
@@ -90,12 +98,12 @@ export default function DealsPage() {
               <div className="ks-fs-category-pills">
                 {categoryFilters.map((cat) => (
                   <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`ks-fs-pill ${selectedCategory === cat ? "ks-fs-pill-active" : ""}`}
-                    style={selectedCategory === cat ? { background: "#f97316", borderColor: "#f97316" } : {}}
+                    key={cat.value}
+                    onClick={() => setSelectedCategory(cat.value)}
+                    className={`ks-fs-pill ${selectedCategory === cat.value ? "ks-fs-pill-active" : ""}`}
+                    style={selectedCategory === cat.value ? { background: "#f97316", borderColor: "#f97316" } : {}}
                   >
-                    {cat}
+                    {t(cat.labelKey)}
                   </button>
                 ))}
               </div>
@@ -106,18 +114,18 @@ export default function DealsPage() {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="ks-fs-sort-select"
                 >
-                  <option value="featured">Featured</option>
-                  <option value="discount">Biggest Discount</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="rating">Top Rated</option>
+                  <option value="featured">{t("catalog.sort.featured")}</option>
+                  <option value="discount">{t("catalog.sort.biggestDiscount")}</option>
+                  <option value="price-low">{t("catalog.sort.priceLow")}</option>
+                  <option value="price-high">{t("catalog.sort.priceHigh")}</option>
+                  <option value="rating">{t("catalog.sort.topRated")}</option>
                 </select>
                 <ChevronDown className="ks-fs-sort-arrow" />
               </div>
             </div>
 
             <p className="text-[13px] text-[#999] font-medium mb-5">
-              Showing <strong className="text-[#555]">{allProducts.length}</strong> deals
+              {t("catalog.showingPrefix")} <strong className="text-[#555]">{allProducts.length}</strong> {t("catalog.dealsWord")}
             </p>
 
             {/* Grid */}
@@ -132,7 +140,7 @@ export default function DealsPage() {
             {/* Bottom info */}
             <div className="ks-fs-bottom-info">
               <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-              <span>New deals added <strong>every day</strong> &middot; Check back tomorrow for more!</span>
+              <span>{t("catalog.deals.newDealsAdded")} <strong>{t("catalog.deals.everyDay")}</strong> &middot; {t("catalog.deals.checkBack")}</span>
             </div>
           </div>
         </section>

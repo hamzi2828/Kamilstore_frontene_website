@@ -4,14 +4,15 @@ import { useState } from "react";
 import Link from "next/link";
 import ProductCard from "@/components/ui/ProductCard";
 import { SlidersHorizontal, Grid, List, ChevronDown, X, ChevronRight } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 // Mock data
 const categoryInfo = {
-  name: "Electronics",
+  nameKey: "catalog.dept.electronics.name",
   slug: "electronics",
-  description: "Discover the latest in electronics and gadgets. From smartphones to laptops, find everything you need.",
+  descKey: "catalog.categoryPage.electronicsDesc",
   productCount: 1234,
-  subcategories: ["Smartphones", "Laptops", "Audio", "Cameras", "Wearables", "Accessories"],
+  subKeys: ["catalog.sub.smartphones", "catalog.sub.laptops", "catalog.sub.audio", "catalog.sub.cameras", "catalog.sub.wearables", "catalog.sub.accessories"],
 };
 
 const products = [
@@ -83,14 +84,15 @@ const products = [
 const brands = ["Apple", "Samsung", "Sony", "LG", "Dell", "HP", "Bose"];
 
 const priceRanges = [
-  { label: "All Prices", min: 0, max: Infinity },
-  { label: "Under $100", min: 0, max: 100 },
-  { label: "$100 - $500", min: 100, max: 500 },
-  { label: "$500 - $1000", min: 500, max: 1000 },
-  { label: "Over $1000", min: 1000, max: Infinity },
+  { label: "All Prices", labelKey: "catalog.price.all", min: 0, max: Infinity },
+  { label: "Under $100", labelKey: "catalog.price.under100", min: 0, max: 100 },
+  { label: "$100 - $500", labelKey: "catalog.price.100to500", min: 100, max: 500 },
+  { label: "$500 - $1000", labelKey: "catalog.price.500to1000", min: 500, max: 1000 },
+  { label: "Over $1000", labelKey: "catalog.price.over1000", min: 1000, max: Infinity },
 ];
 
 export default function CategoryPage() {
+  const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("featured");
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
@@ -113,14 +115,14 @@ export default function CategoryPage() {
         <div className="site-container">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-blue-100 mb-4">
-            <Link href="/" className="hover:text-white">Home</Link>
+            <Link href="/" className="hover:text-white">{t("catalog.breadcrumb.home")}</Link>
             <ChevronRight className="w-4 h-4" />
-            <span className="text-white">{categoryInfo.name}</span>
+            <span className="text-white">{t(categoryInfo.nameKey)}</span>
           </nav>
 
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">{categoryInfo.name}</h1>
-          <p className="text-blue-100 max-w-2xl">{categoryInfo.description}</p>
-          <p className="text-sm text-blue-200 mt-2">{categoryInfo.productCount} products</p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">{t(categoryInfo.nameKey)}</h1>
+          <p className="text-blue-100 max-w-2xl">{t(categoryInfo.descKey)}</p>
+          <p className="text-sm text-blue-200 mt-2">{categoryInfo.productCount} {t("catalog.productsLower")}</p>
         </div>
       </div>
 
@@ -136,9 +138,9 @@ export default function CategoryPage() {
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              All
+              {t("catalog.all")}
             </button>
-            {categoryInfo.subcategories.map((sub) => (
+            {categoryInfo.subKeys.map((sub) => (
               <button
                 key={sub}
                 onClick={() => setSelectedSubcategory(sub)}
@@ -148,7 +150,7 @@ export default function CategoryPage() {
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                {sub}
+                {t(sub)}
               </button>
             ))}
           </div>
@@ -160,11 +162,11 @@ export default function CategoryPage() {
           {/* Sidebar Filters - Desktop */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="bg-white rounded-xl p-6 shadow-sm sticky top-24">
-              <h3 className="font-semibold text-lg mb-4">Filters</h3>
+              <h3 className="font-semibold text-lg mb-4">{t("common.filters")}</h3>
 
               {/* Price Range */}
               <div className="mb-6">
-                <h4 className="font-medium text-gray-800 mb-3">Price Range</h4>
+                <h4 className="font-medium text-gray-800 mb-3">{t("catalog.filters.priceRange")}</h4>
                 <ul className="space-y-2">
                   {priceRanges.map((range) => (
                     <li key={range.label}>
@@ -176,7 +178,7 @@ export default function CategoryPage() {
                             : "hover:bg-gray-100"
                         }`}
                       >
-                        {range.label}
+                        {t(range.labelKey)}
                       </button>
                     </li>
                   ))}
@@ -185,7 +187,7 @@ export default function CategoryPage() {
 
               {/* Brands */}
               <div className="mb-6">
-                <h4 className="font-medium text-gray-800 mb-3">Brands</h4>
+                <h4 className="font-medium text-gray-800 mb-3">{t("catalog.filters.brands")}</h4>
                 <ul className="space-y-2">
                   {brands.map((brand) => (
                     <li key={brand}>
@@ -205,7 +207,7 @@ export default function CategoryPage() {
 
               {/* Rating */}
               <div className="mb-6">
-                <h4 className="font-medium text-gray-800 mb-3">Customer Rating</h4>
+                <h4 className="font-medium text-gray-800 mb-3">{t("catalog.filters.customerRating")}</h4>
                 <ul className="space-y-2">
                   {[4, 3, 2, 1].map((rating) => (
                     <li key={rating}>
@@ -220,7 +222,7 @@ export default function CategoryPage() {
                             </span>
                           ))}
                         </div>
-                        <span className="text-sm text-gray-600">& Up</span>
+                        <span className="text-sm text-gray-600">{t("catalog.andUp")}</span>
                       </button>
                     </li>
                   ))}
@@ -228,7 +230,7 @@ export default function CategoryPage() {
               </div>
 
               <button className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                Apply Filters
+                {t("catalog.applyFilters")}
               </button>
             </div>
           </aside>
@@ -240,9 +242,9 @@ export default function CategoryPage() {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold">
-                    {selectedSubcategory || "All Products"}
+                    {selectedSubcategory ? t(selectedSubcategory) : t("catalog.allProducts")}
                   </h2>
-                  <p className="text-gray-500 text-sm">{products.length} products</p>
+                  <p className="text-gray-500 text-sm">{products.length} {t("catalog.productsLower")}</p>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -252,7 +254,7 @@ export default function CategoryPage() {
                     className="lg:hidden flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                   >
                     <SlidersHorizontal className="w-4 h-4" />
-                    Filters
+                    {t("common.filters")}
                   </button>
 
                   {/* Sort */}
@@ -262,11 +264,11 @@ export default function CategoryPage() {
                       onChange={(e) => setSortBy(e.target.value)}
                       className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:border-blue-500"
                     >
-                      <option value="featured">Featured</option>
-                      <option value="newest">Newest</option>
-                      <option value="price-low">Price: Low to High</option>
-                      <option value="price-high">Price: High to Low</option>
-                      <option value="rating">Best Rating</option>
+                      <option value="featured">{t("catalog.sort.featured")}</option>
+                      <option value="newest">{t("catalog.sort.newest")}</option>
+                      <option value="price-low">{t("catalog.sort.priceLow")}</option>
+                      <option value="price-high">{t("catalog.sort.priceHigh")}</option>
+                      <option value="rating">{t("catalog.sort.bestRating")}</option>
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
                   </div>
@@ -303,7 +305,7 @@ export default function CategoryPage() {
                 ))}
                 {selectedPriceRange.label !== "All Prices" && (
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                    {selectedPriceRange.label}
+                    {t(selectedPriceRange.labelKey)}
                     <button onClick={() => setSelectedPriceRange(priceRanges[0])}>
                       <X className="w-4 h-4" />
                     </button>
@@ -322,11 +324,11 @@ export default function CategoryPage() {
             {/* Pagination */}
             <div className="flex justify-center mt-8">
               <nav className="flex items-center gap-2">
-                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white">Previous</button>
+                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white">{t("common.previous")}</button>
                 <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">1</button>
                 <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white">2</button>
                 <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white">3</button>
-                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white">Next</button>
+                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 bg-white">{t("common.next")}</button>
               </nav>
             </div>
           </div>
@@ -339,7 +341,7 @@ export default function CategoryPage() {
           <div className="absolute inset-0 bg-black/50" onClick={() => setShowFilters(false)} />
           <div className="absolute right-0 top-0 h-full w-80 bg-white p-6 overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-semibold text-lg">Filters</h3>
+              <h3 className="font-semibold text-lg">{t("common.filters")}</h3>
               <button onClick={() => setShowFilters(false)}>
                 <X className="w-6 h-6" />
               </button>
@@ -347,7 +349,7 @@ export default function CategoryPage() {
 
             {/* Price Range */}
             <div className="mb-6">
-              <h4 className="font-medium text-gray-800 mb-3">Price Range</h4>
+              <h4 className="font-medium text-gray-800 mb-3">{t("catalog.filters.priceRange")}</h4>
               <ul className="space-y-2">
                 {priceRanges.map((range) => (
                   <li key={range.label}>
@@ -359,7 +361,7 @@ export default function CategoryPage() {
                           : "hover:bg-gray-100"
                       }`}
                     >
-                      {range.label}
+                      {t(range.labelKey)}
                     </button>
                   </li>
                 ))}
@@ -368,7 +370,7 @@ export default function CategoryPage() {
 
             {/* Brands */}
             <div className="mb-6">
-              <h4 className="font-medium text-gray-800 mb-3">Brands</h4>
+              <h4 className="font-medium text-gray-800 mb-3">{t("catalog.filters.brands")}</h4>
               <ul className="space-y-2">
                 {brands.map((brand) => (
                   <li key={brand}>
@@ -390,7 +392,7 @@ export default function CategoryPage() {
               onClick={() => setShowFilters(false)}
               className="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
-              Apply Filters
+              {t("catalog.applyFilters")}
             </button>
           </div>
         </div>

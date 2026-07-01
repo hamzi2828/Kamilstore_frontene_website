@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useWishlist } from "@/lib/wishlist-context";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/AccountPage.css";
 
 interface RecentOrder {
@@ -39,6 +40,7 @@ const statusStyles: Record<string, { bg: string; color: string; border: string }
 export default function AccountPage() {
   const { user } = useAuth();
   const { totalItems: wishlistCount } = useWishlist();
+  const { t } = useLanguage();
 
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
@@ -81,13 +83,21 @@ export default function AccountPage() {
 
   const memberSince = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })
-    : "Recently";
+    : t("account.recently");
+
+  const statusLabel = (s: string) =>
+    ({
+      Processing: t("account.orders.statusProcessing"),
+      Shipped: t("account.orders.statusShipped"),
+      Delivered: t("account.orders.statusDelivered"),
+      Cancelled: t("account.orders.statusCancelled"),
+    } as Record<string, string>)[s] || s;
 
   const quickStats = [
-    { label: "Total Orders", value: String(totalOrders), icon: Package, color: "#F97316", bg: "#FFF7ED" },
-    { label: "Wishlist Items", value: String(wishlistCount), icon: Heart, color: "#EF4444", bg: "#FEF2F2" },
-    { label: "Saved Addresses", value: String(savedAddresses), icon: MapPin, color: "#3B82F6", bg: "#EFF6FF" },
-    { label: "Payment Methods", value: String(savedPayments), icon: CreditCard, color: "#10B981", bg: "#ECFDF5" },
+    { labelKey: "account.stats.totalOrders", value: String(totalOrders), icon: Package, color: "#F97316", bg: "#FFF7ED" },
+    { labelKey: "account.stats.wishlistItems", value: String(wishlistCount), icon: Heart, color: "#EF4444", bg: "#FEF2F2" },
+    { labelKey: "account.stats.savedAddresses", value: String(savedAddresses), icon: MapPin, color: "#3B82F6", bg: "#EFF6FF" },
+    { labelKey: "account.nav.paymentMethods", value: String(savedPayments), icon: CreditCard, color: "#10B981", bg: "#ECFDF5" },
   ];
 
   return (
@@ -97,12 +107,12 @@ export default function AccountPage() {
         <div className="ks-acc-welcome-bg" />
         <div className="ks-acc-welcome-content">
           <div>
-            <h1 className="ks-acc-welcome-title">Welcome back, {user.name.split(" ")[0]}!</h1>
-            <p className="ks-acc-welcome-sub">Manage your orders, wishlist, and account settings.</p>
+            <h1 className="ks-acc-welcome-title">{t("account.welcomeBack", { name: user.name.split(" ")[0] })}</h1>
+            <p className="ks-acc-welcome-sub">{t("account.welcomeSub")}</p>
           </div>
           <Link href="/account/settings" className="ks-acc-welcome-btn">
             <Edit2 className="w-4 h-4" />
-            Edit Profile
+            {t("account.editProfile")}
           </Link>
         </div>
       </div>
@@ -112,12 +122,12 @@ export default function AccountPage() {
         {quickStats.map((s) => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="ks-acc-stat-card">
+            <div key={s.labelKey} className="ks-acc-stat-card">
               <div className="ks-acc-stat-icon" style={{ background: s.bg }}>
                 <Icon className="w-5 h-5" style={{ color: s.color }} />
               </div>
               <span className="ks-acc-stat-value">{s.value}</span>
-              <span className="ks-acc-stat-label">{s.label}</span>
+              <span className="ks-acc-stat-label">{t(s.labelKey)}</span>
             </div>
           );
         })}
@@ -126,25 +136,25 @@ export default function AccountPage() {
       {/* Recent orders */}
       <div className="ks-acc-orders-card">
         <div className="ks-acc-orders-header">
-          <h2 className="ks-acc-orders-title">Recent Orders</h2>
+          <h2 className="ks-acc-orders-title">{t("account.recentOrders")}</h2>
           <Link href="/account/orders" className="ks-acc-orders-viewall">
-            View All <ChevronRight className="w-4 h-4" />
+            {t("common.viewAll")} <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
 
         {ordersLoading ? (
           <div className="flex items-center justify-center py-10 text-sm text-[#9ca3af]">
-            Loading your orders...
+            {t("account.loadingOrders")}
           </div>
         ) : recentOrders.length === 0 ? (
           <div className="flex flex-col items-center justify-center text-center py-10 px-4">
             <div className="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center mb-3">
               <Package className="w-5 h-5 text-orange-500" />
             </div>
-            <p className="text-sm font-semibold text-[#111] mb-1">No orders yet</p>
-            <p className="text-xs text-[#9ca3af] mb-4">Your placed orders will show up here.</p>
+            <p className="text-sm font-semibold text-[#111] mb-1">{t("account.noOrdersYet")}</p>
+            <p className="text-xs text-[#9ca3af] mb-4">{t("account.noOrdersSub")}</p>
             <Link href="/products" className="ks-acc-welcome-btn">
-              Start Shopping
+              {t("account.startShopping")}
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
@@ -161,14 +171,14 @@ export default function AccountPage() {
                         className="ks-acc-order-status"
                         style={{ background: st.bg, color: st.color, borderColor: st.border }}
                       >
-                        {order.status}
+                        {statusLabel(order.status)}
                       </span>
                     </div>
                     <p className="ks-acc-order-meta">
                       <Clock className="w-3.5 h-3.5" />
                       {new Date(order.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       <span className="ks-acc-order-dot" />
-                      {order.items} item{order.items > 1 ? "s" : ""}
+                      {order.items} {order.items > 1 ? t("account.itemPlural") : t("account.itemSingular")}
                       {order.vendorName && (
                         <>
                           <span className="ks-acc-order-dot" />
@@ -180,7 +190,7 @@ export default function AccountPage() {
                   <div className="ks-acc-order-right">
                     <span className="ks-acc-order-total">${order.total.toFixed(2)}</span>
                     <Link href={`/account/orders/${order._id}`} className="ks-acc-order-detail-btn">
-                      Details <ChevronRight className="w-3.5 h-3.5" />
+                      {t("account.details")} <ChevronRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 </div>
@@ -193,20 +203,20 @@ export default function AccountPage() {
       {/* Profile info */}
       <div className="ks-acc-profile-card">
         <div className="ks-acc-profile-header">
-          <h2 className="ks-acc-profile-title">Profile Information</h2>
+          <h2 className="ks-acc-profile-title">{t("account.profileInfo")}</h2>
           <button className="ks-acc-profile-edit">
-            <Edit2 className="w-3.5 h-3.5" /> Edit
+            <Edit2 className="w-3.5 h-3.5" /> {t("common.edit")}
           </button>
         </div>
         <div className="ks-acc-profile-grid">
           {[
-            { label: "Full Name", value: user.name },
-            { label: "Email Address", value: user.email },
-            { label: "Phone Number", value: user.phone || "Not set" },
-            { label: "Member Since", value: memberSince },
+            { labelKey: "account.fields.fullName", value: user.name },
+            { labelKey: "account.fields.emailAddress", value: user.email },
+            { labelKey: "account.fields.phoneNumber", value: user.phone || t("account.notSet") },
+            { labelKey: "account.fields.memberSince", value: memberSince },
           ].map((f) => (
-            <div key={f.label} className="ks-acc-profile-field">
-              <span className="ks-acc-profile-label">{f.label}</span>
+            <div key={f.labelKey} className="ks-acc-profile-field">
+              <span className="ks-acc-profile-label">{t(f.labelKey)}</span>
               <span className="ks-acc-profile-value">{f.value}</span>
             </div>
           ))}

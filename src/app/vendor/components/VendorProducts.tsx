@@ -8,12 +8,14 @@ import {
   useVendorProducts,
 } from "../hooks/useVendorProducts";
 import type { VendorProductSort } from "../types";
+import { useLanguage } from "@/lib/i18n";
 
 interface VendorProductsProps {
   vendorId: string;
 }
 
 export default function VendorProducts({ vendorId }: VendorProductsProps) {
+  const { t } = useLanguage();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState<VendorProductSort>("featured");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
@@ -28,16 +30,16 @@ export default function VendorProducts({ vendorId }: VendorProductsProps) {
 
   const activeCategoryName =
     selectedCategory === "all"
-      ? "All Products"
+      ? t("vendor.allProducts")
       : categories.find((c) => c._id === selectedCategory)?.name ||
-        "All Products";
+        t("vendor.allProducts");
 
   return (
     <div className="ks-vp-products-layout">
       {/* Sidebar */}
       <aside className="ks-vp-sidebar">
         <div className="ks-vp-sidebar-card">
-          <h3 className="ks-vp-sidebar-title">Categories</h3>
+          <h3 className="ks-vp-sidebar-title">{t("common.categories")}</h3>
           <ul className="ks-vp-sidebar-list">
             <li>
               <button
@@ -46,7 +48,7 @@ export default function VendorProducts({ vendorId }: VendorProductsProps) {
                   selectedCategory === "all" ? "ks-vp-sidebar-item-active" : ""
                 }`}
               >
-                <span>All Products</span>
+                <span>{t("vendor.allProducts")}</span>
                 <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                   <span style={{ fontSize: 12, color: "#9CA3AF" }}>
                     {totalAcrossCats}
@@ -57,7 +59,7 @@ export default function VendorProducts({ vendorId }: VendorProductsProps) {
             </li>
             {catsLoading && (
               <li style={{ padding: "8px 12px", fontSize: 12, color: "#9CA3AF" }}>
-                Loading...
+                {t("common.loading")}
               </li>
             )}
             {categories.map((cat) => (
@@ -90,7 +92,7 @@ export default function VendorProducts({ vendorId }: VendorProductsProps) {
           <div>
             <h2 className="ks-vp-toolbar-title">{activeCategoryName}</h2>
             <p className="ks-vp-toolbar-count">
-              {isLoading ? "Loading..." : `${total} products found`}
+              {isLoading ? t("common.loading") : t("vendor.productsFound", { count: total })}
             </p>
           </div>
 
@@ -101,12 +103,12 @@ export default function VendorProducts({ vendorId }: VendorProductsProps) {
                 onChange={(e) => setSortBy(e.target.value as VendorProductSort)}
                 className="ks-vp-sort-select"
               >
-                <option value="featured">Featured</option>
-                <option value="newest">Newest</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="name-asc">Name: A-Z</option>
-                <option value="name-desc">Name: Z-A</option>
+                <option value="featured">{t("vendor.sortFeatured")}</option>
+                <option value="newest">{t("vendor.sortNewest")}</option>
+                <option value="price-low">{t("vendor.sortPriceLow")}</option>
+                <option value="price-high">{t("vendor.sortPriceHigh")}</option>
+                <option value="name-asc">{t("vendor.sortNameAsc")}</option>
+                <option value="name-desc">{t("vendor.sortNameDesc")}</option>
               </select>
               <ChevronDown className="ks-vp-sort-arrow" />
             </div>
@@ -141,7 +143,7 @@ export default function VendorProducts({ vendorId }: VendorProductsProps) {
               fontSize: 14,
             }}
           >
-            This vendor has no products in this category yet.
+            {t("vendor.noProductsInCategory")}
           </div>
         ) : (
           <div

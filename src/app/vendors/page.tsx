@@ -9,9 +9,11 @@ import {
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { VendorCard, VendorsEmpty, VendorsLoading } from "./components";
 import { getVendors, type Vendor, type VendorsPagination } from "./services/vendorsApi";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/VendorsPage.css";
 
 export default function VendorsPage() {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -51,7 +53,7 @@ export default function VendorsPage() {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Vendors" }]} />
+      <Breadcrumb items={[{ label: t("common.vendors") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         {/* ── Header Card ── */}
@@ -68,10 +70,10 @@ export default function VendorsPage() {
                   </div>
                   <div>
                     <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                      Our Vendors
+                      {t("nav.vendors")}
                     </h1>
                     <p className="text-sm text-[#999] font-medium mt-1.5">
-                      Shop from {pagination?.total ?? "..."} trusted sellers on KamilStore
+                      {t("vendor.shopFromSellers", { count: pagination?.total ?? "..." })}
                     </p>
                   </div>
                 </div>
@@ -81,7 +83,7 @@ export default function VendorsPage() {
                   <Search className="ks-vs-search-icon" />
                   <input
                     type="text"
-                    placeholder="Search vendors..."
+                    placeholder={t("vendor.searchPlaceholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="ks-vs-search-input"
@@ -94,13 +96,13 @@ export default function VendorsPage() {
                 <div className="ks-vs-stat">
                   <Store className="w-[18px] h-[18px] text-orange-500" />
                   <span className="ks-vs-stat-value">{pagination?.total ?? "..."}</span>
-                  <span className="ks-vs-stat-label">Vendors</span>
+                  <span className="ks-vs-stat-label">{t("common.vendors")}</span>
                 </div>
                 <div className="ks-vs-stat-sep" />
                 <div className="ks-vs-stat">
                   <Users className="w-[18px] h-[18px] text-emerald-500" />
-                  <span className="ks-vs-stat-value">Verified</span>
-                  <span className="ks-vs-stat-label">Sellers</span>
+                  <span className="ks-vs-stat-value">{t("vendor.verified")}</span>
+                  <span className="ks-vs-stat-label">{t("vendor.sellers")}</span>
                 </div>
               </div>
             </div>
@@ -113,7 +115,7 @@ export default function VendorsPage() {
             {/* Sort bar */}
             <div className="ks-vs-filter-bar">
               <p className="text-[13px] text-[#999] font-medium">
-                Showing <strong className="text-[#555]">{vendors.length}</strong> of {pagination?.total ?? 0} vendors
+                {t("vendor.showing")} <strong className="text-[#555]">{vendors.length}</strong> {t("vendor.ofVendors", { total: pagination?.total ?? 0 })}
               </p>
 
               <div className="ks-vs-sort-wrap">
@@ -122,8 +124,8 @@ export default function VendorsPage() {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="ks-vs-sort-select"
                 >
-                  <option value="newest">Newest</option>
-                  <option value="oldest">Oldest</option>
+                  <option value="newest">{t("vendor.sortNewest")}</option>
+                  <option value="oldest">{t("vendor.sortOldest")}</option>
                   <option value="name-asc">A — Z</option>
                   <option value="name-desc">Z — A</option>
                 </select>
@@ -152,7 +154,7 @@ export default function VendorsPage() {
                   disabled={page <= 1}
                   onClick={() => setPage((p) => p - 1)}
                 >
-                  Previous
+                  {t("common.previous")}
                 </button>
                 {[...Array(pagination.pages)].map((_, i) => (
                   <button
@@ -168,7 +170,7 @@ export default function VendorsPage() {
                   disabled={page >= pagination.pages}
                   onClick={() => setPage((p) => p + 1)}
                 >
-                  Next
+                  {t("common.next")}
                 </button>
               </div>
             )}
@@ -183,14 +185,14 @@ export default function VendorsPage() {
                 <Store className="w-6 h-6 text-orange-500" />
               </div>
               <div>
-                <h2 className="ks-vs-cta-title">Become a Seller</h2>
+                <h2 className="ks-vs-cta-title">{t("footer.becomeSeller")}</h2>
                 <p className="ks-vs-cta-sub">
-                  Join thousands of successful sellers on KamilStore. Reach millions of customers today.
+                  {t("vendor.ctaSubtitle")}
                 </p>
               </div>
             </div>
             <Link href="/vendor/register" className="ks-vs-cta-btn">
-              Start Selling
+              {t("vendor.startSelling")}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

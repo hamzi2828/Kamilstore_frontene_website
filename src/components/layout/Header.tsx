@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   ShoppingCart, Heart, Menu, X, User, LogOut, Search, ChevronDown, ChevronRight,
-  MapPin, Shield, Headphones, Globe, LayoutGrid, Tag, Sparkles, Package,
+  MapPin, Shield, Headphones, LayoutGrid, Tag, Sparkles, Package,
   ArrowRight, Star, Store, Zap, TrendingUp, Bell,
   Smartphone, Shirt, Home, Dumbbell, Gamepad2, Watch, Car, Tags,
   type LucideIcon,
@@ -13,6 +13,8 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/lib/wishlist-context";
+import { useLanguage } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { useNavCategories } from "./hooks/useNavCategories";
 import type { NavCategory } from "./service/categoriesApi";
 
@@ -60,11 +62,11 @@ const fallbackCategories: NavCategory[] = [
 ];
 
 const navLinks = [
-  { label: "Today's Deals", href: "/deals", icon: Tag, hot: false },
-  { label: "Flash Sale", href: "/flash-sale", icon: Zap, live: true },
-  { label: "Trending", href: "/trending", icon: TrendingUp, hot: false },
-  { label: "New Arrivals", href: "/products?newArrivals=1", icon: Sparkles, hot: false },
-  { label: "Our Vendors", href: "/vendors", icon: Store, hot: false },
+  { labelKey: "nav.deals", href: "/deals", icon: Tag, hot: false },
+  { labelKey: "nav.flashSale", href: "/flash-sale", icon: Zap, live: true },
+  { labelKey: "nav.trending", href: "/trending", icon: TrendingUp, hot: false },
+  { labelKey: "nav.newArrivals", href: "/products?newArrivals=1", icon: Sparkles, hot: false },
+  { labelKey: "nav.vendors", href: "/vendors", icon: Store, hot: false },
 ];
 
 const routes = {
@@ -103,6 +105,7 @@ export default function Header() {
   }, [categories, activeSlug]);
 
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -159,42 +162,39 @@ export default function Header() {
           <div className="md:hidden max-w-[1400px] mx-auto px-3 flex items-center justify-between h-6">
             <div className="flex items-center gap-1">
               <MapPin className="w-2.5 h-2.5 text-orange-400 flex-shrink-0" />
-              <span>Free shipping on $50+</span>
+              <span>{t("header.freeShippingShort")}</span>
             </div>
             <div className="flex items-center gap-1">
               <Shield className="w-2.5 h-2.5 text-emerald-400 flex-shrink-0" />
-              <span className="text-emerald-400">Buyer Protected</span>
+              <span className="text-emerald-400">{t("header.buyerProtectedShort")}</span>
             </div>
           </div>
           {/* Desktop */}
           <div className="hidden md:flex max-w-[1400px] mx-auto px-5 items-center justify-between h-9">
             <div className="flex items-center gap-2">
               <MapPin className="w-3 h-3 text-orange-400" />
-              <span>Free shipping on orders over $50</span>
+              <span>{t("header.freeShipping")}</span>
               <span className="text-gray-600 mx-1">·</span>
               <Shield className="w-3 h-3 text-emerald-400" />
-              <span className="text-emerald-400">Buyer Protection Guaranteed</span>
+              <span className="text-emerald-400">{t("header.buyerProtection")}</span>
             </div>
             <div className="flex items-center gap-4">
               <Link href={routes.sell} className="flex items-center gap-1.5 hover:text-orange-400 transition-colors">
                 <Store className="w-3 h-3" />
-                Sell on KamilStore
+                {t("header.sell")}
               </Link>
               <span className="text-gray-600">|</span>
               <Link href={routes.help} className="flex items-center gap-1.5 hover:text-orange-400 transition-colors">
                 <Headphones className="w-3 h-3" />
-                Help
+                {t("header.help")}
               </Link>
               <span className="text-gray-600">|</span>
               <Link href={routes.track} className="flex items-center gap-1.5 hover:text-orange-400 transition-colors">
                 <Package className="w-3 h-3" />
-                Track Order
+                {t("header.trackOrder")}
               </Link>
               <span className="text-gray-600">|</span>
-              <Link href="/language" className="flex items-center gap-1.5 hover:text-orange-400 transition-colors">
-                <Globe className="w-3 h-3" />
-                EN / USD
-              </Link>
+              <LanguageSwitcher />
             </div>
           </div>
         </div>
@@ -223,7 +223,7 @@ export default function Header() {
                   }`}
                 >
                   <LayoutGrid className="w-4 h-4" />
-                  All Categories
+                  {t("header.allCategories")}
                   <ChevronDown className={`w-3.5 h-3.5 opacity-80 transition-transform duration-200 ${megaOpen ? "rotate-180" : ""}`} />
                 </button>
 
@@ -272,7 +272,7 @@ export default function Header() {
                             </div>
                             <div>
                               <div className="font-extrabold text-base text-gray-900">{activeCategory.name}</div>
-                              <div className="text-xs text-gray-500">Browse all {activeCategory.name.toLowerCase()}</div>
+                              <div className="text-xs text-gray-500">{t("header.browseAll", { category: activeCategory.name.toLowerCase() })}</div>
                             </div>
                           </div>
                         );
@@ -295,7 +295,7 @@ export default function Header() {
                         </ul>
                       ) : (
                         <p className="text-sm text-gray-500 mb-5">
-                          No sub-categories yet. Browse all products in this category.
+                          {t("header.noSubcategories")}
                         </p>
                       )}
 
@@ -304,7 +304,7 @@ export default function Header() {
                         onClick={() => setMegaOpen(false)}
                         className="inline-flex items-center gap-1.5 text-sm font-bold text-orange-600 hover:text-orange-700 transition-colors"
                       >
-                        View all {activeCategory.name}
+                        {t("header.viewAllCategory", { category: activeCategory.name })}
                         <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
@@ -327,7 +327,7 @@ export default function Header() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setSearchFocused(true)}
                   onBlur={() => setSearchFocused(false)}
-                  placeholder="Search for products, brands, categories..."
+                  placeholder={t("header.searchPlaceholder")}
                   className="flex-1 px-4 text-sm bg-transparent outline-none text-gray-900 placeholder:text-gray-400 min-w-0"
                 />
                 <button
@@ -377,7 +377,7 @@ export default function Header() {
                     <button
                       onClick={handleLogout}
                       className="w-11 h-11 rounded-xl border-[1.5px] border-gray-200 bg-gray-50 flex items-center justify-center text-red-500 hover:border-red-300 hover:bg-red-50 transition-colors"
-                      title="Sign Out"
+                      title={t("common.signOut")}
                     >
                       <LogOut className="w-4 h-4" />
                     </button>
@@ -388,7 +388,7 @@ export default function Header() {
                     className="hidden lg:flex items-center gap-1.5 px-3 py-2.5 rounded-xl border-[1.5px] border-gray-200 bg-gray-50 text-gray-700 font-semibold text-sm hover:border-orange-400 hover:bg-orange-50 hover:text-orange-600 transition-colors"
                   >
                     <User className="w-4 h-4" />
-                    Sign In
+                    {t("common.signIn")}
                   </Link>
                 )}
 
@@ -396,8 +396,8 @@ export default function Header() {
                 <Link
                   href={routes.wishlist}
                   className="relative w-8 h-8 lg:w-11 lg:h-11 rounded-lg lg:rounded-xl border-[1.5px] border-gray-200 bg-gray-50 flex items-center justify-center text-gray-700 hover:border-orange-400 hover:bg-orange-50 hover:text-orange-600 transition-colors"
-                  aria-label="Wishlist"
-                  title="Wishlist"
+                  aria-label={t("common.wishlist")}
+                  title={t("common.wishlist")}
                 >
                   <Heart className="w-3.5 h-3.5 lg:w-[18px] lg:h-[18px]" />
                   {wishlistCount > 0 && (
@@ -411,8 +411,8 @@ export default function Header() {
                 <Link
                   href={routes.cart}
                   className="relative w-8 h-8 lg:w-11 lg:h-11 rounded-lg lg:rounded-xl bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center transition-colors"
-                  aria-label="Cart"
-                  title="Cart"
+                  aria-label={t("common.cart")}
+                  title={t("common.cart")}
                 >
                   <ShoppingCart className="w-3.5 h-3.5 lg:w-[18px] lg:h-[18px]" />
                   {cartCount > 0 && (
@@ -453,7 +453,7 @@ export default function Header() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
-                placeholder="Search products..."
+                placeholder={t("header.searchPlaceholderShort")}
                 className="flex-1 px-3 sm:px-4 text-xs sm:text-sm bg-transparent outline-none text-gray-900 placeholder:text-gray-400 min-w-0"
                 autoFocus
               />
@@ -471,7 +471,7 @@ export default function Header() {
         {/* ─────────── Nav Strip (desktop only) ─────────── */}
         <div className="hidden lg:block bg-white border-b border-gray-100">
           <div className="max-w-[1400px] mx-auto px-3 xl:px-5 flex items-center h-10 xl:h-11 gap-0.5 xl:gap-1">
-            {navLinks.map(({ label, href, icon: Icon, live }) => {
+            {navLinks.map(({ labelKey, href, icon: Icon, live }) => {
               const active = isActive(href);
               return (
                 <Link
@@ -486,10 +486,10 @@ export default function Header() {
                   }`}
                 >
                   <Icon className="w-3 h-3 xl:w-3.5 xl:h-3.5" />
-                  {label}
+                  {t(labelKey)}
                   {live && (
                     <span className="text-[8px] xl:text-[9px] font-extrabold px-1 xl:px-1.5 py-px bg-red-500 text-white rounded uppercase tracking-wider">
-                      Live
+                      {t("header.live")}
                     </span>
                   )}
                 </Link>
@@ -500,7 +500,7 @@ export default function Header() {
               <div className="flex items-center gap-1 xl:gap-1.5 text-[10px] xl:text-xs text-gray-500">
                 <Star className="w-3 h-3 xl:w-3.5 xl:h-3.5 text-yellow-500 fill-yellow-500" />
                 <span className="font-semibold">4.9/5</span>
-                <span className="text-gray-400 hidden xl:inline">from 28k+ reviews</span>
+                <span className="text-gray-400 hidden xl:inline">{t("header.reviewsCount")}</span>
               </div>
               <span className="text-gray-200">|</span>
               <Link
@@ -508,7 +508,7 @@ export default function Header() {
                 className="flex items-center gap-1 xl:gap-1.5 text-[10px] xl:text-xs text-gray-600 hover:text-orange-600 font-semibold transition-colors"
               >
                 <Headphones className="w-3 h-3 xl:w-3.5 xl:h-3.5" />
-                24/7 Support
+                {t("header.support247")}
               </Link>
             </div>
           </div>
@@ -540,7 +540,7 @@ export default function Header() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
+                  placeholder={t("header.searchPlaceholderShort")}
                   className="flex-1 px-3 sm:px-4 text-xs sm:text-sm bg-transparent outline-none min-w-0"
                 />
                 <button type="submit" className="px-3 sm:px-4 bg-orange-600 text-white">
@@ -551,10 +551,10 @@ export default function Header() {
               {/* Quick actions grid */}
               <div className="grid grid-cols-2 gap-1.5 sm:gap-2 mb-4 sm:mb-5">
                 {[
-                  { label: user ? user.name.split(" ")[0] : "Sign In", icon: User, href: user ? routes.userDetails : routes.auth },
-                  { label: "Wishlist", icon: Heart, href: routes.wishlist, count: wishlistCount },
-                  { label: "Cart", icon: ShoppingCart, href: routes.cart, count: cartCount },
-                  { label: "Track", icon: Package, href: routes.track },
+                  { label: user ? user.name.split(" ")[0] : t("common.signIn"), icon: User, href: user ? routes.userDetails : routes.auth },
+                  { label: t("common.wishlist"), icon: Heart, href: routes.wishlist, count: wishlistCount },
+                  { label: t("common.cart"), icon: ShoppingCart, href: routes.cart, count: cartCount },
+                  { label: t("header.track"), icon: Package, href: routes.track },
                 ].map(({ label, icon: Icon, href, count }) => (
                   <Link
                     key={href}
@@ -581,15 +581,15 @@ export default function Header() {
               >
                 <span className="flex items-center gap-2">
                   <Zap className="w-4 h-4" />
-                  Flash Sale — Live Now
+                  {t("header.flashSaleLive")}
                 </span>
-                <span className="text-[9px] font-extrabold px-1.5 py-0.5 bg-white text-red-500 rounded">LIVE</span>
+                <span className="text-[9px] font-extrabold px-1.5 py-0.5 bg-white text-red-500 rounded">{t("header.live").toUpperCase()}</span>
               </Link>
 
               {/* Main nav */}
-              <div className="text-[10px] font-extrabold text-gray-400 uppercase tracking-[1px] px-1 mb-2">Explore</div>
+              <div className="text-[10px] font-extrabold text-gray-400 uppercase tracking-[1px] px-1 mb-2">{t("header.explore")}</div>
               <div className="space-y-1 mb-4 sm:mb-5">
-                {navLinks.map(({ label, href, icon: Icon, live }) => (
+                {navLinks.map(({ labelKey, href, icon: Icon, live }) => (
                   <Link
                     key={href}
                     href={href}
@@ -603,10 +603,10 @@ export default function Header() {
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    {label}
+                    {t(labelKey)}
                     {live && (
                       <span className="ml-auto text-[9px] font-extrabold px-1.5 py-0.5 bg-red-500 text-white rounded uppercase tracking-wider">
-                        Live
+                        {t("header.live")}
                       </span>
                     )}
                   </Link>
@@ -618,7 +618,7 @@ export default function Header() {
                 onClick={() => setMobileShowCategories((s) => !s)}
                 className="w-full flex items-center justify-between px-1 mb-2"
               >
-                <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-[1px]">Categories</span>
+                <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-[1px]">{t("common.categories")}</span>
                 <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${mobileShowCategories ? "rotate-180" : ""}`} />
               </button>
               {mobileShowCategories && (
@@ -662,7 +662,7 @@ export default function Header() {
                     onClick={closeMobileMenu}
                     className="flex items-center justify-center gap-2 px-2.5 py-2 sm:px-3 sm:py-2.5 rounded-lg bg-orange-50 text-orange-600 font-bold text-xs sm:text-sm"
                   >
-                    View All Products
+                    {t("header.viewAllProducts")}
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -670,13 +670,17 @@ export default function Header() {
 
               {/* Footer inside mobile menu */}
               <div className="pt-3 sm:pt-4 border-t border-gray-100 space-y-2">
+                <div className="flex items-center justify-between px-1 py-1 text-gray-700">
+                  <span className="text-xs font-semibold">{t("header.language")}</span>
+                  <LanguageSwitcher />
+                </div>
                 <Link
                   href={routes.sell}
                   onClick={closeMobileMenu}
                   className="flex items-center justify-center gap-2 px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg sm:rounded-xl bg-[#1A1A2E] text-white font-bold text-xs sm:text-sm"
                 >
                   <Store className="w-4 h-4" />
-                  Sell on KamilStore
+                  {t("header.sell")}
                 </Link>
                 {user && (
                   <button
@@ -684,7 +688,7 @@ export default function Header() {
                     className="w-full flex items-center justify-center gap-2 px-3 py-2.5 sm:px-4 sm:py-3 rounded-lg sm:rounded-xl bg-red-50 text-red-600 font-bold text-xs sm:text-sm hover:bg-red-100 transition-colors"
                   >
                     <LogOut className="w-4 h-4" />
-                    Sign Out
+                    {t("common.signOut")}
                   </button>
                 )}
               </div>

@@ -11,6 +11,7 @@ import ProductImage from "@/components/ui/ProductImage";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import "@/styling/CartPage.css";
 import { useCart } from "@/lib/cart-context";
+import { useLanguage } from "@/lib/i18n";
 
 const PLACEHOLDER =
   "https://png.pngtree.com/png-vector/20241018/ourmid/pngtree-running-shoes-or-sneakers-on-a-transparent-background-png-image_14112954.png";
@@ -27,6 +28,7 @@ export default function CartPage() {
     clearCart,
     refresh,
   } = useCart();
+  const { t } = useLanguage();
 
   const [couponCode, setCouponCode] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
@@ -50,7 +52,7 @@ export default function CartPage() {
   if (!isReady) {
     return (
       <>
-        <Breadcrumb items={[{ label: "Cart" }]} />
+        <Breadcrumb items={[{ label: t("common.cart") }]} />
         <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
           <section className="site-container">
             <div
@@ -63,7 +65,7 @@ export default function CartPage() {
                 fontSize: 14,
               }}
             >
-              Loading cart...
+              {t("cart.loading")}
             </div>
           </section>
         </div>
@@ -75,20 +77,20 @@ export default function CartPage() {
   if (cartItems.length === 0) {
     return (
       <>
-        <Breadcrumb items={[{ label: "Cart" }]} />
+        <Breadcrumb items={[{ label: t("common.cart") }]} />
         <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
           <section className="site-container">
             <div className="ks-cart-empty-card">
               <div className="ks-cart-empty-icon-box">
                 <ShoppingBag className="w-10 h-10 text-[#ddd]" />
               </div>
-              <h1 className="ks-cart-empty-title">Your cart is empty</h1>
+              <h1 className="ks-cart-empty-title">{t("cart.empty.title")}</h1>
               <p className="ks-cart-empty-sub">
-                Looks like you haven&apos;t added any items to your cart yet.
+                {t("cart.empty.subtitle")}
               </p>
               <Link href="/products" className="ks-cart-empty-btn">
                 <ShoppingBag className="w-[18px] h-[18px]" />
-                Start Shopping
+                {t("cart.startShopping")}
               </Link>
             </div>
           </section>
@@ -99,7 +101,7 @@ export default function CartPage() {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Shopping Cart" }]} />
+      <Breadcrumb items={[{ label: t("cart.title") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         <section className="site-container">
@@ -112,10 +114,15 @@ export default function CartPage() {
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                    Shopping Cart
+                    {t("cart.title")}
                   </h1>
                   <p className="text-sm text-[#999] font-medium mt-1.5">
-                    {totalItems} {totalItems === 1 ? "item" : "items"} in your cart
+                    {t(
+                      totalItems === 1
+                        ? "cart.itemsInCartOne"
+                        : "cart.itemsInCartOther",
+                      { count: totalItems },
+                    )}
                   </p>
                 </div>
               </div>
@@ -128,10 +135,10 @@ export default function CartPage() {
             <div className="ks-cart-items-col">
               <div className="bg-white rounded-2xl overflow-hidden border border-[#f1f5f9]">
                 <div className="ks-cart-table-head">
-                  <div className="ks-cart-th-product">Product</div>
-                  <div className="ks-cart-th">Price</div>
-                  <div className="ks-cart-th">Quantity</div>
-                  <div className="ks-cart-th ks-cart-th-right">Total</div>
+                  <div className="ks-cart-th-product">{t("cart.product")}</div>
+                  <div className="ks-cart-th">{t("common.price")}</div>
+                  <div className="ks-cart-th">{t("common.quantity")}</div>
+                  <div className="ks-cart-th ks-cart-th-right">{t("common.total")}</div>
                 </div>
 
                 <div className="ks-cart-items">
@@ -162,7 +169,7 @@ export default function CartPage() {
                             </Link>
                             {item.vendor && (
                               <p className="ks-cart-item-vendor">
-                                Sold by{" "}
+                                {t("cart.soldBy")}{" "}
                                 <Link
                                   href={`/vendor/${item.vendor._id}`}
                                   className="ks-cart-item-vendor-link"
@@ -180,7 +187,7 @@ export default function CartPage() {
                         </div>
 
                         <div className="ks-cart-item-price">
-                          <span className="ks-cart-label">Price</span>
+                          <span className="ks-cart-label">{t("common.price")}</span>
                           <span className="ks-cart-item-price-current">
                             {formatPrice(price)}
                           </span>
@@ -192,7 +199,7 @@ export default function CartPage() {
                         </div>
 
                         <div className="ks-cart-item-qty">
-                          <span className="ks-cart-label">Qty</span>
+                          <span className="ks-cart-label">{t("cart.qty")}</span>
                           <div className="ks-cart-qty-control">
                             <button
                               onClick={() => updateQuantity(item._id, item.quantity - 1)}
@@ -213,14 +220,14 @@ export default function CartPage() {
                         </div>
 
                         <div className="ks-cart-item-total">
-                          <span className="ks-cart-label">Total</span>
+                          <span className="ks-cart-label">{t("common.total")}</span>
                           <span className="ks-cart-item-total-value">
                             {formatPrice(lineTotal)}
                           </span>
                           <button
                             onClick={() => removeItem(item._id)}
                             className="ks-cart-remove-btn"
-                            aria-label="Remove item"
+                            aria-label={t("cart.removeItem")}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -234,21 +241,21 @@ export default function CartPage() {
               <div className="ks-cart-actions">
                 <Link href="/products" className="ks-cart-continue-link">
                   <Package className="w-4 h-4" />
-                  Continue Shopping
+                  {t("cart.continueShopping")}
                 </Link>
                 <button onClick={clearCart} className="ks-cart-clear-btn">
                   <Trash2 className="w-4 h-4" />
-                  Clear Cart
+                  {t("cart.clearCart")}
                 </button>
               </div>
             </div>
 
             <div className="ks-cart-summary-col">
               <div className="ks-cart-summary-card">
-                <h2 className="ks-cart-summary-title">Order Summary</h2>
+                <h2 className="ks-cart-summary-title">{t("cart.orderSummary")}</h2>
 
                 <div className="ks-cart-coupon">
-                  <label className="ks-cart-coupon-label">Coupon Code</label>
+                  <label className="ks-cart-coupon-label">{t("cart.couponCode")}</label>
                   <div className="ks-cart-coupon-row">
                     <div className="ks-cart-coupon-field">
                       <Tag className="ks-cart-coupon-icon" />
@@ -256,72 +263,72 @@ export default function CartPage() {
                         type="text"
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value)}
-                        placeholder="Enter code"
+                        placeholder={t("cart.enterCode")}
                         className="ks-cart-coupon-input"
                       />
                     </div>
                     <button onClick={applyCoupon} className="ks-cart-coupon-btn">
-                      Apply
+                      {t("common.apply")}
                     </button>
                   </div>
                   {appliedCoupon && (
                     <p className="ks-cart-coupon-success">
-                      Coupon &quot;{appliedCoupon}&quot; applied! 10% off
+                      {t("cart.couponApplied", { coupon: appliedCoupon })}
                     </p>
                   )}
                   <p className="ks-cart-coupon-hint">
-                    Try &quot;SAVE10&quot; for 10% off
+                    {t("cart.couponHint")}
                   </p>
                 </div>
 
                 <div className="ks-cart-summary-rows">
                   <div className="ks-cart-summary-row">
-                    <span>Subtotal ({totalItems} items)</span>
+                    <span>{t("cart.subtotalItems", { count: totalItems })}</span>
                     <span className="ks-cart-summary-row-value">{formatPrice(subtotal)}</span>
                   </div>
                   {discount > 0 && (
                     <div className="ks-cart-summary-row ks-cart-summary-discount">
-                      <span>Discount</span>
+                      <span>{t("cart.discount")}</span>
                       <span>-{formatPrice(discount)}</span>
                     </div>
                   )}
                   <div className="ks-cart-summary-row">
-                    <span>Shipping</span>
+                    <span>{t("common.shipping")}</span>
                     <span className="ks-cart-summary-row-value">
                       {shipping === 0 ? (
-                        <span className="ks-cart-free-shipping">FREE</span>
+                        <span className="ks-cart-free-shipping">{t("common.free")}</span>
                       ) : (
                         formatPrice(shipping)
                       )}
                     </span>
                   </div>
                   {shipping > 0 && (
-                    <p className="ks-cart-shipping-hint">Free shipping on orders over $50</p>
+                    <p className="ks-cart-shipping-hint">{t("header.freeShipping")}</p>
                   )}
 
                   <div className="ks-cart-summary-total-row">
-                    <span>Total</span>
+                    <span>{t("common.total")}</span>
                     <span className="ks-cart-summary-total-value">{formatPrice(total)}</span>
                   </div>
                 </div>
 
                 <Link href="/checkout" className="ks-cart-checkout-btn">
-                  Proceed to Checkout
+                  {t("cart.proceedToCheckout")}
                   <ArrowRight className="w-[18px] h-[18px]" />
                 </Link>
 
                 <div className="ks-cart-trust">
                   <div className="ks-cart-trust-item">
                     <ShieldCheck className="ks-cart-trust-icon" />
-                    <span>Secure checkout</span>
+                    <span>{t("cart.secureCheckout")}</span>
                   </div>
                   <div className="ks-cart-trust-item">
                     <Truck className="ks-cart-trust-icon" />
-                    <span>Fast delivery</span>
+                    <span>{t("cart.fastDelivery")}</span>
                   </div>
                   <div className="ks-cart-trust-item">
                     <RotateCcw className="ks-cart-trust-icon" />
-                    <span>30-day returns</span>
+                    <span>{t("cart.returns30Day")}</span>
                   </div>
                 </div>
               </div>

@@ -4,29 +4,37 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useBanners } from "../hooks/useBanners";
+import { useLanguage } from "@/lib/i18n";
 
 type Slide = { id: string; src: string; alt: string; link: string };
 
-const fallbackSlides: Slide[] = [
-  { id: "f1", src: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1440&h=460&fit=crop&q=80", alt: "Marketplace Sale - Up to 50% off", link: "/deals" },
-  { id: "f2", src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1440&h=460&fit=crop&q=80", alt: "New Fashion Arrivals", link: "/products?newArrivals=1" },
-  { id: "f3", src: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1440&h=460&fit=crop&q=80", alt: "Premium Electronics", link: "/category/electronics" },
+const fallbackSlides: Array<{ id: string; src: string; altKey: string; link: string }> = [
+  { id: "f1", src: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1440&h=460&fit=crop&q=80", altKey: "home.hero.slide1Alt", link: "/deals" },
+  { id: "f2", src: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1440&h=460&fit=crop&q=80", altKey: "home.hero.slide2Alt", link: "/products?newArrivals=1" },
+  { id: "f3", src: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1440&h=460&fit=crop&q=80", altKey: "home.hero.slide3Alt", link: "/category/electronics" },
 ];
 
 const INTERVAL = 3000;
 
 export default function HeroBanner() {
+  const { t } = useLanguage();
   const { banners } = useBanners("hero");
 
   const slides = useMemo<Slide[]>(() => {
-    if (banners.length === 0) return fallbackSlides;
+    if (banners.length === 0)
+      return fallbackSlides.map((s) => ({
+        id: s.id,
+        src: s.src,
+        alt: t(s.altKey),
+        link: s.link,
+      }));
     return banners.map((b) => ({
       id: b._id,
       src: b.image,
       alt: b.title,
       link: b.link || "/",
     }));
-  }, [banners]);
+  }, [banners, t]);
 
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -143,14 +151,14 @@ export default function HeroBanner() {
         <button
           onClick={prev}
           className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center bg-white/90 hover:bg-white rounded-full text-gray-800 shadow-lg shadow-black/10 transition-all opacity-0 group-hover:opacity-100 hover:scale-105 active:scale-95"
-          aria-label="Previous"
+          aria-label={t("common.previous")}
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
         <button
           onClick={next}
           className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 flex items-center justify-center bg-white/90 hover:bg-white rounded-full text-gray-800 shadow-lg shadow-black/10 transition-all opacity-0 group-hover:opacity-100 hover:scale-105 active:scale-95"
-          aria-label="Next"
+          aria-label={t("common.next")}
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -169,7 +177,7 @@ export default function HeroBanner() {
                     ? "w-7 bg-white shadow-sm shadow-white/30"
                     : "w-2 bg-white/40 hover:bg-white/70"
                 }`}
-                aria-label={`Slide ${i + 1}`}
+                aria-label={t("home.hero.slideLabel", { number: i + 1 })}
               />
             ))}
           </div>

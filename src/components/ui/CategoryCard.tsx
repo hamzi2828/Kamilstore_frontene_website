@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguage } from "@/lib/i18n";
 
 interface CategoryCardProps {
   category: {
@@ -16,6 +17,7 @@ interface CategoryCardProps {
 
 export default function CategoryCard({ category }: CategoryCardProps) {
   const [imgError, setImgError] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <Link href={`/category/${category.slug}`}>
@@ -49,7 +51,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
             <h3 className="font-semibold text-lg">{category.name}</h3>
             <p className="text-sm opacity-80">
-              {category.productCount} Products
+              {category.productCount} {t("common.products")}
             </p>
           </div>
         </div>

@@ -1,13 +1,17 @@
+"use client";
+
 import { Truck, RotateCcw, ShieldCheck, BadgeCheck } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 const badges = [
-  { icon: BadgeCheck, title: "Verified Sellers", desc: "All vendors vetted & approved" },
-  { icon: ShieldCheck, title: "Buyer Protection", desc: "100% purchase protection" },
-  { icon: Truck, title: "Free Delivery", desc: "On orders over $50" },
-  { icon: RotateCcw, title: "30-Day Returns", desc: "Money-back guarantee" },
+  { icon: BadgeCheck, titleKey: "footer.verifiedSellers", descKey: "home.trust.verifiedDesc" },
+  { icon: ShieldCheck, titleKey: "footer.buyerProtection", descKey: "home.trust.protectionDesc" },
+  { icon: Truck, titleKey: "home.trust.freeDelivery", descKey: "home.trust.freeDeliveryDesc" },
+  { icon: RotateCcw, titleKey: "home.trust.returns", descKey: "home.trust.returnsDesc" },
 ];
 
 export default function TrustBadges() {
+  const { t } = useLanguage();
   return (
     <section className="site-container">
       <div className="bg-white rounded-2xl overflow-hidden">
@@ -16,16 +20,16 @@ export default function TrustBadges() {
             const Icon = b.icon;
             return (
               <div
-                key={b.title}
+                key={b.titleKey}
                 className="flex items-center gap-2.5 sm:gap-3 px-3 py-3 sm:px-4 sm:py-4 lg:px-5 min-w-0"
               >
                 <Icon className="w-5 h-5 text-orange-500 flex-shrink-0" />
                 <div className="min-w-0">
                   <p className="font-semibold text-[#333] text-[13px] sm:text-sm leading-tight truncate">
-                    {b.title}
+                    {t(b.titleKey)}
                   </p>
                   <p className="text-[11px] sm:text-xs text-[#999] leading-snug mt-0.5 line-clamp-2">
-                    {b.desc}
+                    {t(b.descKey)}
                   </p>
                 </div>
               </div>

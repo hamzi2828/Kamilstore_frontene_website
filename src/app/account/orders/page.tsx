@@ -10,6 +10,7 @@ import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useAuth } from "@/lib/auth-context";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/OrdersPage.css";
 
 interface UiOrderItem {
@@ -60,6 +61,7 @@ const statusStyles: Record<string, { bg: string; color: string; border: string }
 
 export default function OrdersPage() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
@@ -114,9 +116,17 @@ export default function OrdersPage() {
     [orders, selectedStatus, searchQuery]
   );
 
+  const statusLabel = (s: string) =>
+    ({
+      Processing: t("account.orders.statusProcessing"),
+      Shipped: t("account.orders.statusShipped"),
+      Delivered: t("account.orders.statusDelivered"),
+      Cancelled: t("account.orders.statusCancelled"),
+    } as Record<string, string>)[s] || s;
+
   return (
     <>
-      <Breadcrumb items={[{ label: "Account", href: "/account" }, { label: "Orders" }]} />
+      <Breadcrumb items={[{ label: t("common.account"), href: "/account" }, { label: t("common.orders") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         {/* ── Header ── */}
@@ -130,10 +140,10 @@ export default function OrdersPage() {
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                    My Orders
+                    {t("account.orders.title")}
                   </h1>
                   <p className="text-sm text-[#999] font-medium mt-1.5">
-                    {orders.length} orders placed
+                    {t("account.orders.placedCount", { count: orders.length })}
                   </p>
                 </div>
               </div>
@@ -144,7 +154,7 @@ export default function OrdersPage() {
                   <Search className="ks-ord-search-icon" />
                   <input
                     type="text"
-                    placeholder="Search by order ID..."
+                    placeholder={t("account.orders.searchPlaceholder")}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="ks-ord-search-input"
@@ -158,7 +168,7 @@ export default function OrdersPage() {
                       onClick={() => setSelectedStatus(s)}
                       className={`ks-ord-pill ${selectedStatus === s ? "ks-ord-pill-active" : ""}`}
                     >
-                      {s === "all" ? "All" : s}
+                      {s === "all" ? t("account.orders.filterAll") : statusLabel(s)}
                     </button>
                   ))}
                 </div>
@@ -172,7 +182,7 @@ export default function OrdersPage() {
           {loading && (
             <div className="flex flex-col items-center justify-center py-16 text-[#9ca3af] text-sm">
               <Loader2 className="w-6 h-6 animate-spin mb-2 text-orange-500" />
-              Loading your orders...
+              {t("account.loadingOrders")}
             </div>
           )}
           {!loading && (
@@ -190,14 +200,14 @@ export default function OrdersPage() {
                       <div className="ks-ord-id-row">
                         <span className="ks-ord-id">#{order._id}</span>
                         <span className="ks-ord-status" style={{ background: st.bg, color: st.color, borderColor: st.border }}>
-                          {order.status}
+                          {statusLabel(order.status)}
                         </span>
                       </div>
                       <p className="ks-ord-meta">
                         <Clock className="w-3.5 h-3.5" />
                         {new Date(order.date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
                         <span className="ks-ord-dot" />
-                        {order.items.length} item{order.items.length > 1 ? "s" : ""}
+                        {order.items.length} {order.items.length > 1 ? t("account.itemPlural") : t("account.itemSingular")}
                         {order.vendorName && (
                           <>
                             <span className="ks-ord-dot" />
@@ -213,7 +223,7 @@ export default function OrdersPage() {
                         className="ks-ord-toggle-btn"
                       >
                         {isExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        {isExpanded ? "Hide" : "Details"}
+                        {isExpanded ? t("account.orders.hide") : t("account.details")}
                       </button>
                     </div>
                   </div>
@@ -227,19 +237,19 @@ export default function OrdersPage() {
                         </div>
                         <div className="ks-ord-preview-info">
                           <p className="ks-ord-preview-name">{item.name}</p>
-                          <p className="ks-ord-preview-qty">Qty: {item.quantity}</p>
+                          <p className="ks-ord-preview-qty">{t("account.orders.qtyShort", { qty: item.quantity })}</p>
                         </div>
                       </div>
                     ))}
                     {order.items.length > 3 && (
-                      <div className="ks-ord-preview-more">+{order.items.length - 3} more</div>
+                      <div className="ks-ord-preview-more">{t("account.orders.moreItems", { count: order.items.length - 3 })}</div>
                     )}
                   </div>
 
                   {/* Expanded details */}
                   {isExpanded && (
                     <div className="ks-ord-expanded">
-                      <h4 className="ks-ord-expanded-title">Order Items</h4>
+                      <h4 className="ks-ord-expanded-title">{t("account.orders.orderItems")}</h4>
                       <div className="ks-ord-expanded-items">
                         {order.items.map((item, idx) => (
                           <div key={idx} className="ks-ord-expanded-item">
@@ -249,7 +259,7 @@ export default function OrdersPage() {
                               </div>
                               <div>
                                 <p className="ks-ord-expanded-name">{item.name}</p>
-                                <p className="ks-ord-expanded-qty">Quantity: {item.quantity}</p>
+                                <p className="ks-ord-expanded-qty">{t("common.quantity")}: {item.quantity}</p>
                               </div>
                             </div>
                             <span className="ks-ord-expanded-price">{formatPrice(item.price)}</span>
@@ -261,7 +271,7 @@ export default function OrdersPage() {
                         <div className="ks-ord-expanded-info-block">
                           <MapPin className="w-4 h-4 text-[#bbb]" />
                           <div>
-                            <span className="ks-ord-expanded-info-label">Shipping Address</span>
+                            <span className="ks-ord-expanded-info-label">{t("account.addresses.shippingAddress")}</span>
                             <span className="ks-ord-expanded-info-value">{order.shippingAddress}</span>
                           </div>
                         </div>
@@ -269,7 +279,7 @@ export default function OrdersPage() {
                           <div className="ks-ord-expanded-info-block">
                             <Truck className="w-4 h-4 text-[#bbb]" />
                             <div>
-                              <span className="ks-ord-expanded-info-label">Tracking Number</span>
+                              <span className="ks-ord-expanded-info-label">{t("account.orders.trackingNumber")}</span>
                               <span className="ks-ord-expanded-info-value ks-ord-tracking">{order.trackingNumber}</span>
                             </div>
                           </div>
@@ -279,11 +289,11 @@ export default function OrdersPage() {
                       <div className="ks-ord-expanded-actions">
                         {order.status === "Delivered" && (
                           <button className="ks-ord-action-btn-outline">
-                            <RotateCcw className="w-4 h-4" /> Return Items
+                            <RotateCcw className="w-4 h-4" /> {t("account.orders.returnItems")}
                           </button>
                         )}
                         <button className="ks-ord-action-btn-primary">
-                          <ShoppingBag className="w-4 h-4" /> Buy Again
+                          <ShoppingBag className="w-4 h-4" /> {t("account.orders.buyAgain")}
                         </button>
                       </div>
                     </div>
@@ -297,12 +307,12 @@ export default function OrdersPage() {
           {filtered.length === 0 && (
             <div className="ks-ord-empty">
               <div className="ks-ord-empty-icon"><Package className="w-10 h-10 text-[#ddd]" /></div>
-              <h3 className="ks-ord-empty-title">No orders found</h3>
+              <h3 className="ks-ord-empty-title">{t("account.orders.noneFound")}</h3>
               <p className="ks-ord-empty-sub">
-                {searchQuery ? "Try adjusting your search or filter" : "You haven't placed any orders yet"}
+                {searchQuery ? t("account.orders.noneFoundSearch") : t("account.orders.noneYet")}
               </p>
               <Link href="/products" className="ks-ord-empty-btn">
-                <ShoppingBag className="w-[18px] h-[18px]" /> Start Shopping
+                <ShoppingBag className="w-[18px] h-[18px]" /> {t("account.startShopping")}
               </Link>
             </div>
           )}

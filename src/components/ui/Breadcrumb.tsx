@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { Home } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 interface BreadcrumbItem {
   label: string;
@@ -11,6 +14,7 @@ interface BreadcrumbProps {
 }
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
+  const { t } = useLanguage();
   return (
     <nav className="bg-white border-b border-gray-100">
       <div className="site-container h-[44px] flex items-center">
@@ -21,7 +25,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
               className="flex items-center gap-1.5 text-gray-500 hover:text-orange-500 transition-colors"
             >
               <Home className="w-4 h-4" />
-              <span>Home</span>
+              <span>{t("catalog.breadcrumb.home")}</span>
             </Link>
           </li>
 

@@ -19,6 +19,7 @@ import { vendorApi } from "@/app/vendor/service/vendorApi";
 import type { ProductVariantPricing, ProductVendor } from "../types";
 import { useCart } from "@/lib/cart-context";
 import { useWishlist } from "@/lib/wishlist-context";
+import { useLanguage } from "@/lib/i18n";
 import { useRouter } from "next/navigation";
 import ReviewsSection from "../components/ReviewsSection";
 import { reviewsApi } from "../service/reviewsApi";
@@ -39,6 +40,7 @@ const variantMatchesSelection = (
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { t } = useLanguage();
   const slug = params.slug as string;
   const vendorIdFromUrl = (params.vendorid as string | undefined) || undefined;
   const { data, isLoading, error } = useProduct(slug);
@@ -174,21 +176,21 @@ export default function ProductDetailPage() {
   const specifications = useMemo(() => {
     if (!product) return [] as Array<{ label: string; value: string }>;
     const specs: Array<{ label: string; value: string }> = [];
-    if (product.sku) specs.push({ label: "SKU", value: product.sku });
-    if (product.category?.name) specs.push({ label: "Category", value: product.category.name });
-    if (product.subCategory?.name) specs.push({ label: "Sub-category", value: product.subCategory.name });
-    if (product.sellingType) specs.push({ label: "Selling type", value: product.sellingType });
-    if (product.minOrderQuantity) specs.push({ label: "Min order qty", value: String(product.minOrderQuantity) });
-    if (product.taxType) specs.push({ label: "Tax type", value: product.taxType });
-    if (activeVariant?.sku) specs.push({ label: "Variant SKU", value: activeVariant.sku });
-    if (activeVariant) specs.push({ label: "Variant stock", value: String(activeVariant.quantity) });
+    if (product.sku) specs.push({ label: t("product.specSku"), value: product.sku });
+    if (product.category?.name) specs.push({ label: t("common.category"), value: product.category.name });
+    if (product.subCategory?.name) specs.push({ label: t("product.specSubCategory"), value: product.subCategory.name });
+    if (product.sellingType) specs.push({ label: t("product.specSellingType"), value: product.sellingType });
+    if (product.minOrderQuantity) specs.push({ label: t("product.specMinOrderQty"), value: String(product.minOrderQuantity) });
+    if (product.taxType) specs.push({ label: t("product.specTaxType"), value: product.taxType });
+    if (activeVariant?.sku) specs.push({ label: t("product.specVariantSku"), value: activeVariant.sku });
+    if (activeVariant) specs.push({ label: t("product.specVariantStock"), value: String(activeVariant.quantity) });
     return specs;
-  }, [product, activeVariant]);
+  }, [product, activeVariant, t]);
 
   if (isLoading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-        <div style={{ fontSize: 14, color: "#9CA3AF" }}>Loading product...</div>
+        <div style={{ fontSize: 14, color: "#9CA3AF" }}>{t("product.loadingProduct")}</div>
       </div>
     );
   }
@@ -196,12 +198,12 @@ export default function ProductDetailPage() {
   if (error || !product) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh", flexDirection: "column", gap: 8 }}>
-        <div style={{ fontSize: 16, color: "#111", fontWeight: 600 }}>Product not found</div>
+        <div style={{ fontSize: 16, color: "#111", fontWeight: 600 }}>{t("product.notFound")}</div>
         <div style={{ fontSize: 13, color: "#6B7280" }}>
-          {error || "We couldn't find a product matching this URL."}
+          {error || t("product.notFoundDesc")}
         </div>
         <Link href="/products" style={{ marginTop: 8, color: "#EA6B0E", fontWeight: 600 }}>
-          Browse all products
+          {t("product.browseAllProducts")}
         </Link>
       </div>
     );
@@ -300,10 +302,10 @@ export default function ProductDetailPage() {
                       ))}
                       <span className="ks-pd-rating-num">{ratingDisplay}</span>
                     </div>
-                    <span className="ks-pd-review-count">({reviewCount} reviews)</span>
+                    <span className="ks-pd-review-count">{t("product.reviewCount", { count: reviewCount })}</span>
                     <span className="ks-pd-stock-badge" style={!inStock ? { color: "#EF4444" } : undefined}>
                       <span className="ks-pd-stock-dot" style={!inStock ? { background: "#EF4444" } : undefined} />
-                      {inStock ? `In Stock (${stockQty})` : "Out of stock"}
+                      {inStock ? t("product.inStockCount", { count: stockQty }) : t("common.outOfStock")}
                     </span>
                   </div>
 
@@ -312,7 +314,7 @@ export default function ProductDetailPage() {
                     {discountPrice !== undefined && (
                       <>
                         <span className="ks-pd-price-old">{formatPrice(sellingPrice)}</span>
-                        <span className="ks-pd-save-badge">Save {discountPct}%</span>
+                        <span className="ks-pd-save-badge">{t("product.savePercent", { percent: discountPct })}</span>
                       </>
                     )}
                   </div>
@@ -352,7 +354,7 @@ export default function ProductDetailPage() {
                   ))}
 
                   <div className="ks-pd-variant-group">
-                    <label className="ks-pd-variant-label">Quantity</label>
+                    <label className="ks-pd-variant-label">{t("common.quantity")}</label>
                     <div className="ks-pd-qty">
                       <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="ks-pd-qty-btn">
                         <Minus className="w-4 h-4" />
@@ -393,11 +395,11 @@ export default function ProductDetailPage() {
                             ? { _id: String(vendor._id), name: vendor.name }
                             : undefined,
                         });
-                        setAddedFeedback(`Added ${quantity} × ${product.name} to cart`);
+                        setAddedFeedback(t("product.addedToCart", { count: quantity, name: product.name }));
                         setTimeout(() => setAddedFeedback(null), 2500);
                       }}
                     >
-                      <ShoppingCart className="w-5 h-5" /> Add to Cart
+                      <ShoppingCart className="w-5 h-5" /> {t("common.addToCart")}
                     </button>
                     <button
                       className="ks-pd-buy-btn"
@@ -427,7 +429,7 @@ export default function ProductDetailPage() {
                         router.push("/cart");
                       }}
                     >
-                      Buy Now
+                      {t("common.buyNow")}
                     </button>
                     <button className="ks-pd-icon-btn">
                       <Share2 className="w-5 h-5" />
@@ -451,16 +453,16 @@ export default function ProductDetailPage() {
 
                   <div className="ks-pd-features">
                     {[
-                      { icon: Truck, title: "Free Shipping", desc: "On orders over $50", color: "#3B82F6" },
-                      { icon: RotateCcw, title: "Easy Returns", desc: "30 day return policy", color: "#10B981" },
-                      { icon: Shield, title: "Secure Payment", desc: "100% protected", color: "#EA6B0E" },
-                      { icon: CheckCircle, title: "Genuine Product", desc: "Verified by seller", color: "#8B5CF6" },
-                    ].map(({ icon: Icon, title, desc, color }) => (
-                      <div key={title} className="ks-pd-feature">
+                      { icon: Truck, titleKey: "product.featureFreeShippingTitle", descKey: "product.featureFreeShippingDesc", color: "#3B82F6" },
+                      { icon: RotateCcw, titleKey: "product.featureReturnsTitle", descKey: "product.featureReturnsDesc", color: "#10B981" },
+                      { icon: Shield, titleKey: "product.featureSecureTitle", descKey: "product.featureSecureDesc", color: "#EA6B0E" },
+                      { icon: CheckCircle, titleKey: "product.featureGenuineTitle", descKey: "product.featureGenuineDesc", color: "#8B5CF6" },
+                    ].map(({ icon: Icon, titleKey, descKey, color }) => (
+                      <div key={titleKey} className="ks-pd-feature">
                         <Icon className="w-5 h-5 flex-shrink-0" style={{ color }} />
                         <div>
-                          <p className="ks-pd-feature-title">{title}</p>
-                          <p className="ks-pd-feature-desc">{desc}</p>
+                          <p className="ks-pd-feature-title">{t(titleKey)}</p>
+                          <p className="ks-pd-feature-desc">{t(descKey)}</p>
                         </div>
                       </div>
                     ))}
@@ -475,13 +477,13 @@ export default function ProductDetailPage() {
                         <div className="ks-pd-vendor-card-name-row">
                           <span className="ks-pd-vendor-card-name">{vendor.name}</span>
                           <span className="ks-pd-vendor-verified-pill">
-                            <CheckCircle className="w-3 h-3" /> Verified
+                            <CheckCircle className="w-3 h-3" /> {t("product.verified")}
                           </span>
                         </div>
                         <div className="ks-pd-vendor-card-stats">
                           {vendor.address && <span>{vendor.address}</span>}
                           {vendor.address && <span className="ks-pd-vendor-card-dot" />}
-                          <span>{vendor.productCount} products</span>
+                          <span>{t("product.productCount", { count: vendor.productCount })}</span>
                         </div>
                       </div>
                       <ChevronRight className="w-5 h-5 text-[#ccc] group-hover:text-orange-500 transition-colors" />
@@ -503,7 +505,11 @@ export default function ProductDetailPage() {
                     onClick={() => setActiveTab(tab)}
                     className={`ks-pd-tab ${activeTab === tab ? "ks-pd-tab-active" : ""}`}
                   >
-                    {tab === "reviews" ? `Reviews (${reviewCount})` : tab}
+                    {tab === "reviews"
+                      ? t("product.tabReviewsCount", { count: reviewCount })
+                      : tab === "specifications"
+                        ? t("product.tabSpecifications")
+                        : t("product.tabDescription")}
                     {activeTab === tab && <span className="ks-pd-tab-bar" />}
                   </button>
                 ))}
@@ -514,7 +520,7 @@ export default function ProductDetailPage() {
               {activeTab === "description" && (
                 <div className="max-w-3xl">
                   <p className="whitespace-pre-line text-[14.5px] text-[#555] leading-[1.75]">
-                    {product.description || "No description provided for this product yet."}
+                    {product.description || t("product.noDescription")}
                   </p>
                 </div>
               )}
@@ -522,7 +528,7 @@ export default function ProductDetailPage() {
               {activeTab === "specifications" && (
                 <div className="max-w-2xl">
                   {specifications.length === 0 ? (
-                    <p className="text-sm text-[#6B7280]">No specifications available.</p>
+                    <p className="text-sm text-[#6B7280]">{t("product.noSpecifications")}</p>
                   ) : (
                     specifications.map((spec, i) => (
                       <div key={spec.label} className={`ks-pd-spec-row ${i % 2 === 0 ? "ks-pd-spec-row-alt" : ""}`}>
@@ -550,7 +556,7 @@ export default function ProductDetailPage() {
             <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#f1f5f9]">
               <div className="flex items-center gap-2.5 mb-5">
                 <Flame className="w-[18px] h-[18px] text-orange-400" />
-                <h2 className="text-lg font-extrabold text-[#111]">More from this vendor</h2>
+                <h2 className="text-lg font-extrabold text-[#111]">{t("product.moreFromVendor")}</h2>
               </div>
               <div className="ks-pd-related-grid">
                 {related.slice(0, 4).map((p) => (

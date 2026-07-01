@@ -8,11 +8,13 @@ import {
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { useAuth } from "@/lib/auth-context";
+import { useLanguage } from "@/lib/i18n";
 import { updateProfile, updatePassword as updatePw } from "@/app/account/services/accountApi";
 import "@/styling/SettingsPage.css";
 
 export default function SettingsPage() {
   const { user, loading, logout } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
 
   const [profile, setProfile] = useState({ name: "", email: "", phone: "" });
@@ -41,7 +43,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
-        <div style={{ fontSize: 14, color: "#9CA3AF" }}>Loading...</div>
+        <div style={{ fontSize: 14, color: "#9CA3AF" }}>{t("common.loading")}</div>
       </div>
     );
   }
@@ -71,10 +73,10 @@ export default function SettingsPage() {
         email: profile.email,
         phone: profile.phone,
       });
-      setProfileMsg({ type: "success", text: "Profile updated successfully" });
+      setProfileMsg({ type: "success", text: t("account.settings.profileUpdated") });
       window.location.reload();
     } catch (err: unknown) {
-      setProfileMsg({ type: "error", text: err instanceof Error ? err.message : "Update failed" });
+      setProfileMsg({ type: "error", text: err instanceof Error ? err.message : t("account.settings.updateFailed") });
     } finally {
       setProfileSaving(false);
     }
@@ -85,11 +87,11 @@ export default function SettingsPage() {
     setPasswordMsg(null);
 
     if (passwords.newPass !== passwords.confirm) {
-      setPasswordMsg({ type: "error", text: "New passwords do not match" });
+      setPasswordMsg({ type: "error", text: t("account.settings.passwordsNoMatch") });
       return;
     }
     if (passwords.newPass.length < 6) {
-      setPasswordMsg({ type: "error", text: "New password must be at least 6 characters" });
+      setPasswordMsg({ type: "error", text: t("account.settings.passwordTooShort") });
       return;
     }
 
@@ -97,9 +99,9 @@ export default function SettingsPage() {
     try {
       await updatePw(passwords.current, passwords.newPass);
       setPasswords({ current: "", newPass: "", confirm: "" });
-      setPasswordMsg({ type: "success", text: "Password updated successfully" });
+      setPasswordMsg({ type: "success", text: t("account.settings.passwordUpdated") });
     } catch (err: unknown) {
-      setPasswordMsg({ type: "error", text: err instanceof Error ? err.message : "Update failed" });
+      setPasswordMsg({ type: "error", text: err instanceof Error ? err.message : t("account.settings.updateFailed") });
     } finally {
       setPasswordSaving(false);
     }
@@ -120,7 +122,7 @@ export default function SettingsPage() {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Account", href: "/account" }, { label: "Settings" }]} />
+      <Breadcrumb items={[{ label: t("common.account"), href: "/account" }, { label: t("account.settings.breadcrumb") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         {/* ── Header ── */}
@@ -134,10 +136,10 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                    Account Settings
+                    {t("account.nav.accountSettings")}
                   </h1>
                   <p className="text-sm text-[#999] font-medium mt-1.5">
-                    Manage your profile, security, and preferences
+                    {t("account.settings.subtitle")}
                   </p>
                 </div>
               </div>
@@ -154,8 +156,8 @@ export default function SettingsPage() {
                   <User className="w-[18px] h-[18px]" />
                 </div>
                 <div>
-                  <h2 className="ks-set-card-title">Personal Information</h2>
-                  <p className="ks-set-card-sub">Update your name, email, and contact details</p>
+                  <h2 className="ks-set-card-title">{t("account.settings.personalInfo")}</h2>
+                  <p className="ks-set-card-sub">{t("account.settings.personalInfoSub")}</p>
                 </div>
               </div>
 
@@ -163,18 +165,18 @@ export default function SettingsPage() {
 
               <div className="ks-set-form-grid">
                 <div className="ks-set-field" style={{ gridColumn: "1 / -1" }}>
-                  <label className="ks-set-label">Full Name</label>
+                  <label className="ks-set-label">{t("account.fields.fullName")}</label>
                   <input type="text" name="name" value={profile.name} onChange={handleProfile} className="ks-set-input" required disabled={profileSaving} />
                 </div>
                 <div className="ks-set-field">
-                  <label className="ks-set-label">Email Address</label>
+                  <label className="ks-set-label">{t("account.fields.emailAddress")}</label>
                   <div className="ks-set-input-icon-wrap">
                     <Mail className="ks-set-input-pre-icon" />
                     <input type="email" name="email" value={profile.email} onChange={handleProfile} className="ks-set-input ks-set-input-with-icon" required disabled={profileSaving} />
                   </div>
                 </div>
                 <div className="ks-set-field">
-                  <label className="ks-set-label">Phone Number</label>
+                  <label className="ks-set-label">{t("account.fields.phoneNumber")}</label>
                   <div className="ks-set-input-icon-wrap">
                     <Smartphone className="ks-set-input-pre-icon" />
                     <input type="tel" name="phone" value={profile.phone} onChange={handleProfile} className="ks-set-input ks-set-input-with-icon" disabled={profileSaving} />
@@ -185,7 +187,7 @@ export default function SettingsPage() {
               <div className="ks-set-card-footer">
                 <button type="submit" className="ks-set-save-btn" disabled={profileSaving}>
                   {profileSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                  {profileSaving ? "Saving..." : "Save Changes"}
+                  {profileSaving ? t("account.settings.saving") : t("common.saveChanges")}
                 </button>
               </div>
             </div>
@@ -201,8 +203,8 @@ export default function SettingsPage() {
                   <Lock className="w-[18px] h-[18px]" />
                 </div>
                 <div>
-                  <h2 className="ks-set-card-title">Change Password</h2>
-                  <p className="ks-set-card-sub">Update your password to keep your account secure</p>
+                  <h2 className="ks-set-card-title">{t("account.settings.changePassword")}</h2>
+                  <p className="ks-set-card-sub">{t("account.settings.changePasswordSub")}</p>
                 </div>
               </div>
 
@@ -210,28 +212,28 @@ export default function SettingsPage() {
 
               <div className="ks-set-form-grid ks-set-form-single">
                 <div className="ks-set-field">
-                  <label className="ks-set-label">Current Password</label>
+                  <label className="ks-set-label">{t("account.settings.currentPassword")}</label>
                   <div className="ks-set-input-icon-wrap">
-                    <input type={showPassword ? "text" : "password"} name="current" value={passwords.current} onChange={handlePassword} className="ks-set-input" placeholder="Enter current password" required disabled={passwordSaving} />
+                    <input type={showPassword ? "text" : "password"} name="current" value={passwords.current} onChange={handlePassword} className="ks-set-input" placeholder={t("account.settings.currentPasswordPlaceholder")} required disabled={passwordSaving} />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="ks-set-input-post-icon">
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
                 <div className="ks-set-field">
-                  <label className="ks-set-label">New Password</label>
-                  <input type={showPassword ? "text" : "password"} name="newPass" value={passwords.newPass} onChange={handlePassword} className="ks-set-input" placeholder="Enter new password" required minLength={6} disabled={passwordSaving} />
+                  <label className="ks-set-label">{t("account.settings.newPassword")}</label>
+                  <input type={showPassword ? "text" : "password"} name="newPass" value={passwords.newPass} onChange={handlePassword} className="ks-set-input" placeholder={t("account.settings.newPasswordPlaceholder")} required minLength={6} disabled={passwordSaving} />
                 </div>
                 <div className="ks-set-field">
-                  <label className="ks-set-label">Confirm New Password</label>
-                  <input type={showPassword ? "text" : "password"} name="confirm" value={passwords.confirm} onChange={handlePassword} className="ks-set-input" placeholder="Confirm new password" required disabled={passwordSaving} />
+                  <label className="ks-set-label">{t("account.settings.confirmPassword")}</label>
+                  <input type={showPassword ? "text" : "password"} name="confirm" value={passwords.confirm} onChange={handlePassword} className="ks-set-input" placeholder={t("account.settings.confirmPasswordPlaceholder")} required disabled={passwordSaving} />
                 </div>
               </div>
 
               <div className="ks-set-card-footer">
                 <button type="submit" className="ks-set-save-btn" disabled={passwordSaving}>
                   {passwordSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-                  {passwordSaving ? "Updating..." : "Update Password"}
+                  {passwordSaving ? t("account.settings.updating") : t("account.settings.updatePassword")}
                 </button>
               </div>
             </div>
@@ -246,17 +248,17 @@ export default function SettingsPage() {
                 <Bell className="w-[18px] h-[18px]" />
               </div>
               <div>
-                <h2 className="ks-set-card-title">Notification Preferences</h2>
-                <p className="ks-set-card-sub">Choose what updates you&apos;d like to receive</p>
+                <h2 className="ks-set-card-title">{t("account.settings.notifications")}</h2>
+                <p className="ks-set-card-sub">{t("account.settings.notificationsSub")}</p>
               </div>
             </div>
 
             <div className="ks-set-toggle-list">
               {([
-                { key: "orderUpdates" as const, title: "Order Updates", desc: "Get notified about order status changes", icon: ShieldCheck },
-                { key: "promotions" as const, title: "Promotions & Deals", desc: "Receive flash sale alerts and exclusive offers", icon: Globe },
-                { key: "newsletter" as const, title: "Newsletter", desc: "Weekly newsletter with curated products", icon: Mail },
-                { key: "sms" as const, title: "SMS Notifications", desc: "Receive text messages for important updates", icon: Smartphone },
+                { key: "orderUpdates" as const, titleKey: "account.settings.notifOrderUpdates", descKey: "account.settings.notifOrderUpdatesDesc", icon: ShieldCheck },
+                { key: "promotions" as const, titleKey: "account.settings.notifPromotions", descKey: "account.settings.notifPromotionsDesc", icon: Globe },
+                { key: "newsletter" as const, titleKey: "account.settings.notifNewsletter", descKey: "account.settings.notifNewsletterDesc", icon: Mail },
+                { key: "sms" as const, titleKey: "account.settings.notifSms", descKey: "account.settings.notifSmsDesc", icon: Smartphone },
               ]).map((item) => {
                 const Icon = item.icon;
                 return (
@@ -264,8 +266,8 @@ export default function SettingsPage() {
                     <div className="ks-set-toggle-info">
                       <Icon className="w-[18px] h-[18px] text-[#bbb]" />
                       <div>
-                        <span className="ks-set-toggle-title">{item.title}</span>
-                        <span className="ks-set-toggle-desc">{item.desc}</span>
+                        <span className="ks-set-toggle-title">{t(item.titleKey)}</span>
+                        <span className="ks-set-toggle-desc">{t(item.descKey)}</span>
                       </div>
                     </div>
                     <button
@@ -285,10 +287,10 @@ export default function SettingsPage() {
         <section className="site-container">
           <div className="ks-set-danger-card">
             <div>
-              <h3 className="ks-set-danger-title">Delete Account</h3>
-              <p className="ks-set-danger-sub">Permanently delete your account and all associated data. This action cannot be undone.</p>
+              <h3 className="ks-set-danger-title">{t("account.settings.deleteAccount")}</h3>
+              <p className="ks-set-danger-sub">{t("account.settings.deleteAccountSub")}</p>
             </div>
-            <button className="ks-set-danger-btn">Delete Account</button>
+            <button className="ks-set-danger-btn">{t("account.settings.deleteAccount")}</button>
           </div>
         </section>
       </div>

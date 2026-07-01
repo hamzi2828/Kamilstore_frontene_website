@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Heart, ShoppingCart, Eye, Zap, Star } from "lucide-react";
 import { useWishlist } from "@/lib/wishlist-context";
 import { useCart } from "@/lib/cart-context";
+import { useLanguage } from "@/lib/i18n";
 
 interface ProductCardProps {
   product: {
@@ -34,6 +35,7 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
   const router = useRouter();
   const { toggleItem: toggleWishlist, isWishlisted } = useWishlist();
   const { addItem: addToCart } = useCart();
+  const { t } = useLanguage();
 
   const discount = product.discountPrice
     ? Math.round(
@@ -127,12 +129,12 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
             <div className="absolute top-1.5 left-1.5 sm:top-3 sm:left-3 z-30">
               <div className="flex items-center gap-1 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-rose-600/90 backdrop-blur-sm text-white text-[9px] sm:text-[11px] font-bold tracking-wide shadow-md transition-transform duration-300 group-hover:scale-105">
                 <Zap className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0" />
-                {discount}% OFF
+                {discount}% {t("common.off")}
               </div>
             </div>
             <div className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 z-30">
               <div className="px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-md sm:rounded-lg bg-emerald-600/90 backdrop-blur-sm text-white text-[8.5px] sm:text-[11px] font-semibold tabular-nums shadow-md transition-transform duration-300 group-hover:scale-105">
-                Save {formatPrice(savingsCents)}
+                {t("catalog.card.save", { amount: formatPrice(savingsCents) })}
               </div>
             </div>
           </>
@@ -148,7 +150,7 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
                 ? "bg-rose-500 text-white hover:bg-rose-600"
                 : "bg-white/95 text-stone-900 hover:bg-white"
             }`}
-            aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+            aria-label={wishlisted ? t("catalog.card.removeFromWishlist") : t("catalog.card.addToWishlist")}
             aria-pressed={wishlisted}
           >
             <Heart
@@ -161,7 +163,7 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
             type="button"
             onClick={handleQuickView}
             className="w-12 h-12 rounded-full bg-white/95 backdrop-blur-sm flex items-center justify-center text-stone-900 transition-all duration-300 hover:bg-white hover:shadow-lg transform opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 delay-75 hover:scale-110 active:scale-95"
-            aria-label="Quick view"
+            aria-label={t("catalog.card.quickView")}
           >
             <Eye className="w-5 h-5" />
           </button>
@@ -169,7 +171,7 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
             type="button"
             onClick={handleAddToCart}
             className="w-12 h-12 rounded-full bg-black text-white flex items-center justify-center transition-all duration-300 hover:bg-stone-800 hover:shadow-lg transform opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 delay-150 hover:scale-110 active:scale-95"
-            aria-label="Add to cart"
+            aria-label={t("common.addToCart")}
           >
             <ShoppingCart className="w-5 h-5" />
           </button>
@@ -200,7 +202,7 @@ export default function PremiumProductCard({ product }: ProductCardProps) {
 
         {/* Rating */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <div className="flex gap-0.5" role="img" aria-label={`${product.rating} out of 5 stars`}>
+          <div className="flex gap-0.5" role="img" aria-label={t("catalog.card.ratingStars", { rating: product.rating })}>
             {[...Array(5)].map((_, i) => {
               const filled = i < Math.floor(product.rating);
               return (

@@ -12,6 +12,7 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import "@/styling/WishlistPage.css";
 import { useWishlist } from "@/lib/wishlist-context";
 import { useCart } from "@/lib/cart-context";
+import { useLanguage } from "@/lib/i18n";
 
 const PLACEHOLDER =
   "https://png.pngtree.com/png-vector/20241018/ourmid/pngtree-running-shoes-or-sneakers-on-a-transparent-background-png-image_14112954.png";
@@ -19,6 +20,7 @@ const PLACEHOLDER =
 export default function WishlistPage() {
   const { items, isReady, isAuthenticated, removeItem, refresh } = useWishlist();
   const { addItem: addToCartItem } = useCart();
+  const { t, locale } = useLanguage();
 
   // Pull latest server wishlist for logged-in users on mount
   useEffect(() => {
@@ -63,7 +65,7 @@ export default function WishlistPage() {
   if (!isReady) {
     return (
       <>
-        <Breadcrumb items={[{ label: "Wishlist" }]} />
+        <Breadcrumb items={[{ label: t("common.wishlist") }]} />
         <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
           <section className="site-container">
             <div
@@ -75,7 +77,7 @@ export default function WishlistPage() {
                 fontSize: 14,
               }}
             >
-              Loading wishlist...
+              {t("cart.wishlist.loading")}
             </div>
           </section>
         </div>
@@ -86,20 +88,20 @@ export default function WishlistPage() {
   if (items.length === 0) {
     return (
       <>
-        <Breadcrumb items={[{ label: "Wishlist" }]} />
+        <Breadcrumb items={[{ label: t("common.wishlist") }]} />
         <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
           <section className="site-container">
             <div className="ks-wl-empty-card">
               <div className="ks-wl-empty-icon-box">
                 <Heart className="w-10 h-10 text-[#ddd]" />
               </div>
-              <h1 className="ks-wl-empty-title">Your wishlist is empty</h1>
+              <h1 className="ks-wl-empty-title">{t("cart.wishlist.empty.title")}</h1>
               <p className="ks-wl-empty-sub">
-                Save items you love and they&apos;ll appear here for easy access.
+                {t("cart.wishlist.empty.subtitle")}
               </p>
               <Link href="/products" className="ks-wl-empty-btn">
                 <ShoppingBag className="w-[18px] h-[18px]" />
-                Browse Products
+                {t("cart.browseProducts")}
               </Link>
             </div>
           </section>
@@ -110,7 +112,7 @@ export default function WishlistPage() {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Wishlist" }]} />
+      <Breadcrumb items={[{ label: t("common.wishlist") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         <section className="site-container">
@@ -124,10 +126,16 @@ export default function WishlistPage() {
                   </div>
                   <div>
                     <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                      My Wishlist
+                      {t("cart.wishlist.title")}
                     </h1>
                     <p className="text-sm text-[#999] font-medium mt-1.5">
-                      {items.length} {items.length === 1 ? "item" : "items"} saved &middot; {inStockCount} in stock
+                      {t(
+                        items.length === 1
+                          ? "cart.wishlist.savedOne"
+                          : "cart.wishlist.savedOther",
+                        { count: items.length },
+                      )}{" "}
+                      &middot; {t("cart.wishlist.inStockCount", { count: inStockCount })}
                     </p>
                   </div>
                 </div>
@@ -135,11 +143,11 @@ export default function WishlistPage() {
                 <div className="flex items-center gap-3 flex-wrap">
                   <button className="ks-wl-share-btn">
                     <Share2 className="w-4 h-4" />
-                    Share
+                    {t("cart.wishlist.share")}
                   </button>
                   <button onClick={addAllToCart} className="ks-wl-addall-btn">
                     <ShoppingCart className="w-4 h-4" />
-                    Add All to Cart
+                    {t("cart.wishlist.addAllToCart")}
                   </button>
                 </div>
               </div>
@@ -169,7 +177,7 @@ export default function WishlistPage() {
 
                       {!item.inStock && (
                         <div className="ks-wl-oos-overlay">
-                          <span className="ks-wl-oos-badge">Out of Stock</span>
+                          <span className="ks-wl-oos-badge">{t("common.outOfStock")}</span>
                         </div>
                       )}
 
@@ -180,7 +188,7 @@ export default function WishlistPage() {
                       <button
                         onClick={() => removeItem(item.productId)}
                         className="ks-wl-remove-btn"
-                        aria-label="Remove from wishlist"
+                        aria-label={t("cart.wishlist.removeFromWishlist")}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -210,11 +218,15 @@ export default function WishlistPage() {
                       </div>
 
                       <p className="ks-wl-added-date">
-                        Added{" "}
-                        {new Date(item.addedAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
+                        {t("cart.wishlist.added", {
+                          date: new Date(item.addedAt).toLocaleDateString(
+                            locale === "it" ? "it-IT" : "en-US",
+                            {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            },
+                          ),
                         })}
                       </p>
 
@@ -224,7 +236,7 @@ export default function WishlistPage() {
                         className={`ks-wl-cart-btn ${!item.inStock ? "ks-wl-cart-btn-disabled" : ""}`}
                       >
                         <ShoppingCart className="w-4 h-4" />
-                        {item.inStock ? "Add to Cart" : "Out of Stock"}
+                        {item.inStock ? t("common.addToCart") : t("common.outOfStock")}
                       </button>
                     </div>
                   </div>
@@ -235,7 +247,7 @@ export default function WishlistPage() {
             <div className="ks-wl-continue">
               <Link href="/products" className="ks-wl-continue-link">
                 <Package className="w-4 h-4" />
-                Continue Shopping
+                {t("cart.continueShopping")}
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>

@@ -8,6 +8,7 @@ import {
   UserCircle, CalendarDays, ArrowRight, TrendingUp,
 } from "lucide-react";
 import { getVendors, type Vendor } from "@/app/vendors/services/vendorsApi";
+import { useLanguage } from "@/lib/i18n";
 
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -15,10 +16,11 @@ const rankClass = (r: number) => r === 1 ? "gold" : r === 2 ? "silver" : "bronze
 
 function joinedYear(iso: string): string {
   const d = new Date(iso);
-  return isNaN(d.getTime()) ? "" : `Joined ${d.getFullYear()}`;
+  return isNaN(d.getTime()) ? "" : String(d.getFullYear());
 }
 
 export default function TopVendors() {
+  const { t } = useLanguage();
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -62,16 +64,16 @@ export default function TopVendors() {
                 fontSize: 20, fontWeight: 800, color: "#111827",
                 margin: 0, letterSpacing: "-0.3px",
               }}>
-                Top Vendors
+                {t("home.vendors.title")}
               </h2>
               <p style={{ fontSize: 13, color: "#9CA3AF", margin: "3px 0 0", fontWeight: 500 }}>
-                Trusted sellers with the best ratings
+                {t("home.vendors.subtitle")}
               </p>
             </div>
           </div>
 
           <Link href="/vendors" className="ks-view-all-btn">
-            View All
+            {t("common.viewAll")}
             <ChevronRight style={{ width: 15, height: 15 }} />
           </Link>
         </div>
@@ -98,7 +100,7 @@ export default function TopVendors() {
               gridColumn: "1 / -1", padding: "32px 16px", textAlign: "center",
               color: "#9CA3AF", fontSize: 13, fontWeight: 500,
             }}>
-              No vendors available yet.
+              {t("home.vendors.empty")}
             </div>
           ) : (
             vendors.map((v, i) => {
@@ -152,7 +154,7 @@ export default function TopVendors() {
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
                     <span className="ks-vendor-verified">
                       <ShieldCheck style={{ width: 10, height: 10 }} />
-                      Verified
+                      {t("home.vendors.verified")}
                     </span>
                   </div>
 
@@ -189,7 +191,7 @@ export default function TopVendors() {
                     ) : joined ? (
                       <div className="ks-vendor-stat">
                         <CalendarDays style={{ width: 12, height: 12 }} />
-                        {joined}
+                        {t("home.vendors.joined", { year: joined })}
                       </div>
                     ) : null}
                   </div>
@@ -203,13 +205,13 @@ export default function TopVendors() {
         <div className="ks-vendors-promo">
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <ShieldCheck style={{ width: 14, height: 14, color: "#2563EB" }} />
-            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#374151" }}>All vendors verified</span>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#374151" }}>{t("home.vendors.allVerified")}</span>
           </div>
           <span style={{ color: "#E5E7EB" }}>|</span>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <TrendingUp style={{ width: 14, height: 14, color: "#10B981" }} />
             <span style={{ fontSize: 12.5, fontWeight: 600, color: "#374151" }}>
-              {total > 0 ? `${total}+ active sellers` : "Active sellers"}
+              {total > 0 ? t("home.vendors.activeSellers", { count: total }) : t("home.vendors.activeSellersGeneric")}
             </span>
           </div>
           <span style={{ color: "#E5E7EB" }}>|</span>
@@ -219,7 +221,7 @@ export default function TopVendors() {
             textDecoration: "none", transition: "color 0.15s",
           }}>
             <Store style={{ width: 13, height: 13 }} />
-            Become a seller
+            {t("footer.becomeSeller")}
             <ArrowRight style={{ width: 12, height: 12 }} />
           </Link>
         </div>

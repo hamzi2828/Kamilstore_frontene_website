@@ -9,127 +9,129 @@ import {
   ArrowRight, LayoutGrid, TrendingUp, Flame,
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/CategoriesPage.css";
 
 const categories = [
   {
-    name: "Electronics",
+    nameKey: "catalog.dept.electronics.name",
     slug: "electronics",
     icon: Smartphone,
     color: "#3B82F6",
     bg: "#EFF6FF",
     count: "2,400+",
     vendors: 186,
-    description: "Smartphones, laptops, audio, cameras and all the latest gadgets.",
-    subcategories: ["Smartphones", "Laptops", "Audio", "Cameras", "Wearables", "Accessories"],
+    descKey: "catalog.dept.electronics.desc",
+    subKeys: ["catalog.sub.smartphones", "catalog.sub.laptops", "catalog.sub.audio", "catalog.sub.cameras", "catalog.sub.wearables", "catalog.sub.accessories"],
     image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600&h=400&fit=crop&q=80",
     trending: true,
   },
   {
-    name: "Fashion",
+    nameKey: "catalog.dept.fashion.name",
     slug: "fashion",
     icon: Shirt,
     color: "#EC4899",
     bg: "#FDF2F8",
     count: "3,100+",
     vendors: 234,
-    description: "Clothing, shoes, and accessories for men, women, and kids.",
-    subcategories: ["Men", "Women", "Kids", "Shoes", "Bags", "Jewelry"],
+    descKey: "catalog.dept.fashion.desc",
+    subKeys: ["catalog.sub.men", "catalog.sub.women", "catalog.sub.kids", "catalog.sub.shoes", "catalog.sub.bags", "catalog.sub.jewelry"],
     image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&h=400&fit=crop&q=80",
     trending: true,
   },
   {
-    name: "Home & Garden",
+    nameKey: "catalog.dept.home-garden.name",
     slug: "home-garden",
     icon: Home,
     color: "#10B981",
     bg: "#ECFDF5",
     count: "1,800+",
     vendors: 142,
-    description: "Furniture, decor, kitchen essentials, and garden tools.",
-    subcategories: ["Furniture", "Decor", "Kitchen", "Bedding", "Lighting", "Garden"],
+    descKey: "catalog.dept.home-garden.desc",
+    subKeys: ["catalog.sub.furniture", "catalog.sub.decor", "catalog.sub.kitchen", "catalog.sub.bedding", "catalog.sub.lighting", "catalog.sub.garden"],
     image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop&q=80",
     trending: false,
   },
   {
-    name: "Sports & Fitness",
+    nameKey: "catalog.dept.sports.name",
     slug: "sports",
     icon: Dumbbell,
     color: "#F59E0B",
     bg: "#FFFBEB",
     count: "950+",
     vendors: 89,
-    description: "Equipment, apparel, and accessories for every sport.",
-    subcategories: ["Gym", "Running", "Cycling", "Yoga", "Outdoor", "Supplements"],
+    descKey: "catalog.dept.sports.desc",
+    subKeys: ["catalog.sub.gym", "catalog.sub.running", "catalog.sub.cycling", "catalog.sub.yoga", "catalog.sub.outdoor", "catalog.sub.supplements"],
     image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&h=400&fit=crop&q=80",
     trending: false,
   },
   {
-    name: "Beauty",
+    nameKey: "catalog.dept.beauty.name",
     slug: "beauty",
     icon: Sparkles,
     color: "#A855F7",
     bg: "#FAF5FF",
     count: "1,200+",
     vendors: 167,
-    description: "Skincare, makeup, haircare, and fragrances from top brands.",
-    subcategories: ["Skincare", "Makeup", "Haircare", "Fragrance", "Tools", "Organic"],
+    descKey: "catalog.dept.beauty.desc",
+    subKeys: ["catalog.sub.skincare", "catalog.sub.makeup", "catalog.sub.haircare", "catalog.sub.fragrance", "catalog.sub.tools", "catalog.sub.organic"],
     image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&h=400&fit=crop&q=80",
     trending: true,
   },
   {
-    name: "Gaming",
+    nameKey: "catalog.dept.gaming.name",
     slug: "gaming",
     icon: Gamepad2,
     color: "#EF4444",
     bg: "#FEF2F2",
     count: "780+",
     vendors: 65,
-    description: "Consoles, PC components, peripherals, and gaming accessories.",
-    subcategories: ["Consoles", "PC Gaming", "Controllers", "Headsets", "Chairs", "Merchandise"],
+    descKey: "catalog.dept.gaming.desc",
+    subKeys: ["catalog.sub.consoles", "catalog.sub.pcGaming", "catalog.sub.controllers", "catalog.sub.headsets", "catalog.sub.chairs", "catalog.sub.merchandise"],
     image: "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&h=400&fit=crop&q=80",
     trending: false,
   },
   {
-    name: "Watches",
+    nameKey: "catalog.dept.watches.name",
     slug: "watches",
     icon: Watch,
     color: "#0EA5E9",
     bg: "#F0F9FF",
     count: "540+",
     vendors: 48,
-    description: "Luxury, smart, and casual watches from top brands.",
-    subcategories: ["Smart Watches", "Luxury", "Casual", "Sport", "Bands", "Accessories"],
+    descKey: "catalog.dept.watches.desc",
+    subKeys: ["catalog.sub.smartWatches", "catalog.sub.luxury", "catalog.sub.casual", "catalog.sub.sport", "catalog.sub.bands", "catalog.sub.accessories"],
     image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=600&h=400&fit=crop&q=80",
     trending: false,
   },
   {
-    name: "Automotive",
+    nameKey: "catalog.dept.automotive.name",
     slug: "automotive",
     icon: Car,
     color: "#64748B",
     bg: "#F8FAFC",
     count: "420+",
     vendors: 37,
-    description: "Parts, accessories, tools, and care products for your vehicle.",
-    subcategories: ["Parts", "Accessories", "Tools", "Car Care", "Electronics", "Interior"],
+    descKey: "catalog.dept.automotive.desc",
+    subKeys: ["catalog.sub.parts", "catalog.sub.accessories", "catalog.sub.tools", "catalog.sub.carCare", "catalog.sub.electronics", "catalog.sub.interior"],
     image: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=400&fit=crop&q=80",
     trending: false,
   },
 ];
 
 export default function CategoriesPage() {
+  const { t } = useLanguage();
   const [search, setSearch] = useState("");
 
   const filtered = categories.filter(
     (c) =>
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.subcategories.some((s) => s.toLowerCase().includes(search.toLowerCase()))
+      t(c.nameKey).toLowerCase().includes(search.toLowerCase()) ||
+      c.subKeys.some((s) => t(s).toLowerCase().includes(search.toLowerCase()))
   );
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Categories" }]} />
+      <Breadcrumb items={[{ label: t("common.categories") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         {/* ── Header Card ── */}
@@ -146,10 +148,10 @@ export default function CategoriesPage() {
                   </div>
                   <div>
                     <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                      All Categories
+                      {t("header.allCategories")}
                     </h1>
                     <p className="text-sm text-[#999] font-medium mt-1.5">
-                      Browse products across every department
+                      {t("catalog.browseAllDepartments")}
                     </p>
                   </div>
                 </div>
@@ -159,7 +161,7 @@ export default function CategoriesPage() {
                   <Search className="ks-cat-search-icon" />
                   <input
                     type="text"
-                    placeholder="Search categories..."
+                    placeholder={t("catalog.searchCategories")}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="ks-cat-search-input"
@@ -172,19 +174,19 @@ export default function CategoriesPage() {
                 <div className="ks-cat-stat">
                   <LayoutGrid className="w-[18px] h-[18px] text-orange-500" />
                   <span className="ks-cat-stat-value">{categories.length}</span>
-                  <span className="ks-cat-stat-label">Categories</span>
+                  <span className="ks-cat-stat-label">{t("common.categories")}</span>
                 </div>
                 <div className="ks-cat-stat-sep" />
                 <div className="ks-cat-stat">
                   <TrendingUp className="w-[18px] h-[18px] text-emerald-500" />
                   <span className="ks-cat-stat-value">11,190+</span>
-                  <span className="ks-cat-stat-label">Products</span>
+                  <span className="ks-cat-stat-label">{t("common.products")}</span>
                 </div>
                 <div className="ks-cat-stat-sep" />
                 <div className="ks-cat-stat">
                   <Flame className="w-[18px] h-[18px] text-amber-500" />
                   <span className="ks-cat-stat-value">968</span>
-                  <span className="ks-cat-stat-label">Verified Sellers</span>
+                  <span className="ks-cat-stat-label">{t("footer.verifiedSellers")}</span>
                 </div>
               </div>
             </div>
@@ -197,8 +199,8 @@ export default function CategoriesPage() {
             {search && filtered.length === 0 && (
               <div className="flex flex-col items-center py-16 text-center">
                 <Search className="w-10 h-10 text-[#ddd] mb-4" />
-                <p className="text-base font-semibold text-[#555] mb-1">No categories found</p>
-                <p className="text-sm text-[#999]">Try a different search term</p>
+                <p className="text-base font-semibold text-[#555] mb-1">{t("catalog.noCategoriesFound")}</p>
+                <p className="text-sm text-[#999]">{t("catalog.tryDifferentSearch")}</p>
               </div>
             )}
 
@@ -215,7 +217,7 @@ export default function CategoriesPage() {
                     <div className="ks-cat-card-img-area">
                       <Image
                         src={cat.image}
-                        alt={cat.name}
+                        alt={t(cat.nameKey)}
                         fill
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -228,7 +230,7 @@ export default function CategoriesPage() {
                           {cat.count}
                         </span>
                         <span className="text-white/70 text-xs font-semibold drop-shadow-md">
-                          products
+                          {t("catalog.productsLower")}
                         </span>
                       </div>
 
@@ -236,7 +238,7 @@ export default function CategoriesPage() {
                       {cat.trending && (
                         <span className="absolute top-3 right-3 z-[2] flex items-center gap-1.5 px-3 py-1.5 bg-white/90 backdrop-blur-sm rounded-lg text-[11px] font-bold text-orange-500 shadow-sm">
                           <TrendingUp className="w-3.5 h-3.5" />
-                          Trending
+                          {t("nav.trending")}
                         </span>
                       )}
                     </div>
@@ -253,36 +255,36 @@ export default function CategoriesPage() {
                         </div>
                         <div className="min-w-0">
                           <h3 className="text-[17px] font-bold text-[#111] group-hover:text-orange-500 transition-colors leading-tight truncate">
-                            {cat.name}
+                            {t(cat.nameKey)}
                           </h3>
                           <p className="text-[12.5px] font-semibold mt-0.5" style={{ color: cat.color }}>
-                            {cat.vendors} sellers
+                            {t("catalog.sellersCount", { count: cat.vendors })}
                           </p>
                         </div>
                       </div>
 
                       {/* Description */}
                       <p className="text-[13.5px] text-[#777] leading-relaxed line-clamp-2 mb-4">
-                        {cat.description}
+                        {t(cat.descKey)}
                       </p>
 
                       {/* Subcategory pills */}
                       <div className="flex flex-wrap gap-2 mb-4">
-                        {cat.subcategories.slice(0, 4).map((sub) => (
+                        {cat.subKeys.slice(0, 4).map((sub) => (
                           <span key={sub} className="ks-cat-sub-pill">
-                            {sub}
+                            {t(sub)}
                           </span>
                         ))}
-                        {cat.subcategories.length > 4 && (
+                        {cat.subKeys.length > 4 && (
                           <span className="text-[11.5px] font-bold px-2 py-1" style={{ color: cat.color }}>
-                            +{cat.subcategories.length - 4}
+                            +{cat.subKeys.length - 4}
                           </span>
                         )}
                       </div>
 
                       {/* CTA */}
                       <div className="flex items-center justify-center gap-1.5 pt-3.5 border-t border-gray-100 text-[14px] font-semibold text-orange-500 group-hover:text-orange-600 transition-colors">
-                        Browse category
+                        {t("catalog.browseCategory")}
                         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                       </div>
                     </div>

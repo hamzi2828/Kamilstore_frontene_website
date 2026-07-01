@@ -7,6 +7,7 @@ import {
   Building2, Phone, User, X,
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/AddressesPage.css";
 
 interface Address {
@@ -53,6 +54,7 @@ const initialAddresses: Address[] = [
 ];
 
 export default function AddressesPage() {
+  const { t } = useLanguage();
   const [addresses, setAddresses] = useState<Address[]>(initialAddresses);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -104,7 +106,7 @@ export default function AddressesPage() {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Account", href: "/account" }, { label: "Addresses" }]} />
+      <Breadcrumb items={[{ label: t("common.account"), href: "/account" }, { label: t("account.nav.addresses") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         {/* ── Header ── */}
@@ -119,16 +121,16 @@ export default function AddressesPage() {
                   </div>
                   <div>
                     <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                      My Addresses
+                      {t("account.addresses.title")}
                     </h1>
                     <p className="text-sm text-[#999] font-medium mt-1.5">
-                      {addresses.length} saved address{addresses.length !== 1 ? "es" : ""}
+                      {addresses.length} {addresses.length !== 1 ? t("account.addresses.savedPlural") : t("account.addresses.savedSingular")}
                     </p>
                   </div>
                 </div>
                 <button onClick={() => { resetForm(); setShowForm(true); }} className="ks-addr-add-btn">
                   <Plus className="w-[18px] h-[18px]" />
-                  Add Address
+                  {t("account.addresses.addAddress")}
                 </button>
               </div>
             </div>
@@ -151,7 +153,7 @@ export default function AddressesPage() {
                     {addr.isDefault && (
                       <span className="ks-addr-default-badge">
                         <CheckCircle className="w-3.5 h-3.5" />
-                        Default
+                        {t("account.default")}
                       </span>
                     )}
                   </div>
@@ -180,14 +182,14 @@ export default function AddressesPage() {
                   <div className="ks-addr-card-actions">
                     {!addr.isDefault && (
                       <button onClick={() => handleSetDefault(addr._id)} className="ks-addr-action-link ks-addr-action-default">
-                        <CheckCircle className="w-3.5 h-3.5" /> Set Default
+                        <CheckCircle className="w-3.5 h-3.5" /> {t("account.setDefault")}
                       </button>
                     )}
                     <button onClick={() => handleEdit(addr)} className="ks-addr-action-link ks-addr-action-edit">
-                      <Edit2 className="w-3.5 h-3.5" /> Edit
+                      <Edit2 className="w-3.5 h-3.5" /> {t("common.edit")}
                     </button>
                     <button onClick={() => handleDelete(addr._id)} className="ks-addr-action-link ks-addr-action-delete">
-                      <Trash2 className="w-3.5 h-3.5" /> Delete
+                      <Trash2 className="w-3.5 h-3.5" /> {t("common.delete")}
                     </button>
                   </div>
                 </div>
@@ -200,7 +202,7 @@ export default function AddressesPage() {
                 <div className="ks-addr-add-card-icon">
                   <Plus className="w-6 h-6" />
                 </div>
-                <span className="ks-addr-add-card-text">Add New Address</span>
+                <span className="ks-addr-add-card-text">{t("account.addresses.addNew")}</span>
               </button>
             )}
           </div>
@@ -209,10 +211,10 @@ export default function AddressesPage() {
           {addresses.length === 0 && !showForm && (
             <div className="ks-addr-empty">
               <div className="ks-addr-empty-icon"><MapPin className="w-10 h-10 text-[#ddd]" /></div>
-              <h3 className="ks-addr-empty-title">No addresses saved</h3>
-              <p className="ks-addr-empty-sub">Add a shipping address to speed up checkout.</p>
+              <h3 className="ks-addr-empty-title">{t("account.addresses.noneSaved")}</h3>
+              <p className="ks-addr-empty-sub">{t("account.addresses.noneSavedSub")}</p>
               <button onClick={() => setShowForm(true)} className="ks-addr-empty-btn">
-                <Plus className="w-[18px] h-[18px]" /> Add Address
+                <Plus className="w-[18px] h-[18px]" /> {t("account.addresses.addAddress")}
               </button>
             </div>
           )}
@@ -224,7 +226,7 @@ export default function AddressesPage() {
             <div className="ks-addr-modal" onClick={(e) => e.stopPropagation()}>
               <div className="ks-addr-modal-header">
                 <h2 className="ks-addr-modal-title">
-                  {editingId ? "Edit Address" : "Add New Address"}
+                  {editingId ? t("account.addresses.editAddress") : t("account.addresses.addNew")}
                 </h2>
                 <button onClick={resetForm} className="ks-addr-modal-close">
                   <X className="w-5 h-5" />
@@ -238,43 +240,43 @@ export default function AddressesPage() {
                     onClick={() => setForm((p) => ({ ...p, type: "home", label: "Home" }))}
                     className={`ks-addr-type-btn ${form.type === "home" ? "ks-addr-type-btn-active" : ""}`}
                   >
-                    <Home className="w-4 h-4" /> Home
+                    <Home className="w-4 h-4" /> {t("account.addresses.home")}
                   </button>
                   <button
                     onClick={() => setForm((p) => ({ ...p, type: "office", label: "Office" }))}
                     className={`ks-addr-type-btn ${form.type === "office" ? "ks-addr-type-btn-active" : ""}`}
                   >
-                    <Building2 className="w-4 h-4" /> Office
+                    <Building2 className="w-4 h-4" /> {t("account.addresses.office")}
                   </button>
                 </div>
 
                 <div className="ks-addr-form-grid">
                   <div className="ks-addr-field-half">
-                    <label className="ks-addr-label">Full Name</label>
+                    <label className="ks-addr-label">{t("account.fields.fullName")}</label>
                     <input type="text" name="name" value={form.name} onChange={handleChange} className="ks-addr-input" placeholder="John Doe" />
                   </div>
                   <div className="ks-addr-field-half">
-                    <label className="ks-addr-label">Phone</label>
+                    <label className="ks-addr-label">{t("account.addresses.phone")}</label>
                     <input type="tel" name="phone" value={form.phone} onChange={handleChange} className="ks-addr-input" placeholder="+1 (555) 123-4567" />
                   </div>
                   <div className="ks-addr-field-full">
-                    <label className="ks-addr-label">Street Address</label>
+                    <label className="ks-addr-label">{t("account.addresses.streetAddress")}</label>
                     <input type="text" name="address" value={form.address} onChange={handleChange} className="ks-addr-input" placeholder="123 Main Street" />
                   </div>
                   <div className="ks-addr-field-half">
-                    <label className="ks-addr-label">City</label>
+                    <label className="ks-addr-label">{t("account.addresses.city")}</label>
                     <input type="text" name="city" value={form.city} onChange={handleChange} className="ks-addr-input" placeholder="New York" />
                   </div>
                   <div className="ks-addr-field-half">
-                    <label className="ks-addr-label">State</label>
+                    <label className="ks-addr-label">{t("account.addresses.state")}</label>
                     <input type="text" name="state" value={form.state} onChange={handleChange} className="ks-addr-input" placeholder="NY" />
                   </div>
                   <div className="ks-addr-field-half">
-                    <label className="ks-addr-label">ZIP Code</label>
+                    <label className="ks-addr-label">{t("account.addresses.zipCode")}</label>
                     <input type="text" name="zipCode" value={form.zipCode} onChange={handleChange} className="ks-addr-input" placeholder="10001" />
                   </div>
                   <div className="ks-addr-field-half">
-                    <label className="ks-addr-label">Country</label>
+                    <label className="ks-addr-label">{t("account.addresses.country")}</label>
                     <select name="country" value={form.country} onChange={handleChange} className="ks-addr-input">
                       <option>United States</option>
                       <option>Canada</option>
@@ -285,9 +287,9 @@ export default function AddressesPage() {
               </div>
 
               <div className="ks-addr-modal-footer">
-                <button onClick={resetForm} className="ks-addr-cancel-btn">Cancel</button>
+                <button onClick={resetForm} className="ks-addr-cancel-btn">{t("common.cancel")}</button>
                 <button onClick={handleSave} className="ks-addr-save-btn">
-                  {editingId ? "Save Changes" : "Add Address"}
+                  {editingId ? t("common.saveChanges") : t("account.addresses.addAddress")}
                 </button>
               </div>
             </div>

@@ -1,11 +1,15 @@
+"use client";
+
 import Link from "next/link";
 import { MapPin, Mail, Phone, ArrowRight, UserCircle } from "lucide-react";
 import type { Vendor } from "../services/vendorsApi";
+import { useLanguage } from "@/lib/i18n";
 
 const COLORS = ["#3B82F6", "#EC4899", "#10B981", "#F59E0B", "#8B5CF6", "#EF4444", "#059669", "#D97706"];
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function VendorCard({ vendor, index }: { vendor: Vendor; index: number }) {
+  const { t } = useLanguage();
   const color = COLORS[index % COLORS.length];
 
   return (
@@ -75,7 +79,7 @@ export default function VendorCard({ vendor, index }: { vendor: Vendor; index: n
 
       {/* CTA */}
       <div className="ks-vs-card-cta">
-        Visit store
+        {t("vendor.visitStore")}
         <ArrowRight className="ks-vs-card-cta-icon" />
       </div>
     </Link>

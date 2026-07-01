@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Zap, ChevronRight, Flame, Clock, TrendingUp, ArrowRight } from "lucide-react";
 import FlashDealCard from "@/components/ui/FlashDealCard";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/FlashDeals.css";
 
 const flashProducts = [
@@ -62,6 +63,7 @@ const flashProducts = [
 ];
 
 export default function FlashDeals() {
+  const { t } = useLanguage();
   const [timeLeft, setTimeLeft] = useState({
     hours: 5,
     minutes: 23,
@@ -93,9 +95,9 @@ export default function FlashDeals() {
   const pad = (n: number) => String(n).padStart(2, "0");
 
   const timerUnits = [
-    { value: pad(timeLeft.hours), label: "Hours" },
-    { value: pad(timeLeft.minutes), label: "Min" },
-    { value: pad(timeLeft.seconds), label: "Sec" },
+    { value: pad(timeLeft.hours), label: t("home.flash.hours") },
+    { value: pad(timeLeft.minutes), label: t("home.flash.minutes") },
+    { value: pad(timeLeft.seconds), label: t("home.flash.seconds") },
   ];
 
   return (
@@ -117,14 +119,14 @@ export default function FlashDeals() {
 
               <div className="ks-flash-title-text">
                 <div className="ks-flash-title-row">
-                  <h2 className="ks-flash-title">Flash Deals</h2>
+                  <h2 className="ks-flash-title">{t("home.flash.title")}</h2>
                   <span className="ks-flash-live-badge">
                     <span className="ks-flash-live-dot" />
-                    LIVE
+                    {t("home.flash.liveBadge")}
                   </span>
                 </div>
                 <p className="ks-flash-subtitle">
-                  Grab before they&apos;re gone
+                  {t("home.flash.subtitle")}
                 </p>
               </div>
             </div>
@@ -133,7 +135,7 @@ export default function FlashDeals() {
             <div className="ks-flash-timer-area">
               <div className="ks-flash-timer-label">
                 <Clock className="ks-flash-timer-label-icon" />
-                <span>Ends in</span>
+                <span>{t("home.flash.endsIn")}</span>
               </div>
               <div className="ks-flash-timer">
                 {timerUnits.map((unit, i) => (
@@ -159,7 +161,7 @@ export default function FlashDeals() {
 
             {/* Right: View all link */}
             <Link href="/flash-sale" className="ks-flash-viewall">
-              <span>View All Deals</span>
+              <span>{t("home.flash.viewAllDeals")}</span>
               <ArrowRight className="ks-flash-viewall-icon" />
             </Link>
           </div>
@@ -186,12 +188,12 @@ export default function FlashDeals() {
                     <div className="ks-flash-sold-info">
                       <span className="ks-flash-sold-text">
                         <TrendingUp className="ks-flash-sold-icon" />
-                        {p.sold} sold
+                        {t("home.flash.soldCount", { count: p.sold })}
                       </span>
                       {isHot && (
                         <span className="ks-flash-hot-badge">
                           <Flame className="ks-flash-hot-icon" />
-                          Almost gone!
+                          {t("home.flash.almostGone")}
                         </span>
                       )}
                     </div>
@@ -207,10 +209,10 @@ export default function FlashDeals() {
           <div className="ks-flash-bottom-inner">
             <div className="ks-flash-bottom-info">
               <Zap className="ks-flash-bottom-icon" />
-              <span>New flash deals added every <strong>6 hours</strong></span>
+              <span>{t("home.flash.newAddedPrefix")} <strong>{t("home.flash.newAddedHours")}</strong></span>
             </div>
             <Link href="/flash-sale" className="ks-flash-bottom-link">
-              Browse all flash deals
+              {t("home.flash.browseAll")}
               <ChevronRight className="ks-flash-bottom-link-icon" />
             </Link>
           </div>

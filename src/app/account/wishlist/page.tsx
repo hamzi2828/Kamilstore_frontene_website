@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Heart, ShoppingCart, Trash2, ChevronRight, Share2 } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
+import { useLanguage } from "@/lib/i18n";
 
 // Mock wishlist data
 const initialWishlistItems = [
@@ -54,6 +55,7 @@ const initialWishlistItems = [
 ];
 
 export default function WishlistPage() {
+  const { t } = useLanguage();
   const [wishlistItems, setWishlistItems] = useState(initialWishlistItems);
 
   const removeItem = (id: string) => {
@@ -77,16 +79,16 @@ export default function WishlistPage() {
           <div className="max-w-md mx-auto text-center">
             <Heart className="w-24 h-24 text-gray-300 mx-auto mb-6" />
             <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              Your wishlist is empty
+              {t("account.wishlist.emptyTitle")}
             </h1>
             <p className="text-gray-500 mb-8">
-              Save items you love to your wishlist and they&apos;ll appear here.
+              {t("account.wishlist.emptySub")}
             </p>
             <Link
               href="/products"
               className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
             >
-              Explore Products
+              {t("account.wishlist.exploreProducts")}
             </Link>
           </div>
         </div>
@@ -99,11 +101,11 @@ export default function WishlistPage() {
       <div className="site-container py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-orange-500">Home</Link>
+          <Link href="/" className="hover:text-orange-500">{t("account.home")}</Link>
           <ChevronRight className="w-4 h-4" />
-          <Link href="/account" className="hover:text-orange-500">Account</Link>
+          <Link href="/account" className="hover:text-orange-500">{t("common.account")}</Link>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-gray-900">Wishlist</span>
+          <span className="text-gray-900">{t("common.wishlist")}</span>
         </nav>
 
         {/* Header */}
@@ -111,21 +113,21 @@ export default function WishlistPage() {
           <div className="flex items-center gap-3">
             <Heart className="w-8 h-8 text-red-500 fill-red-500" />
             <div>
-              <h1 className="text-3xl font-bold">My Wishlist</h1>
-              <p className="text-gray-500">{wishlistItems.length} items saved</p>
+              <h1 className="text-3xl font-bold">{t("account.wishlist.title")}</h1>
+              <p className="text-gray-500">{t("account.wishlist.itemsSaved", { count: wishlistItems.length })}</p>
             </div>
           </div>
           <div className="flex gap-3">
             <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
               <Share2 className="w-4 h-4" />
-              Share Wishlist
+              {t("account.wishlist.share")}
             </button>
             <button
               onClick={addAllToCart}
               className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
             >
               <ShoppingCart className="w-4 h-4" />
-              Add All to Cart
+              {t("account.wishlist.addAllToCart")}
             </button>
           </div>
         </div>
@@ -149,7 +151,7 @@ export default function WishlistPage() {
                 {!item.inStock && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                     <span className="bg-white text-gray-800 px-4 py-2 rounded-lg font-medium">
-                      Out of Stock
+                      {t("common.outOfStock")}
                     </span>
                   </div>
                 )}
@@ -198,7 +200,7 @@ export default function WishlistPage() {
 
                 {/* Added Date */}
                 <p className="text-xs text-gray-400 mt-2">
-                  Added on {new Date(item.addedAt).toLocaleDateString()}
+                  {t("account.wishlist.addedOn", { date: new Date(item.addedAt).toLocaleDateString() })}
                 </p>
 
                 {/* Add to Cart Button */}
@@ -212,7 +214,7 @@ export default function WishlistPage() {
                   }`}
                 >
                   <ShoppingCart className="w-4 h-4" />
-                  {item.inStock ? "Add to Cart" : "Out of Stock"}
+                  {item.inStock ? t("common.addToCart") : t("common.outOfStock")}
                 </button>
               </div>
             </div>
@@ -225,7 +227,7 @@ export default function WishlistPage() {
             href="/products"
             className="text-orange-500 hover:underline font-medium"
           >
-            ← Continue Shopping
+            ← {t("account.continueShopping")}
           </Link>
         </div>
       </div>

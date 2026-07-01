@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useLanguage } from "@/lib/i18n";
 
 interface ProductImageProps {
   src: string;
@@ -19,6 +20,7 @@ export default function ProductImage({
   priority = false,
 }: ProductImageProps) {
   const [error, setError] = useState(false);
+  const { t } = useLanguage();
 
   if (error || !src) {
     return (
@@ -36,7 +38,7 @@ export default function ProductImage({
           <path d="M4 5h16v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5z" />
           <path d="M9 5V3.5a3 3 0 0 1 6 0V5" />
         </svg>
-        <span className="text-[11px] text-gray-300 font-medium">No Image</span>
+        <span className="text-[11px] text-gray-300 font-medium">{t("catalog.noImage")}</span>
       </div>
     );
   }

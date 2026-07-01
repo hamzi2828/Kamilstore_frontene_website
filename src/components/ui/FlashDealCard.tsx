@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { Star, ShoppingBag, Truck, ShieldCheck } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import ProductImage from "@/components/ui/ProductImage";
+import { useLanguage } from "@/lib/i18n";
 
 interface FlashDealCardProps {
   product: {
@@ -21,6 +24,7 @@ interface FlashDealCardProps {
 }
 
 export default function FlashDealCard({ product }: FlashDealCardProps) {
+  const { t } = useLanguage();
   const discount = product.discountPrice
     ? Math.round(
         ((product.sellingPrice - product.discountPrice) / product.sellingPrice) *
@@ -52,7 +56,7 @@ export default function FlashDealCard({ product }: FlashDealCardProps) {
           {/* Save Badge — top right */}
           {discount > 0 && (
             <span className="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-emerald-500 text-white text-[8.5px] sm:text-[10px] font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md sm:rounded-lg shadow-sm">
-              Save {formatPrice(product.sellingPrice - (product.discountPrice || product.sellingPrice))}
+              {t("catalog.card.save", { amount: formatPrice(product.sellingPrice - (product.discountPrice || product.sellingPrice)) })}
             </span>
           )}
 
@@ -66,7 +70,7 @@ export default function FlashDealCard({ product }: FlashDealCardProps) {
               className="w-full flex items-center justify-center gap-2 bg-[#111] text-white text-[12px] font-bold py-2.5 rounded-xl hover:bg-orange-500 transition-colors duration-200"
             >
               <ShoppingBag className="w-3.5 h-3.5" />
-              Add to Cart
+              {t("common.addToCart")}
             </button>
           </div>
         </div>
@@ -132,11 +136,11 @@ export default function FlashDealCard({ product }: FlashDealCardProps) {
           <div className="flex items-center gap-2 sm:gap-3 mt-2 sm:mt-3">
             <div className="flex items-center gap-1">
               <Truck className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500" />
-              <span className="text-[9px] sm:text-[10px] font-semibold text-[#999]">Free Shipping</span>
+              <span className="text-[9px] sm:text-[10px] font-semibold text-[#999]">{t("catalog.card.freeShipping")}</span>
             </div>
             <div className="flex items-center gap-1">
               <ShieldCheck className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-500" />
-              <span className="text-[9px] sm:text-[10px] font-semibold text-[#999]">Warranty</span>
+              <span className="text-[9px] sm:text-[10px] font-semibold text-[#999]">{t("catalog.card.warranty")}</span>
             </div>
           </div>
         </div>

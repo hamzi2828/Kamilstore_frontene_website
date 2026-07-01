@@ -6,6 +6,7 @@ import {
   ShieldCheck, Lock,
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { useLanguage } from "@/lib/i18n";
 import "@/styling/PaymentsPage.css";
 
 interface PaymentMethod {
@@ -43,6 +44,7 @@ const brandColors: Record<string, { bg: string; color: string; border: string; l
 };
 
 export default function PaymentsPage() {
+  const { t } = useLanguage();
   const [methods, setMethods] = useState<PaymentMethod[]>(initialMethods);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -110,7 +112,7 @@ export default function PaymentsPage() {
 
   return (
     <>
-      <Breadcrumb items={[{ label: "Account", href: "/account" }, { label: "Payment Methods" }]} />
+      <Breadcrumb items={[{ label: t("common.account"), href: "/account" }, { label: t("account.nav.paymentMethods") }]} />
 
       <div className="flex flex-col gap-5 sm:gap-6 pt-4 sm:pt-5 pb-20 sm:pb-28">
         {/* ── Header ── */}
@@ -125,16 +127,16 @@ export default function PaymentsPage() {
                   </div>
                   <div>
                     <h1 className="text-2xl sm:text-[28px] font-extrabold text-[#111] tracking-tight leading-tight">
-                      Payment Methods
+                      {t("account.nav.paymentMethods")}
                     </h1>
                     <p className="text-sm text-[#999] font-medium mt-1.5">
-                      {methods.length} saved card{methods.length !== 1 ? "s" : ""}
+                      {methods.length} {methods.length !== 1 ? t("account.payments.savedPlural") : t("account.payments.savedSingular")}
                     </p>
                   </div>
                 </div>
                 <button onClick={() => { resetForm(); setShowForm(true); }} className="ks-pay-add-btn">
                   <Plus className="w-[18px] h-[18px]" />
-                  Add Card
+                  {t("account.payments.addCard")}
                 </button>
               </div>
             </div>
@@ -157,7 +159,7 @@ export default function PaymentsPage() {
                       {pm.isDefault && (
                         <span className="ks-pay-default-badge">
                           <CheckCircle className="w-3.5 h-3.5" />
-                          Default
+                          {t("account.default")}
                         </span>
                       )}
                     </div>
@@ -177,11 +179,11 @@ export default function PaymentsPage() {
 
                     <div className="ks-pay-card-bottom">
                       <div>
-                        <span className="ks-pay-card-label">Card Holder</span>
+                        <span className="ks-pay-card-label">{t("account.payments.cardHolder")}</span>
                         <span className="ks-pay-card-value">{pm.name}</span>
                       </div>
                       <div>
-                        <span className="ks-pay-card-label">Expires</span>
+                        <span className="ks-pay-card-label">{t("account.payments.expires")}</span>
                         <span className="ks-pay-card-value">{pm.expiry}</span>
                       </div>
                     </div>
@@ -191,14 +193,14 @@ export default function PaymentsPage() {
                   <div className="ks-pay-card-actions">
                     {!pm.isDefault && (
                       <button onClick={() => handleSetDefault(pm._id)} className="ks-pay-action ks-pay-action-default">
-                        <CheckCircle className="w-3.5 h-3.5" /> Set Default
+                        <CheckCircle className="w-3.5 h-3.5" /> {t("account.setDefault")}
                       </button>
                     )}
                     <button onClick={() => handleEdit(pm)} className="ks-pay-action ks-pay-action-edit">
-                      <Edit2 className="w-3.5 h-3.5" /> Edit
+                      <Edit2 className="w-3.5 h-3.5" /> {t("common.edit")}
                     </button>
                     <button onClick={() => handleDelete(pm._id)} className="ks-pay-action ks-pay-action-delete">
-                      <Trash2 className="w-3.5 h-3.5" /> Remove
+                      <Trash2 className="w-3.5 h-3.5" /> {t("common.remove")}
                     </button>
                   </div>
                 </div>
@@ -211,7 +213,7 @@ export default function PaymentsPage() {
                 <div className="ks-pay-add-card-icon">
                   <Plus className="w-6 h-6" />
                 </div>
-                <span className="ks-pay-add-card-text">Add New Card</span>
+                <span className="ks-pay-add-card-text">{t("account.payments.addNew")}</span>
               </button>
             )}
           </div>
@@ -220,10 +222,10 @@ export default function PaymentsPage() {
           {methods.length === 0 && !showForm && (
             <div className="ks-pay-empty">
               <div className="ks-pay-empty-icon"><CreditCard className="w-10 h-10 text-[#ddd]" /></div>
-              <h3 className="ks-pay-empty-title">No payment methods</h3>
-              <p className="ks-pay-empty-sub">Add a card to make checkout faster and easier.</p>
+              <h3 className="ks-pay-empty-title">{t("account.payments.noneTitle")}</h3>
+              <p className="ks-pay-empty-sub">{t("account.payments.noneSub")}</p>
               <button onClick={() => setShowForm(true)} className="ks-pay-empty-btn">
-                <Plus className="w-[18px] h-[18px]" /> Add Card
+                <Plus className="w-[18px] h-[18px]" /> {t("account.payments.addCard")}
               </button>
             </div>
           )}
@@ -232,7 +234,7 @@ export default function PaymentsPage() {
           {methods.length > 0 && (
             <div className="ks-pay-security">
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
-              <span>Your payment information is encrypted and securely stored. We never share your card details.</span>
+              <span>{t("account.payments.securityNote")}</span>
             </div>
           )}
         </section>
@@ -243,7 +245,7 @@ export default function PaymentsPage() {
             <div className="ks-pay-modal" onClick={(e) => e.stopPropagation()}>
               <div className="ks-pay-modal-header">
                 <h2 className="ks-pay-modal-title">
-                  {editingId ? "Edit Card" : "Add New Card"}
+                  {editingId ? t("account.payments.editCard") : t("account.payments.addNew")}
                 </h2>
                 <button onClick={resetForm} className="ks-pay-modal-close">
                   <X className="w-5 h-5" />
@@ -271,33 +273,33 @@ export default function PaymentsPage() {
 
                 <div className="ks-pay-form-grid">
                   <div className="ks-pay-field-full">
-                    <label className="ks-pay-label">Card Number</label>
+                    <label className="ks-pay-label">{t("account.payments.cardNumber")}</label>
                     <input type="text" name="number" value={form.number} onChange={handleChange} placeholder="1234 5678 9012 3456" className="ks-pay-input" />
                   </div>
                   <div className="ks-pay-field-full">
-                    <label className="ks-pay-label">Cardholder Name</label>
+                    <label className="ks-pay-label">{t("account.payments.cardholderName")}</label>
                     <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="John Doe" className="ks-pay-input" />
                   </div>
                   <div className="ks-pay-field-half">
-                    <label className="ks-pay-label">Expiry Date</label>
+                    <label className="ks-pay-label">{t("account.payments.expiryDate")}</label>
                     <input type="text" name="expiry" value={form.expiry} onChange={handleChange} placeholder="MM/YY" className="ks-pay-input" />
                   </div>
                   <div className="ks-pay-field-half">
-                    <label className="ks-pay-label">CVV</label>
+                    <label className="ks-pay-label">{t("account.payments.cvv")}</label>
                     <input type="text" name="cvv" value={form.cvv} onChange={handleChange} placeholder="123" className="ks-pay-input" />
                   </div>
                 </div>
 
                 <div className="ks-pay-modal-trust">
                   <Lock className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>256-bit SSL encrypted. Your card data is safe.</span>
+                  <span>{t("account.payments.trustNote")}</span>
                 </div>
               </div>
 
               <div className="ks-pay-modal-footer">
-                <button onClick={resetForm} className="ks-pay-cancel-btn">Cancel</button>
+                <button onClick={resetForm} className="ks-pay-cancel-btn">{t("common.cancel")}</button>
                 <button onClick={handleSave} className="ks-pay-save-btn">
-                  {editingId ? "Save Changes" : "Add Card"}
+                  {editingId ? t("common.saveChanges") : t("account.payments.addCard")}
                 </button>
               </div>
             </div>
