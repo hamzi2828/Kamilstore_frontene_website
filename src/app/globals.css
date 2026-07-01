@@ -74,6 +74,15 @@ body {
   }
 }
 
+/* Icon refinement — uniform, elegant stroke across every lucide icon site-wide.
+   Overrides lucide's inline stroke-width="2" attribute for a lighter, classic feel.
+   Rounded joins/caps keep the strokes soft and consistent. */
+svg.lucide:not([stroke-width="0"]) {
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
